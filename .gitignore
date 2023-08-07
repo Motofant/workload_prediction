@@ -1,0 +1,4 @@
+test/
+c_sharp/logs/*
+*.log
+*.txt
