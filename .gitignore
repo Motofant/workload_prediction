@@ -2,3 +2,4 @@ test/
 c_sharp/logs/*
 *.log
 *.txt
+__pycache__/
