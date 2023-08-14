@@ -24,7 +24,6 @@ class CSVFormatter(logging.Formatter):
         self.output.seek(0)
         return data.strip()
 
-
 logging.basicConfig(filename=f'{sys.argv[1]}_{sys.argv[2]}_logging.log', filemode='w',level=logging.DEBUG,format='%(message)s')#%(asctime)s|
 
 logger = logging.getLogger(__name__)

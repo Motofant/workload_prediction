@@ -28,10 +28,7 @@ else:
     if st.session_state[f'{MAIN_KEY}tests'] == 'default':
         st.write("default")
     if st.session_state[f'{MAIN_KEY}tests'] == 'text':
-        process = st.session_state["subprocess"]
-        id = process.pid
-        print(f'process Id {id}')
-        textWriteView(process, id)
+        textWriteView()
     if st.session_state[f'{MAIN_KEY}tests'] == 'mouse':
         st.write("TODO: mouse")
     
