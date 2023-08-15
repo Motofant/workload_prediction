@@ -1,8 +1,9 @@
 import streamlit as st
-import os 
-import subprocess
 import psutil
-import signal
+from utils import startSubprocesses
+
+# creative writing task 
+# let the user write a text about provideed topic
 
 WRITING_KEY = "writing_"
 start = "start_button"
@@ -16,22 +17,6 @@ ELEMENT_KEYS = [
     active,
 ]
 
-
-
-def startSubprocesses(site_key:str, name:str, difficulty: str, ):
-    # start logging scripts
-    # keyboard/mouse
-    if f'{site_key}_key_mouse' not in st.session_state:
-        key_mouse = subprocess.Popen(f"python ./keyboard_mouse_tracker.py {name} textTask {difficulty}", shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
-        psutil.Process(key_mouse.pid).suspend()
-        st.session_state[f'{site_key}_key_mouse'] = key_mouse
-
-    # analog
-
-
-    # eyetracker
-
-    return[f'{site_key}_key_mouse',]
     
 def manageSubProc(processes:list, mode:str):
     if mode == "resume":
@@ -43,6 +28,7 @@ def manageSubProc(processes:list, mode:str):
         st.session_state["writing_experiment_input"] = False
         for proc in processes:
             psutil.Process(st.session_state[proc].pid).suspend()
+
     elif mode == "kill":
         st.session_state["writing_experiment_input"] = False
         for proc in processes:
@@ -69,9 +55,8 @@ def textWriteView():
         sub_procs = startSubprocesses(WRITING_KEY,st.session_state["main_user"],"easy")
         st.write(
             """
-            Starten sie den Test mit drücken des Buttons. 
-            Wenn Sie fertig sind drücken sie Stopp
-            Schreiben sie einen text in dieses Feld
+            Schreiben Sie einen Text zum Thema ____
+            Die Länge ist Ihnen überlassen
             """
         )
         

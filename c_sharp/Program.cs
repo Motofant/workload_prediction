@@ -77,8 +77,8 @@ namespace c_sharp
 
                     // We want to have a bit of a delay so we don't spam the console with new values
                     //Thread.Sleep(100);
+                    //Log.Debug($"{DateTime.Now.ToString(timeFormat)}|analog|gen|done");
                 }
-                long.Debug($"{DateTime.Now.ToString(timeFormat)}|analog|gen|done")
             }			
             else {
                 Console.WriteLine($"Analog SDK failed to initialise: {error}");

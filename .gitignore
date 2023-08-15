@@ -1,5 +1,7 @@
 test/
 eyeenv/
+volume/
+logging/
 c_sharp/logs/*
 *.log
 *.txt
