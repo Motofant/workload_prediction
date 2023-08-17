@@ -33,11 +33,12 @@ def gaze_data_callback(gaze_data):
     print("Left eye: ({gaze_left_eye}) \t Right eye: ({gaze_right_eye})".format(
         gaze_left_eye=gaze_data['left_gaze_point_on_display_area'],
         gaze_right_eye=gaze_data['right_gaze_point_on_display_area']))
+    logging.info(f'{gaze_data["system_time_stamp"]}|eyetrack|pupil_diameter|{(gaze_data["left_gaze_point_on_display_area"],gaze_data["right_gaze_point_on_display_area"])}')
     
 def pupil_data_callback(data):
     # pupil diameter
     print(f'pupil data ((left|right)): ({data["left_pupil_diameter"]}|{data["right_pupil_diameter"]}) at {data["system_time_stamp"]}')
-    logging.info(f'{data["system_time_stamp"]}|eyetrack|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}|pupil_diameter')
+    logging.info(f'{data["system_time_stamp"]}|eyetrack|pupil_diameter|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}')
     
 
 my_eyetracker = found_eyetrackers[0]
