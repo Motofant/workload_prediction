@@ -1,0 +1,20 @@
+{
+  "template": "https://github.com/blackary/cookiecutter-streamlit-component/",
+  "commit": "c972054b7b0890a1aa1c02e792bedc71c525ea87",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "author_name": "Erik Zimmermann",
+      "author_email": "erikzimmermann99@googlemail.com",
+      "project_name": "DragnDrop",
+      "package_name": "streamlit-dragndrop",
+      "import_name": "st_dragndrop",
+      "description": "allows to click on and move objects to deiserd location in frame",
+      "deployment_via_github_actions": "n",
+      "working_with_dataframes": "n",
+      "open_source_license": "MIT license",
+      "_template": "https://github.com/blackary/cookiecutter-streamlit-component/"
+    }
+  },
+  "directory": null
+}

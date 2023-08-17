@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <style>
+    #img_0{
+cursor: move;
+padding: 10px;
+position: absolute;
+background-color: #f1f1f1;
+}
+#img_1{
+cursor: move;
+padding: 10px;
+position: absolute;
+background-color: #f1f1f1;
+}
+#img_2{
+cursor: move;
+padding: 10px;
+position: absolute;
+background-color: #f1f1f1;
+}
+
+    </style>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>streamlit-dragndrop</title>
+        <script src="./streamlit-component-lib.js"></script>
+        <script src="./main.js"></script>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body id = "bdid" style="background-color: coral;height: 500px;">
+    <div id="root"></div>
+    <div id="img_0">1</div>
+<div id="img_1">2</div>
+<div id="img_2">3</div>
+<script>
+dragElement(img_0)
+dragElement(img_1)
+dragElement(img_2)
+    function dragElement(elmnt) {
+      x = document.getElementById(elmnt.id)
+      x.style.color = '#2196F3';
+      var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      if (document.getElementById(elmnt.id)) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id).onmousedown = dragMouseDown;
+      } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+      }
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      }
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+    
+      function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+    </script>
+    </body>
+    </html>
+    
