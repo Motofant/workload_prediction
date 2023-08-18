@@ -4,5 +4,6 @@ volume/
 logging/
 c_sharp/logs/*
 *.log
+logs/
 *.txt
 __pycache__/
