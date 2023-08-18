@@ -3,13 +3,13 @@ from study_task_writing import textWriteView
 from study_task_phrase import phraseWriteView
 from study_task_dragging import draggingTaskView
 from study_login import loginView
+import subprocess
 
 MAIN_KEY = "main_"
 PHRASE_KEY = "phrase_"
 DRAG_KEY = "dragging_"
 USER_KEY = "user"
 st.set_page_config(layout="wide",initial_sidebar_state="expanded")
-
 
 if MAIN_KEY+USER_KEY not in st.session_state:
     print("UserKey undefined")

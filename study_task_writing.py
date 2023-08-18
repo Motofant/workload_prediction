@@ -49,10 +49,10 @@ def initSessionState(page_key, elements):
 
 def textWriteView():
     keys = initSessionState(WRITING_KEY,ELEMENT_KEYS)
-    sub_procs = startSubprocesses(WRITING_KEY,st.session_state["main_user"],"easy")
+    sub_procs = startSubprocesses(WRITING_KEY,st.session_state["main_user"],"text", "easy")
     
     if not st.session_state[keys[active]]:
-        sub_procs = startSubprocesses(WRITING_KEY,st.session_state["main_user"],"easy")
+        sub_procs = startSubprocesses(WRITING_KEY,st.session_state["main_user"],"text", "easy")
         st.write(
             """
             Schreiben Sie einen Text zum Thema ____

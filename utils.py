@@ -2,26 +2,32 @@ from streamlit import session_state as sts
 import subprocess
 import psutil
 import random
-
+import sys
 PHRASE_PATH = 'volume/phrases.txt'
 
-def startSubprocesses(site_key:str, name:str, difficulty: str, ):
+def startSubprocesses(site_key:str, name:str, difficulty: str, task :str):
     # start logging scripts
     # keyboard/mouse
     if f'{site_key}_key_mouse' not in sts:
-        key_mouse = subprocess.Popen(f"python ./tracking/keyboard_mouse_tracker.py {name} textTask {difficulty}", shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
+        key_mouse = subprocess.Popen(f"{sys.executable} ./tracking/keyboard_mouse_tracker.py {name} {task} {difficulty}", shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
         psutil.Process(key_mouse.pid).suspend()
         sts[f'{site_key}_key_mouse'] = key_mouse
 
     # analog
-    if f'{site_key}_analog' not in sts and False:
-        analog = subprocess.Popen(f" {name} textTask {difficulty}", shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
-        psutil.Process(key_mouse.pid).suspend()
+    if f'{site_key}_analog' not in sts:
+        analog = subprocess.Popen(f"dotnet run --project ./c_sharp/ {name} {task} {difficulty}", shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
+        psutil.Process(analog.pid).suspend()
         sts[f'{site_key}_analog'] = analog
-
+    
     # eyetracker
+    if f'{site_key}_eyetr' not in sts:
+        cmd = [f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}, {difficulty}]
+        
+        eyetr = subprocess.Popen(cmd, shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
+        psutil.Process(eyetr.pid).suspend()
+        sts[f'{site_key}_eyetr'] = eyetr
 
-    return[f'{site_key}_key_mouse',]
+    return[f'{site_key}_key_mouse',f'{site_key}_analog',f'{site_key}_eyetr',]
 
 def getPhrases(site_key:str,n_o_phrase: int):
     # phrases used from https://www.yorku.ca/mack/chi03b.pdf

@@ -21,10 +21,11 @@ namespace c_sharp
 
         static void Main(string[] args){
             string timeFormat = "HH:mm:ss.fffff";
+            Console.WriteLine(args[0]);
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File("logs/myapp.csv", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fffff}|{Message:l}{NewLine}")
+                .WriteTo.File($"logging/{args[0]}_{args[1]}_{args[2]}_analog_logging.log", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fffff}|{Message:l}{NewLine}")
                 .CreateLogger();
 
             Log.Information($"{DateTime.Now.ToString(timeFormat)}|analog|gen|init");
