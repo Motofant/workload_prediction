@@ -1,16 +1,12 @@
 import component.streamlit_dragndrop.src.st_dragndrop as dnd
 import streamlit as st
 from streamlit import session_state as sts
+import constants as c
 
-DRAG_KEY = "dragging_"
 NO_PHRASE = 5
-SUCCESS_MSG="Sie Haben den Test Überstanden"
-TASK_DESC = '''
-    Bringen sie die Symbole in die richtige Reihenfolge
-    Mit dem Drücken von "Beenden" schließen Sie den Text ab
-'''
+
 def endTest():
-    pass
+    #pass
     # end subprocesses
 
     # write outputs in logfile
@@ -21,22 +17,23 @@ def endTest():
             f.write(row+"\n")'''
     st.balloons()
     # block access to test
-    sts[f'{DRAG_KEY}completed'] = True
+    sts[c.D_END] = True
 
+def changeTest():
+    sts[c.STATE] = 5
 
 def studyToggle(val:bool):
-    sts[f'{DRAG_KEY}started'] = val
+    sts[c.D_START] = val
 
 def draggingTaskView():
-
-    if sts[f'{DRAG_KEY}completed']:
+    if sts[c.D_END]:
         # Test is completed
-        st.success(SUCCESS_MSG)
-        
-    elif not sts[f'{DRAG_KEY}started']:
-        ## Test is not started yet --> giuve explenation
-        st.write(TASK_DESC)
-        st.button(label="Start Experiment", key=f"{DRAG_KEY}start", on_click=studyToggle, args=[True])   
+        st.success(c.SUCCESS)
+        st.button(label = "Nächster Test", key = c.D_B_CHANGE, on_click=changeTest)
+    elif not sts[c.D_START]:
+        ## Test is not started yet
+        st.write(c.D_TASK_DESC)
+        st.button(label="Start Experiment", key=c.D_B_START, on_click=studyToggle, args=[True])   
     
     else:
     # TODO: generate index html before calling stuff 
@@ -44,4 +41,4 @@ def draggingTaskView():
         with may:
             dnd.st_dragndrop([9],"str")
         #st.components.v1.iframe(src = "http://localhost:8501", height=10)
-        st.button("Beende Test",key = f'{DRAG_KEY}end', on_click = endTest,)
+        st.button("Beende Test",key = c.D_B_END, on_click = endTest,)

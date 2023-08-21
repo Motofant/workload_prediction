@@ -1,5 +1,7 @@
-import streamlit as st
 import psutil
+import streamlit as st
+import constants as c
+from streamlit import session_state as sts
 from utils import startSubprocesses
 
 # creative writing task 
@@ -9,7 +11,7 @@ WRITING_KEY = "writing_"
 start = "start_button"
 end = "end_button"
 user_in = "user_input"
-active = "experiment_input"
+active = c.W_ACTIVE
 ELEMENT_KEYS = [
     #start,
     #user_in,
@@ -20,49 +22,43 @@ ELEMENT_KEYS = [
     
 def manageSubProc(processes:list, mode:str):
     if mode == "resume":
-        st.session_state["writing_experiment_input"] = True
+        sts[c.W_ACTIVE] = True
         for proc in processes:
-            psutil.Process(st.session_state[proc].pid).resume()
+            psutil.Process(sts[proc].pid).resume()
         
     elif mode == "suspend":
-        st.session_state["writing_experiment_input"] = False
+        sts[c.W_ACTIVE] = False
         for proc in processes:
-            psutil.Process(st.session_state[proc].pid).suspend()
+            psutil.Process(sts[proc].pid).suspend()
 
     elif mode == "kill":
-        st.session_state["writing_experiment_input"] = False
+        sts[c.W_ACTIVE] = False
         for proc in processes:
-            psutil.Process(st.session_state[proc].pid).kill()
-            del st.session_state[proc]
+            psutil.Process(sts[proc].pid).kill()
+            del sts[proc]
     
 
 
-def initSessionState(page_key, elements):
+def initSessionState(elements):
     session_elements = {}
     for key in elements:
-        full_key = page_key+key
-        if full_key not in st.session_state:
-            st.session_state[full_key] = False
+        full_key = key
+        if full_key not in sts:
+            sts[full_key] = False
         session_elements[key] = full_key
-    
     return session_elements
 
 def textWriteView():
-    keys = initSessionState(WRITING_KEY,ELEMENT_KEYS)
-    sub_procs = startSubprocesses(WRITING_KEY,st.session_state["main_user"],"text", "easy")
+    keys = initSessionState(ELEMENT_KEYS)
+    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],"text", "easy")
     
-    if not st.session_state[keys[active]]:
-        sub_procs = startSubprocesses(WRITING_KEY,st.session_state["main_user"],"text", "easy")
-        st.write(
-            """
-            Schreiben Sie einen Text zum Thema ____
-            Die Länge ist Ihnen überlassen
-            """
-        )
+    if not sts[c.W_ACTIVE]:
+        sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],"text", "easy")
+        st.write(c.W_TASK_DESC)
         
-        st.button(label="Start Experiment", key=f"{WRITING_KEY}{start}", on_click=manageSubProc, args=[sub_procs,"resume"])
+        st.button(label="Start Experiment", key=c.W_B_START, on_click=manageSubProc, args=[sub_procs,"resume"])
         
     else:
-        print(st.session_state["main_user"])
-        st.text_area(label="Eingabe", key= f"{WRITING_KEY}{user_in}")
-        st.button(label="Stop Experiment", key=f"{WRITING_KEY}{end}", on_click=manageSubProc, args=[sub_procs,"kill"])
+        print(sts[c.USER])
+        st.text_area(label="Eingabe", key= c.USER)
+        st.button(label="Stop Experiment", key=c.W_B_END, on_click=manageSubProc, args=[sub_procs,"kill"])

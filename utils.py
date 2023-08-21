@@ -47,3 +47,13 @@ def getPhrases(site_key:str,n_o_phrase: int):
                 f.write(i+"\n")
         sts[f"{site_key}phrases"] = output
         sts[f"{site_key}outputs"] = [None]*n_o_phrase
+
+def radioFormat(x):
+    vals = {
+        0: "login",
+        1: "start",
+        2: "text",
+        3: "phrase",
+        4: "maus",
+    }
+    return vals[x]
