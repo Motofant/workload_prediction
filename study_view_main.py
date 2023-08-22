@@ -11,7 +11,7 @@ import subprocess
 
 DRAG_KEY = "dragging_"
 
-st.set_page_config(layout="wide",initial_sidebar_state="expanded")
+st.set_page_config(initial_sidebar_state="expanded")
 
 if c.STATE not in sts:
     sts[c.STATE] = 0
@@ -19,6 +19,10 @@ if c.STATE not in sts:
 if c.USER not in sts:
     print("UserKey undefined")
     sts[c.USER] = ""
+
+if c.W_START not in sts:
+    sts[c.W_START] = False
+    sts[c.W_END] = False
 
 if c.P_START not in sts:
     sts[c.P_START] = False
@@ -28,7 +32,8 @@ if c.D_START not in sts:
     sts[c.D_START] = False
     sts[c.D_END] = False    
 
-if sts[c.USER] == "":
+if sts[c.USER] == "" or sts[c.STATE] == 0:
+    print("before "+sts[c.USER])
     loginView()
     print(sts[c.USER])
     

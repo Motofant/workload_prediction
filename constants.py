@@ -4,6 +4,12 @@ USER = MAINKEY+"user"
 STATE = MAINKEY+"state"
 M_R_TESTS = MAINKEY+"tests"
 
+### subprocesses 
+SUB_KM = "key_mouse"
+SUB_AN = "analog"
+SUB_EY = "eyetr"
+SUB_LST = "sub_list"
+
 ### Login
 LOGINKEY = "login_"
 L_T_NAME = LOGINKEY+"text"
@@ -16,9 +22,12 @@ DEF_MSG_END = "end"
 ### Writing
 WRITING_KEY = "writing_"
 W_ACTIVE = WRITING_KEY + "active"
+W_START = WRITING_KEY + "started"
+W_END = WRITING_KEY + "completed"
 # Buttons
 W_B_START = WRITING_KEY + "start"
 W_B_END = WRITING_KEY + "end"
+W_B_CHANGE = WRITING_KEY+"change"
 # Text Inputs
 W_T_INPUT = WRITING_KEY + "user_input"
 # Text

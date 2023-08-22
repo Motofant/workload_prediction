@@ -2,6 +2,7 @@ import component.streamlit_dragndrop.src.st_dragndrop as dnd
 import streamlit as st
 from streamlit import session_state as sts
 import constants as c
+import config as conf 
 
 NO_PHRASE = 5
 

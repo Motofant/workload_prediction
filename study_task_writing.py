@@ -2,42 +2,34 @@ import psutil
 import streamlit as st
 import constants as c
 from streamlit import session_state as sts
-from utils import startSubprocesses
+from utils import startSubprocesses, manageSubProc
 
 # creative writing task 
 # let the user write a text about provideed topic
 
-WRITING_KEY = "writing_"
-start = "start_button"
-end = "end_button"
-user_in = "user_input"
-active = c.W_ACTIVE
-ELEMENT_KEYS = [
-    #start,
-    #user_in,
-    #end,
-    active,
-]
+def endTest():
+    # end subprocesses
+    manageSubProc("kill")
 
+    # write outputs in logfile
+    '''
+    sts[c.P_OUT] = [val if val else "__" for val in sts[c.P_OUT] ]
+    with open(f'./logging/{sts[c.USER]}_{c.WRITING_KEY}user_entered.txt', "w") as f:
+        for row in sts[c.P_OUT]:
+            f.write(row+"\n")
+    '''
+    st.balloons()
     
-def manageSubProc(processes:list, mode:str):
-    if mode == "resume":
-        sts[c.W_ACTIVE] = True
-        for proc in processes:
-            psutil.Process(sts[proc].pid).resume()
-        
-    elif mode == "suspend":
-        sts[c.W_ACTIVE] = False
-        for proc in processes:
-            psutil.Process(sts[proc].pid).suspend()
+    # block access to test
+    sts[c.W_END] = True
 
-    elif mode == "kill":
-        sts[c.W_ACTIVE] = False
-        for proc in processes:
-            psutil.Process(sts[proc].pid).kill()
-            del sts[proc]
-    
+def changeTest():
+    sts[c.STATE] = 3
 
+def studyToggle(val:bool):
+    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],"text", "easy")
+    sts[c.W_START] = val
+    manageSubProc("resume")
 
 def initSessionState(elements):
     session_elements = {}
@@ -49,16 +41,17 @@ def initSessionState(elements):
     return session_elements
 
 def textWriteView():
-    keys = initSessionState(ELEMENT_KEYS)
-    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],"text", "easy")
-    
-    if not sts[c.W_ACTIVE]:
-        sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],"text", "easy")
+    # first start 
+    if sts[c.W_END]:
+        # Test is completed
+        st.success(c.SUCCESS)
+        st.button(label = "Nächster Test", key = c.W_B_CHANGE, on_click=changeTest)
+    # currently running
+    elif not sts[c.W_START]:
+        ## Test is not started yet
         st.write(c.W_TASK_DESC)
-        
-        st.button(label="Start Experiment", key=c.W_B_START, on_click=manageSubProc, args=[sub_procs,"resume"])
-        
+        st.button(label="Start Experiment", key=c.W_B_START, on_click=studyToggle, args=[True])   
+    # finished --> get to next test
     else:
-        print(sts[c.USER])
-        st.text_area(label="Eingabe", key= c.USER)
-        st.button(label="Stop Experiment", key=c.W_B_END, on_click=manageSubProc, args=[sub_procs,"kill"])
+        st.text_area(label="Eingabe", key= c.W_T_INPUT)
+        st.button(label="Stop Experiment", key=c.W_B_END, on_click=endTest)
