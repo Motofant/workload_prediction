@@ -4,6 +4,8 @@ import psutil
 import random
 import sys
 import constants as c
+from pathlib import Path
+
 PHRASE_PATH = 'volume/phrases.txt'
 
 def startSubprocesses(site_key:str, name:str, difficulty: str, task :str):
@@ -78,3 +80,78 @@ def radioFormat(x):
         4: "maus",
     }
     return vals[x]
+
+def generateIndex(lst:list, tpe:str):
+    start = '''<!DOCTYPE html>
+    <html lang="en">
+    <style>
+    '''
+    style ='\n'.join(["#img_"+str(num)+'''{\n'''+'cursor: move;\npadding: 10px;\nposition: absolute;\nbackground-color: #f1f1f1;\n'+'''}''' for num,_ in enumerate(lst)])
+    stuff='''\n
+    </style>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>streamlit-dragndrop</title>
+        <script src="./streamlit-component-lib.js"></script>
+        <script src="./main.js"></script>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body id = "bdid" style="height: 500px;">
+    <div id="root"></div>
+    '''
+    divs = '\n'.join([f'<div id="img_{num}">{val}</div>' for num,val in enumerate(lst)])# style="position: absolute;cursor:move;"
+    fct_call = '\n'.join([f'dragElement(img_{num})' for num,_ in enumerate(lst)])
+    end = '''
+    function dragElement(elmnt) {
+      x = document.getElementById(elmnt.id)
+      x.style.color = '#2196F3';
+      var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      if (document.getElementById(elmnt.id)) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id).onmousedown = dragMouseDown;
+      } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+      }
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      }
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+    
+      function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+    </script>
+    </body>
+    </html>
+    '''
+    out_str = start +style+stuff+ divs + '<script>' + fct_call+ end
+    file_dir = f"{Path(__file__).parent}/component/streamlit_dragndrop/src/st_dragndrop/frontend/index.html".replace('\\','/')
+    print(file_dir)
+    with open(file_dir,"w") as f:
+        f.write(out_str)
+
+    return out_str

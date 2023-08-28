@@ -61,12 +61,16 @@ P_TASK_DESC = """
 DRAG_KEY = "dragging_"
 D_START = DRAG_KEY+"started"
 D_END = DRAG_KEY+"completed"
+D_CURR = DRAG_KEY+"curr"
 # Buttons
 D_B_START = DRAG_KEY+"start"
 D_B_PREV = DRAG_KEY+"prev"
 D_B_NEXT = DRAG_KEY+"next"
 D_B_END = DRAG_KEY+"end"
 D_B_CHANGE = DRAG_KEY+"change"
+# custom drag
+D_D_INPUT = DRAG_KEY+"input"
+D_OUT = DRAG_KEY+"outputs"
 # Text
 D_TASK_DESC = '''
     Bringen sie die Symbole in die richtige Reihenfolge

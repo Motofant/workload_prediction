@@ -11,7 +11,7 @@ import subprocess
 
 DRAG_KEY = "dragging_"
 
-st.set_page_config(initial_sidebar_state="expanded")
+st.set_page_config(initial_sidebar_state="expanded",layout="wide")
 
 if c.STATE not in sts:
     sts[c.STATE] = 0

@@ -25,10 +25,10 @@ namespace c_sharp
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File($"logging/{args[0]}_{args[1]}_{args[2]}_analog_logging.log", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fffff}|{Message:l}{NewLine}")
+                .WriteTo.File($"logging/{args[0]}_{args[1]}_{args[2]}_analog_logging.log")//, rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fffff}|{Message:l}{NewLine}")
                 .CreateLogger();
 
-            Log.Information($"{DateTime.Now.ToString(timeFormat)}|analog|gen|init");
+            Log.Information($"|analog|gen|init");
 
             // https://github.com/WootingKb/wooting-analog-wrappers/blob/master/examples/GUIDE.md
             var (noDevices, error) = WootingAnalogSDK.Initialise(); 
@@ -62,7 +62,7 @@ namespace c_sharp
                         foreach (var analog in keys)
                         {
                             Console.Write($"{DateTime.Now.ToString(timeFormat)}: ({analog.Item1},{analog.Item2})");
-                            Log.Information($"{DateTime.Now.ToString(timeFormat)}|analog|{analog.Item1}|{analog.Item2}");
+                            Log.Information($"|analog|{analog.Item1}|{analog.Item2}");
                         }
 		
                         // We want to put on the new line character only if keys have been read and output to the console

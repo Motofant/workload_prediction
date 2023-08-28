@@ -19,6 +19,12 @@ padding: 10px;
 position: absolute;
 background-color: #f1f1f1;
 }
+#img_3{
+cursor: move;
+padding: 10px;
+position: absolute;
+background-color: #f1f1f1;
+}
 
     </style>
     <head>
@@ -30,15 +36,15 @@ background-color: #f1f1f1;
         <script src="./main.js"></script>
         <link rel="stylesheet" href="./style.css" />
     </head>
-    <body id = "bdid" style="background-color: coral;height: 500px;">
+    <body id = "bdid" style="height: 500px;">
     <div id="root"></div>
-    <div id="img_0">1</div>
-<div id="img_1">2</div>
-<div id="img_2">3</div>
-<script>
-dragElement(img_0)
+    <div id="img_0">a</div>
+<div id="img_1">b</div>
+<div id="img_2">c</div>
+<div id="img_3">d</div><script>dragElement(img_0)
 dragElement(img_1)
 dragElement(img_2)
+dragElement(img_3)
     function dragElement(elmnt) {
       x = document.getElementById(elmnt.id)
       x.style.color = '#2196F3';

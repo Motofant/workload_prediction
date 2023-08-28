@@ -12,12 +12,10 @@ def endTest():
     manageSubProc("kill")
 
     # write outputs in logfile
-    '''
-    sts[c.P_OUT] = [val if val else "__" for val in sts[c.P_OUT] ]
+    
     with open(f'./logging/{sts[c.USER]}_{c.WRITING_KEY}user_entered.txt', "w") as f:
-        for row in sts[c.P_OUT]:
-            f.write(row+"\n")
-    '''
+        f.write(sts[c.W_T_INPUT])
+    
     st.balloons()
     
     # block access to test

@@ -22,7 +22,7 @@ def generateIndex(lst:list, tpe:str):
         <script src="./main.js"></script>
         <link rel="stylesheet" href="./style.css" />
     </head>
-    <body id = "bdid" style="background-color: coral;height: 500px;">
+    <body id = "bdid" style="height: 500px;">
     <div id="root"></div>
     '''
     divs = '\n'.join([f'<div id="img_{num}">{val}</div>' for num,val in enumerate(lst)])# style="position: absolute;cursor:move;"
@@ -81,9 +81,11 @@ def generateIndex(lst:list, tpe:str):
     return out_str
 
 frontend_dir = (Path(__file__).parent / "frontend").absolute()
+
 _component_func = components.declare_component(
     "st_dragndrop", path=str(frontend_dir)
 )
+
 # Create the python function that will be called
 def st_dragndrop(
     images: list,
@@ -104,14 +106,14 @@ def main():
     data = [1,2,3]
 
     # generate index.html
-    #generateIndex(data, "str")
+    generateIndex(data, "str")
 
     st.write("## Example")
 
     value = st_dragndrop(data)
 
     #st.write(value)
-
+    print(value)
 
 if __name__ == "__main__":
     st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)

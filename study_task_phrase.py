@@ -6,7 +6,7 @@ import constants as c
 import config as conf
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],"text", "easy")
+    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],"phrase", "easy")
     sts[c.P_START] = val
     manageSubProc("resume")
 
@@ -16,6 +16,8 @@ def phraseChange(change):
     sts[c.P_T_INPUT] = ""
 
 def endTest():
+    # save last value
+    sts[c.P_OUT][sts[c.P_CURR]] = sts[c.P_T_INPUT]
     # end subprocesses
     manageSubProc("kill")
     
@@ -48,7 +50,7 @@ def phraseWriteView():
         if c.P_CURR not in sts:
             sts[c.P_CURR] = 0
         
-            ## Container --> everyting changable 
+            ## Container --> everything changable 
         phrase_cont = st.container()
         prev,pos,nxt = phrase_cont.columns([1,3,1])
         prev.button("vohergehender Eintrag",key = c.P_B_PREV, on_click = phraseChange, args=[-1],disabled=sts[c.P_CURR]<=0)
@@ -56,7 +58,6 @@ def phraseWriteView():
         pos.markdown(f"{sts[c.P_CURR] + 1}/{conf.no_phrases}")
         phrase_cont.subheader(phrases[sts[c.P_CURR]])
         phrase_cont.text_input(label="schreiben", key = c.P_T_INPUT)
-
 
         st.button("Beende Test",key = c.P_B_END, on_click = endTest,)
 
