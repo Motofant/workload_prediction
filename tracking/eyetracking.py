@@ -43,7 +43,11 @@ def gaze_data_callback(gaze_data):
 def pupil_data_callback(data):
     # pupil diameter
     print(f'pupil data ((left|right)): ({data["left_pupil_diameter"]}|{data["right_pupil_diameter"]}) at {data["system_time_stamp"]}')
-    logging.info(f'{data["system_time_stamp"]}|eyetrack|pupil_diameter|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}')
+    t = data["system_time_stamp"]/1000000
+    dobj = datetime.datetime.fromtimestamp(t)
+    print(dobj)
+    #logging.info(f'{dobj}|eyetrack|pupil_diameter|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}')
+    logging.info(f'{datetime.datetime.now()}|eyetrack|pupil_diameter|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}')
 
 while True:
     try:
@@ -56,6 +60,8 @@ while True:
         print("Serial number: " + my_eyetracker.serial_number)
 
         my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, pupil_data_callback, as_dictionary = True)
+        time.sleep(1000000)
+        break
     except:
         logging.info(f"{datetime.datetime.now()}|test|test|test")
         time.sleep(5)

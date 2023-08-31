@@ -4,13 +4,13 @@ from streamlit import session_state as sts
 import constants as c
 import config as conf 
 import json
-from utils import generateIndex
-NO_PHRASE = 50
+from utils import startSubprocesses, generateIndex, manageSubProc
+NO_PHRASE = 5
 DATA = ["a","b","c","d"] 
 def endTest():
     #pass
     # end subprocesses
-
+    manageSubProc("kill")
     # write outputs in logfile
     with open(f'./logging/{sts[c.USER]}_{c.DRAG_KEY}user_entered.txt', "w") as f:
         print(sts[c.D_OUT],file=f)
@@ -23,7 +23,9 @@ def changeTest():
     sts[c.STATE] = 5
 
 def studyToggle(val:bool):
+    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],"dragging", "easy")
     sts[c.D_START] = val
+    manageSubProc("resume")
 
 def change(x):
     sts[c.D_OUT][sts[c.D_CURR]] = x #sts[c.D_D_INPUT]
