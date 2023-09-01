@@ -18,6 +18,7 @@ function onRender(event) {
     // You most likely want to get the data passed in like this
     // const {input1, input2, input3} = event.detail.args
     const {values, key} = event.detail.args
+    var output = {}
     console.warn(document.body.offsetWidth)
     const goal_width_base = document.body.offsetWidth/(values.length +1)
     const goal_height_base = screen.availHeight * .3
@@ -77,10 +78,26 @@ function onRender(event) {
           moving_div.style.top = String(parseInt(window.screen.height*.7)-(parseInt(this.style.height)+ parseInt(moving_div.style.height))/2) +"px"
           moving_div.style.left = String(parseInt(this.style.left) + (parseInt(this.style.width) - parseInt(moving_div.style.width))/2)+"px"
           moving_div.style.borderColor = "black"
-          window.selected_div = " "  
+          window.selected_div = " "
+          // update output
+          output[moving_div.id][1] = this.id
+          
+          // return updated value
+          sendValue(output)
         }
       })
-
+      document.body.addEventListener("mouseup",function(){
+        if (window.selected_div != " "){  
+          var moving_div = document.getElementById(window.selected_div)
+          moving_div.style.top = "0px"
+          moving_div.style.left = output[moving_div.id][0]
+          output[moving_div.id][1] = false
+          sendValue(output)
+        } 
+      })
+      output[div.id] = Array(2)
+      output[div.id][0] = div.style.left
+      output[div.id][1] = false
       div.style.width = String(parseInt(goal.style.width)*.4) + "px"
       document.body.appendChild(goal)
 
