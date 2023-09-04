@@ -25,7 +25,7 @@ def changeTest():
     sts[c.STATE] = 3
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],"text", "easy")
+    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],c.WRITING_KEY, "easy")
     sts[c.W_START] = val
     manageSubProc("resume")
 

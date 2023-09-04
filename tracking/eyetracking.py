@@ -23,9 +23,12 @@ class CSVFormatter(logging.Formatter):
         self.output.truncate(0)
         self.output.seek(0)
         return data.strip()
-
+    
+fp = open(f'./logging/{sys.argv[1]}_{sys.argv[2]}_{sys.argv[3]}eye_logging.log',mode="w")
+fp.write('time,perif,location,event\n')
+fp.close()
 #logging.basicConfig(filename=f'./logging/eye_logging.log', filemode='w',level=logging.DEBUG,format='%(message)s')
-logging.basicConfig(filename=f'./logging/{sys.argv[1]}_{sys.argv[2]}_{sys.argv[3]}_eye_logging.log', filemode='w',level=logging.DEBUG,format='%(message)s')
+logging.basicConfig(filename=f'./logging/{sys.argv[1]}_{sys.argv[2]}_{sys.argv[3]}eye_logging.log', filemode='a',level=logging.DEBUG,format='%(message)s')
 
 logger = logging.getLogger(__name__)
 print(__name__)

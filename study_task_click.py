@@ -8,7 +8,6 @@ NO_CLICKS = 5
 DATA = ["a","b","c","d"] 
 def endTest():
     sts[c.C_OUT][sts[c.C_CURR]] = sts[c.C_C_INPUT+str(sts[c.C_CURR])]
-    #pass
     # end subprocesses
     manageSubProc("kill")
     # write outputs in logfile
@@ -60,9 +59,8 @@ def clickingTaskView():
         if c.C_CURR not in sts:
             sts[c.C_CURR] = 0
         drag_cont = st.empty()
-        prev,pos,nxt = drag_cont.columns([1,3,1])
-        #nxt.button("nächster Eintrag",key=c.C_B_NEXT, on_click = change,disabled=sts[c.C_CURR]>=NO_CLICKS-1)
-        
+        _,pos,nxt = drag_cont.columns([1,3,1])
+
         pos.markdown(f"{sts[c.C_CURR] + 1}/{NO_CLICKS}")
         print(sts)
         if c.C_C_INPUT in sts:

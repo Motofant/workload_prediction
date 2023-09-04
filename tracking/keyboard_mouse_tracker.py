@@ -23,18 +23,20 @@ class CSVFormatter(logging.Formatter):
         self.output.truncate(0)
         self.output.seek(0)
         return data.strip()
-
-logging.basicConfig(filename=f'./logging/{sys.argv[1]}_{sys.argv[2]}_{sys.argv[3]}_key_mouse_logging.log', filemode='w',level=logging.DEBUG,format='%(message)s')#%(asctime)s|
+fp = open(f'./logging/{sys.argv[1]}_{sys.argv[2]}_{sys.argv[3]}key_mouse_logging.log',mode="w")
+fp.write('time,perif,location,event\n')
+fp.close()
+logging.basicConfig(filename=f'./logging/{sys.argv[1]}_{sys.argv[2]}_{sys.argv[3]}key_mouse_logging.log', filemode='a',level=logging.DEBUG,format='%(message)s')#%(asctime)s|
 
 logger = logging.getLogger(__name__)
 print(__name__)
 logging.root.handlers[0].setFormatter(CSVFormatter())
 
 def on_press (key):
-    logging.info(f'{datetime.datetime.now()}|keyboard|{key}|pressed')
+    logging.info(f'{datetime.datetime.now()}|keyboard|{str(key).lower()}|pressed')
 
 def on_release (key):
-    logging.info(f'{datetime.datetime.now()}|keyboard|{key}|released')
+    logging.info(f'{datetime.datetime.now()}|keyboard|{str(key).lower()}|released')
     if key == Key.esc:
         #sys.exit()
         logging.debug(f'{datetime.datetime.now()}|keyboard|gen|end')

@@ -23,7 +23,7 @@ def changeTest():
     sts[c.STATE] = 5
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],"dragging", "easy")
+    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.DRAG_KEY, "easy")
     sts[c.D_START] = val
     manageSubProc("resume")
 

@@ -96,5 +96,5 @@ C_TASK_DESC = '''
     Bringen sie die Symbole in die richtige Reihenfolge
     Mit dem Drücken von "Beenden" schließen Sie den Text ab
 '''
-# Generell
+### Generell
 SUCCESS="Sie Haben den Test Überstanden"

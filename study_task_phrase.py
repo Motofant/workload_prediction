@@ -6,7 +6,7 @@ import constants as c
 import config as conf
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],"phrase", "easy")
+    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.PHRASE_KEY, "easy")
     sts[c.P_START] = val
     manageSubProc("resume")
 

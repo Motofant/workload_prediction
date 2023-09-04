@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Threading;
 using WootingAnalogSDKNET;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System.IO;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System.IO;
 
 namespace c_sharp
 {
@@ -20,12 +16,16 @@ namespace c_sharp
 
 
         static void Main(string[] args){
-            string timeFormat = "HH:mm:ss.fffff";
+            // create file to init columns
+            using (StreamWriter sw = File.CreateText($"logging/{args[0]}_{args[1]}_{args[2]}analog_logging.log")){
+                sw.Write("time|perif|location|event\n");
+            }
+            string timeFormat = "yyyy-MM-dd HH:mm:ss.fffff";//"HH:mm:ss.fffff";
             Console.WriteLine(args[0]);
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File($"logging/{args[0]}_{args[1]}_{args[2]}_analog_logging.log")//, rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fffff}|{Message:l}{NewLine}")
+                .WriteTo.File($"logging/{args[0]}_{args[1]}_{args[2]}analog_logging.log", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fffff}{Message:l}{NewLine}")//, rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fffff}|{Message:l}{NewLine}")
                 .CreateLogger();
 
             Log.Information($"|analog|gen|init");
