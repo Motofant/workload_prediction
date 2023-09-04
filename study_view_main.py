@@ -3,6 +3,7 @@ from streamlit import session_state as sts
 from study_task_writing import textWriteView
 from study_task_phrase import phraseWriteView
 from study_task_dragging import draggingTaskView
+from study_task_click import clickingTaskView
 from study_view_login import loginView
 from study_view_default import defaultView
 from utils import radioFormat
@@ -30,8 +31,12 @@ if c.P_START not in sts:
 
 if c.D_START not in sts:
     sts[c.D_START] = False
-    sts[c.D_END] = False    
+    sts[c.D_END] = False   
 
+if c.C_START not in sts:
+    sts[c.C_START] = False
+    sts[c.C_END] = False
+   
 if sts[c.USER] == "" or sts[c.STATE] == 0:
     print("before "+sts[c.USER])
     loginView()
@@ -45,12 +50,12 @@ else:
 
         test = st.sidebar.radio(
             label="Admin Page view",
-            options=(0,1,2,3,4),
+            options=(0,1,2,3,4,5),
             key=c.M_R_TESTS,
             format_func=radioFormat,
             on_change=radioChange
             )
-    if sts[c.STATE] in [1,5]:
+    if sts[c.STATE] in [1,6]:
         defaultView()
     elif sts[c.STATE] == 2:
         textWriteView()
@@ -58,3 +63,5 @@ else:
         phraseWriteView()
     elif sts[c.STATE] == 4:
         draggingTaskView()
+    elif sts[c.STATE] == 5:
+        clickingTaskView()

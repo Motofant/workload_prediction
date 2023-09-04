@@ -77,5 +77,24 @@ D_TASK_DESC = '''
     Mit dem Drücken von "Beenden" schließen Sie den Text ab
 '''
 
+### Clicking
+CLICK_KEY = "clicking_"
+C_START = DRAG_KEY+"started"
+C_END = DRAG_KEY+"completed"
+C_CURR = DRAG_KEY+"curr"
+# Buttons
+C_B_START = DRAG_KEY+"start"
+C_B_PREV = DRAG_KEY+"prev"
+C_B_NEXT = DRAG_KEY+"next"
+C_B_END = DRAG_KEY+"end"
+C_B_CHANGE = DRAG_KEY+"change"
+# custom drag
+C_C_INPUT = DRAG_KEY+"input"
+C_OUT = DRAG_KEY+"outputs"
+# Text
+C_TASK_DESC = '''
+    Bringen sie die Symbole in die richtige Reihenfolge
+    Mit dem Drücken von "Beenden" schließen Sie den Text ab
+'''
 # Generell
 SUCCESS="Sie Haben den Test Überstanden"

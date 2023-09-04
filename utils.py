@@ -77,7 +77,8 @@ def radioFormat(x):
         1: "start",
         2: "text",
         3: "phrase",
-        4: "maus",
+        4: "maus_drag",
+        5: "mouse_click",
     }
     return vals[x]
 
