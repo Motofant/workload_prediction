@@ -1,6 +1,6 @@
 import pandas as pd
-
-class keyMouse:
+# inspired by Analysis of Text Entry Performance Metrics 
+class KeyMouse:
     col_perif = "perif"
     col_event = "event"
     col_loc = "location"
@@ -22,6 +22,7 @@ class keyMouse:
         self.key_presses = self.get_full_press()
         self.key_press_time  = pd.Series([tup[1] for tup in self.key_presses]).mean()
         self.key_dead_times = self.get_dead_times()
+        self.key_no_dead_times = len(self.key_dead_times)
         self.key_dead_time_avg = pd.Series([tup[0] for tup in self.key_dead_times]).mean()
         self.key_backspaces = 33 # TODO: Is this best way to measure mistakes
 

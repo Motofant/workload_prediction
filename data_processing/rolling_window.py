@@ -1,5 +1,5 @@
 import pandas as pd
-from key_mouse import keyMouse
+from key_mouse import KeyMouse
 
 # import data ( all of it )
 path = "./test.log"
@@ -27,7 +27,7 @@ while curr < end_val:
 
     # get data from every log
     x = data_total.loc[(data_total["time"] >= curr) & (data_total["time"] < diff)]
-    y = keyMouse(x,window_size)
+    y = KeyMouse(x,window_size)
     y.output_string()
     curr += window_step
     #print(pd.to_datetime(x.iloc[-1]["time"])-pd.to_datetime(x.iloc[0]["time"]))
