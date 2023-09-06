@@ -1,8 +1,9 @@
 import psutil
 import streamlit as st
 import constants as c
+import streamlit.components.v1 as components
 from streamlit import session_state as sts
-from utils import startSubprocesses, manageSubProc
+from utils import startSubprocesses, manageSubProc, getFocusString
 
 # creative writing task 
 # let the user write a text about provideed topic
@@ -15,8 +16,6 @@ def endTest():
     
     with open(f'./logging/{sts[c.USER]}_{c.WRITING_KEY}user_entered.txt', "w") as f:
         f.write(sts[c.W_T_INPUT])
-    
-    st.balloons()
     
     # block access to test
     sts[c.W_END] = True

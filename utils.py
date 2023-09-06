@@ -4,23 +4,25 @@ import psutil
 import random
 import sys
 import constants as c
+import config as conf
 from pathlib import Path
 
 PHRASE_PATH = 'volume/phrases.txt'
+CONSOLE_SHOWN = subprocess.CREATE_NEW_CONSOLE if conf.sensor_console else subprocess.CREATE_NO_WINDOW
 
 def startSubprocesses(site_key:str, name:str, difficulty: str, task :str):
     lst_sub = []
     # start logging scripts
     # keyboard/mouse
     if f'{site_key}{c.SUB_KM}' not in sts:
-        key_mouse = subprocess.Popen(f"{sys.executable} ./tracking/keyboard_mouse_tracker.py {name} {task} {difficulty}", shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
+        key_mouse = subprocess.Popen(f"{sys.executable} ./tracking/keyboard_mouse_tracker.py {name} {task} {difficulty}", shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(key_mouse.pid).suspend()
         sts[f'{site_key}{c.SUB_KM}'] = key_mouse
         lst_sub.append(f'{site_key}{c.SUB_KM}')
 
     # analog
     if f'{site_key}{c.SUB_AN}' not in sts:
-        analog = subprocess.Popen(f"dotnet run --project ./c_sharp/ {name} {task} {difficulty}", shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
+        analog = subprocess.Popen(f"dotnet run --project ./c_sharp/ {name} {task} {difficulty}", shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(analog.pid).suspend()
         sts[f'{site_key}{c.SUB_AN}'] = analog
         lst_sub.append(f'{site_key}{c.SUB_AN}')
@@ -29,7 +31,7 @@ def startSubprocesses(site_key:str, name:str, difficulty: str, task :str):
     if f'{site_key}{c.SUB_EY}' not in sts:
         cmd = [f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}, {difficulty}]
         
-        eyetr = subprocess.Popen(cmd, shell = False,creationflags = subprocess.CREATE_NEW_CONSOLE)
+        eyetr = subprocess.Popen(cmd, shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(eyetr.pid).suspend()
         sts[f'{site_key}{c.SUB_EY}'] = eyetr
         lst_sub.append(f'{site_key}{c.SUB_EY}')
@@ -81,6 +83,17 @@ def radioFormat(x):
         5: "mouse_click",
     }
     return vals[x]
+
+def getFocusString(st_val):
+    return f"""
+        <script>
+            var input = window.parent.document.querySelectorAll("input[type=text]");
+
+            for (var i = 0; i < input.length; ++i) {{
+                input[i].focus();
+            }}
+    </script>
+    """
 
 def generateIndex(lst:list, tpe:str):
     start = '''<!DOCTYPE html>

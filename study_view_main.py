@@ -8,12 +8,11 @@ from study_view_login import loginView
 from study_view_default import defaultView
 from utils import radioFormat
 import constants as c
-import subprocess
-
-DRAG_KEY = "dragging_"
 
 st.set_page_config(initial_sidebar_state="expanded",layout="wide")
 
+if c.FOCUS_SUP not in st.session_state:
+        st.session_state[c.FOCUS_SUP] = 0
 if c.STATE not in sts:
     sts[c.STATE] = 0
 

@@ -1,8 +1,12 @@
+from streamlit import session_state as sts
 # Session states variables
 MAINKEY = "main_"
 USER = MAINKEY+"user"
 STATE = MAINKEY+"state"
 M_R_TESTS = MAINKEY+"tests"
+
+### Focus
+FOCUS_SUP = "focus"
 
 ### subprocesses 
 SUB_KM = "key_mouse"
@@ -32,8 +36,10 @@ W_B_CHANGE = WRITING_KEY+"change"
 W_T_INPUT = WRITING_KEY + "user_input"
 # Text
 W_TASK_DESC ="""
-    Schreiben Sie einen Text zum Thema ____
-    Die Länge ist Ihnen überlassen
+    In der folgenden Aufgaben schreiben eine Email zu einem Kollegen.\n
+    Beachten Sie dabei die Aufgaben, die über dem Textfeld angezeigt werden.
+
+    Klicken Sie den Button unter diesem Text um den Test zu beginnen.
 """
 
 ### Phrase
@@ -97,4 +103,4 @@ C_TASK_DESC = '''
     Mit dem Drücken von "Beenden" schließen Sie den Text ab
 '''
 ### Generell
-SUCCESS="Sie Haben den Test Überstanden"
+SUCCESS="Test abgeschlossen"

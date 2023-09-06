@@ -3,6 +3,7 @@ import streamlit as st
 from streamlit import session_state as sts
 import constants as c
 import config as conf 
+from datetime import datetime
 from utils import startSubprocesses, generateIndex, manageSubProc
 NO_CLICKS = 5
 DATA = ["a","b","c","d"] 
@@ -14,7 +15,6 @@ def endTest():
     with open(f'./logging/{sts[c.USER]}_{c.CLICK_KEY}user_entered.txt', "w") as f:
         print(sts[c.C_OUT],file=f)
 
-    st.balloons()
     # block access to test
     sts[c.C_END] = True
 
@@ -27,6 +27,9 @@ def studyToggle(val:bool):
     manageSubProc("resume")
 
 def change(x):
+    if not x:
+        x = {}
+    x["time_end"] = datetime.now().strftime('%Y%m%d%H%M%S%f')
     sts[c.C_OUT][sts[c.C_CURR]] = x #sts[c.C_C_INPUT]
     sts[c.C_CURR] = min(max(sts[c.C_CURR]+1,0),NO_CLICKS-1)
     print("delete")

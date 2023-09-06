@@ -4,6 +4,7 @@ from random import randrange
 from utils import startSubprocesses, getPhrases,manageSubProc
 import constants as c
 import config as conf
+from datetime import datetime
 
 def studyToggle(val:bool):
     sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.PHRASE_KEY, "easy")
@@ -11,7 +12,7 @@ def studyToggle(val:bool):
     manageSubProc("resume")
 
 def phraseChange(change):
-    sts[c.P_OUT][sts[c.P_CURR]] = sts[c.P_T_INPUT]
+    sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y%m%d%H%M%S%f ') + sts[c.P_T_INPUT]
     sts[c.P_CURR] = min(max(sts[c.P_CURR]+change,0),conf.no_phrases-1)
     sts[c.P_T_INPUT] = ""
 
@@ -26,8 +27,7 @@ def endTest():
     with open(f'./logging/{sts[c.USER]}_{c.PHRASE_KEY}user_entered.txt', "w") as f:
         for row in sts[c.P_OUT]:
             f.write(row+"\n")
-    st.balloons()
-    
+
     # block access to test
     sts[c.P_END] = True
 
