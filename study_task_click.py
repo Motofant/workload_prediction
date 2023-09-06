@@ -6,7 +6,11 @@ import config as conf
 from datetime import datetime
 from utils import startSubprocesses, generateIndex, manageSubProc
 NO_CLICKS = 5
-DATA = ["a","b","c","d"] 
+DATA = {
+        "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
+        "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
+        "Textdatein(.docs)":["a.docs","c.docs","b.docs",],
+        }
 def endTest():
     sts[c.C_OUT][sts[c.C_CURR]] = sts[c.C_C_INPUT+str(sts[c.C_CURR])]
     # end subprocesses

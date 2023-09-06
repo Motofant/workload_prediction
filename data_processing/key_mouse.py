@@ -77,6 +77,8 @@ class KeyMouse:
         return dead_times
 
     def get_move_px(self):
+        # every 10th mouse move event to sped up code
+        # source: https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=d7fd6e066d771b98bbfa566337e231e4ab8ebe21
         pass
 
     def output_string(self):

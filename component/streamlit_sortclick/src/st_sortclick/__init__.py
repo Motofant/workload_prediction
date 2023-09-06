@@ -30,7 +30,11 @@ def st_sortclick(
 def main():
     st.set_page_config(layout="wide")
     st.write("## Example")
-    value = st_sortclick(values=["a","b","c","d","e","f","g","h",])
+    value = st_sortclick(values={
+        "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
+        "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
+        "Textdatein(.docs)":["a.docs","c.docs","b.docs",],
+        })
 
     st.write(value)
 

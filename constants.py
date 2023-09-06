@@ -36,7 +36,7 @@ W_B_CHANGE = WRITING_KEY+"change"
 W_T_INPUT = WRITING_KEY + "user_input"
 # Text
 W_TASK_DESC ="""
-    In der folgenden Aufgaben schreiben eine Email zu einem Kollegen.\n
+    In der folgenden Aufgaben schreiben eine Email zu einem Kollegen.
     Beachten Sie dabei die Aufgaben, die über dem Textfeld angezeigt werden.
 
     Klicken Sie den Button unter diesem Text um den Test zu beginnen.
