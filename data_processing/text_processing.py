@@ -1,6 +1,7 @@
 import numpy as np
 
 class TextInfo:
+    
     def __init__(self, user_data, compare_data) -> None:
         self.user_data = user_data
 
@@ -11,6 +12,11 @@ class TextInfo:
 
             # Minimum String distance
     
+        self.words_sum = sum(self.word_count())
+        self.chars_space, self.chars_nospace = self.char_count()    
+        self.chars_space_sum = sum(self.chars_space)
+        self.chars_nospace_sum = sum(self.chars_nospace)
+
     def levenshtein_distance(self):
         # multiple string per task --> for loop
         output_lst = [None]*len(self.compare_data)
@@ -42,6 +48,37 @@ class TextInfo:
             output_lst[number] = distance_lst
 
         return output_lst
+    
+    def word_count(self):
+        if self.compare_data:
+            output = [0]*len(self.user_data)
+            # compare data exists --> mulitple phrases
+            for count,text in enumerate(self.user_data):
+                text = text.replace("\n"," ")
+                output[count] = len(text.split(" ")) 
+
+            return output
+        else:
+            self.user_data = self.user_data.replace("\n"," ")
+            return [len(self.user_data.split(" "))]
+    
+    def char_count(self):
+        if self.compare_data:
+            char_with_space = [0]*len(self.user_data)
+            char_without_space = [0]*len(self.user_data)
+            # compare data exists --> mulitple phrases
+            for count,text in enumerate(self.user_data):
+                text = text.replace("\n"," ")
+                char_with_space[count]=len(text)
+                char_without_space[count]=len(text.replace(" ",""))
+
+            return char_with_space, char_without_space
+        else:
+            self.user_data = self.user_data.replace("\n"," ")
+            return [len(self.user_data)],[len(self.user_data.replace(" ",""))] 
+               
+
+
 
 user = [
     "dolfins heap high out of the waer",
@@ -63,3 +100,8 @@ v = TextInfo(user,compare)
 e = v.levenshtein_distance()
 
 print(e)
+x = v.word_count()
+print(f"{x} --> {v.words_sum}")
+w_s,wo_s = v.char_count()
+print(f"{w_s} --> {v.chars_space_sum}")
+print(f"{wo_s} --> {v.chars_nospace_sum}")
