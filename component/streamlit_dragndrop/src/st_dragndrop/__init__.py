@@ -88,15 +88,15 @@ _component_func = components.declare_component(
 
 # Create the python function that will be called
 def st_dragndrop(
-    images: list,
+    values: list,
     key: Optional[str] = None,
 ):
     """
     Add a descriptive docstring
     """
     component_value = _component_func(
-        img = images,
-        key=key,
+        values = values,
+        key = key,
     )
 
     return component_value
@@ -106,13 +106,18 @@ def main():
     data = [1,2,3]
 
     # generate index.html
-    generateIndex(data, "str")
+    #generateIndex(data, "str")
 
     st.write("## Example")
+    data  ={
+        "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
+        "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
+        "Textdatein(.docs)":["a.docs","c.docs","b.docs",],
+        }
 
-    value = st_dragndrop(data)
+    value = st_dragndrop(values={"a":["a"]})
 
-    #st.write(value)
+    st.write(value)
     print(value)
 
 if __name__ == "__main__":
@@ -121,9 +126,5 @@ if __name__ == "__main__":
 
     # Tell streamlit that there is a component called st_dragndrop,
     # and that the code to display that component is in the "frontend" folder
-    
-    frontend_dir = (Path(__file__).parent / "frontend").absolute()
-    _component_func = components.declare_component(
-        "st_dragndrop", path=str(frontend_dir)
-    )
+
     main()

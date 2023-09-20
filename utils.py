@@ -15,21 +15,21 @@ def startSubprocesses(site_key:str, name:str, difficulty: str, task :str):
     # start logging scripts
     # keyboard/mouse
     if f'{site_key}{c.SUB_KM}' not in sts:
-        key_mouse = subprocess.Popen(f"{sys.executable} ./tracking/keyboard_mouse_tracker.py {name} {task} {difficulty}", shell = False,creationflags = CONSOLE_SHOWN)
+        key_mouse = subprocess.Popen(f"{sys.executable} ./tracking/keyboard_mouse_tracker.py {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(key_mouse.pid).suspend()
         sts[f'{site_key}{c.SUB_KM}'] = key_mouse
         lst_sub.append(f'{site_key}{c.SUB_KM}')
 
     # analog
     if f'{site_key}{c.SUB_AN}' not in sts:
-        analog = subprocess.Popen(f"dotnet run --project ./c_sharp/ {name} {task} {difficulty}", shell = False,creationflags = CONSOLE_SHOWN)
+        analog = subprocess.Popen(f"dotnet run --project ./c_sharp/ {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(analog.pid).suspend()
         sts[f'{site_key}{c.SUB_AN}'] = analog
         lst_sub.append(f'{site_key}{c.SUB_AN}')
 
     # eyetracker
     if f'{site_key}{c.SUB_EY}' not in sts:
-        cmd = [f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}, {difficulty}]
+        cmd = [f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}]
         
         eyetr = subprocess.Popen(cmd, shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(eyetr.pid).suspend()
