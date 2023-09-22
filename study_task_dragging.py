@@ -3,7 +3,6 @@ import streamlit as st
 from streamlit import session_state as sts
 import constants as c
 import config as conf 
-import json
 from datetime import datetime
 from utils import startSubprocesses, generateIndex, manageSubProc
 NO_PHRASE = 5
@@ -27,7 +26,7 @@ def changeTest():
     sts[c.STATE] = 5
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.DRAG_KEY,sts[c.USER],c.DRAG_KEY, "easy")
+    sub_procs = startSubprocesses(c.DRAG_KEY,sts[c.USER],c.DRAG_KEY)
     sts[c.D_START] = val
     manageSubProc("resume")
 
@@ -40,7 +39,6 @@ def change(x):
     print("delete")
     #sts[c.D_B_NEXT] = None
     if c.D_D_INPUT+str(sts[c.D_CURR]) in sts:
-        #print("akljsdhfkljasdhjkldfsahjklsdfahjklfsdhlkjdfkhjlfafashjdklsdafhlhlhlhlhlhlhlhlhlhlhlkj")
         del sts[c.D_D_INPUT+str(sts[c.D_CURR])]
 
 
@@ -59,8 +57,7 @@ def draggingTaskView():
         st.button(label="Start Experiment", key=c.D_B_START, on_click=studyToggle, args=[True])  
         if c.D_OUT not in sts:
             sts[c.D_OUT] = {}
-        ## generate html for component
-        #generateIndex(DATA, True)
+
     
     else:
         if c.D_CURR not in sts:

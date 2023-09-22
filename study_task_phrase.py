@@ -7,7 +7,7 @@ import config as conf
 from datetime import datetime
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.PHRASE_KEY, "easy")
+    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.PHRASE_KEY)
     sts[c.P_START] = val
     manageSubProc("resume")
 

@@ -23,10 +23,10 @@ class CSVFormatter(logging.Formatter):
         self.output.truncate(0)
         self.output.seek(0)
         return data.strip()
-fp = open(f'./logging/{sys.argv[1]}_{sys.argv[2]}_key_mouse_logging.log',mode="w")
+fp = open(f'./logging/{sys.argv[1]}_{sys.argv[2]}key_mouse_logging.log',mode="w")
 fp.write('time,perif,location,event\n')
 fp.close()
-logging.basicConfig(filename=f'./logging/{sys.argv[1]}_{sys.argv[2]}_key_mouse_logging.log', filemode='a',level=logging.DEBUG,format='%(message)s')#%(asctime)s|
+logging.basicConfig(filename=f'./logging/{sys.argv[1]}_{sys.argv[2]}key_mouse_logging.log', filemode='a',level=logging.DEBUG,format='%(message)s')#%(asctime)s|
 
 logger = logging.getLogger(__name__)
 print(__name__)

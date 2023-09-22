@@ -10,7 +10,7 @@ from pathlib import Path
 PHRASE_PATH = 'volume/phrases.txt'
 CONSOLE_SHOWN = subprocess.CREATE_NEW_CONSOLE if conf.sensor_console else subprocess.CREATE_NO_WINDOW
 
-def startSubprocesses(site_key:str, name:str, difficulty: str, task :str):
+def startSubprocesses(site_key:str, name:str, task :str):
     lst_sub = []
     # start logging scripts
     # keyboard/mouse

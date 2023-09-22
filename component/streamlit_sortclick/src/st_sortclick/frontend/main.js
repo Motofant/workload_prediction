@@ -195,7 +195,7 @@ function onRender(event) {
     */
     // You'll most likely want to pass some data back to Python like this
     // sendValue({output1: "foo", output2: "bar"})
-    sendValue("test")
+    // sendValue("test")
     window.rendered = true
   }
 }

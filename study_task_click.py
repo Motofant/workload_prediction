@@ -26,13 +26,14 @@ def changeTest():
     sts[c.STATE] = 6
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.CLICK_KEY, "easy")
+    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.CLICK_KEY)
     sts[c.C_START] = val
     manageSubProc("resume")
 
 def change(x):
     if not x:
         x = {}
+    print(x)
     x["time_end"] = datetime.now().strftime('%Y%m%d%H%M%S%f')
     sts[c.C_OUT][sts[c.C_CURR]] = x #sts[c.C_C_INPUT]
     sts[c.C_CURR] = min(max(sts[c.C_CURR]+1,0),NO_CLICKS-1)
@@ -44,7 +45,7 @@ def change(x):
         sts[c.C_B_NEXT] = None
         print(sts)
     #del sts[c.C_B_END]
-    clickingTaskView()
+    #clickingTaskView()
 
 def clickingTaskView():
     
@@ -59,8 +60,6 @@ def clickingTaskView():
         st.button(label="Start Experiment", key=c.C_B_START, on_click=studyToggle, args=[True])  
         if c.C_OUT not in sts:
             sts[c.C_OUT] = {}
-        ## generate html for component
-        generateIndex(DATA, True)
     
     else:
         if c.C_CURR not in sts:
@@ -75,7 +74,8 @@ def clickingTaskView():
         x = sc.st_sortclick(DATA,key = c.C_C_INPUT+str(sts[c.C_CURR]))
         y=nxt.button("nächster Eintrag", on_click = change,args=[x],disabled=sts[c.C_CURR]>=NO_CLICKS-1)
         if y:
-            x = None
+            st.experimental_rerun()
+            #x = None
         #print(sts[c.C_C_INPUT])
         #print(sts)
         st.button("Beende Test",key = c.C_B_END, on_click = endTest,)

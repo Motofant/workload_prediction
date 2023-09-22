@@ -14,7 +14,7 @@ def endTest():
 
     # write outputs in logfile
     
-    with open(f'./logging/{sts[c.USER]}_{c.WRITING_KEY}user_entered.txt', "w") as f:
+    with open(f'./logging/{sts[c.USER]}_{c.WRITING_KEY}_user_entered.txt', "w") as f:
         f.write(sts[c.W_T_INPUT])
     
     # block access to test
@@ -24,7 +24,7 @@ def changeTest():
     sts[c.STATE] = 3
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],c.WRITING_KEY, "easy")
+    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],c.WRITING_KEY)
     sts[c.W_START] = val
     manageSubProc("resume")
 
