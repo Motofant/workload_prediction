@@ -21,7 +21,7 @@ L_T_NAME = LOGINKEY+"text"
 ### Default
 DEFKEY = "default_"
 DEF_MSG_START = "lets start"
-DEF_MSG_END = "end"
+DEF_MSG_END = "Vielen Dank für die Teilnahme des Teilexperiments"
 
 ### Writing
 WRITING_KEY = "writing_"
@@ -36,12 +36,23 @@ W_B_CHANGE = WRITING_KEY+"change"
 W_T_INPUT = WRITING_KEY + "user_input"
 # Text
 W_TASK_DESC ="""
-    In der folgenden Aufgaben schreiben eine Email zu einem Kollegen.
-    Beachten Sie dabei die Aufgaben, die über dem Textfeld angezeigt werden.
-
-    Klicken Sie den Button unter diesem Text um den Test zu beginnen.
+    In der folgenden Aufgaben schreiben eine Email an einem Kollegen.\n
+    Beachten Sie dabei die Aufgaben, die über dem Textfeld angezeigt werden.\n
+    Schließen Sie den Test mit einem Klick auf 'Beende Experiment' ab.  
 """
-
+W_M_TASK = """
+# Inhalte der E-Mail
+- Anschrift an Empfänger: (Herr Müller)
+- Absage der monatlichen Besprechung 
+- Absagegrund: (Teilnahme an einem Experiment zum Thema verhalten am Arbeitsplatz)
+- 2 Alternativtermine 
+    - nächste Woche Montag zwischen 13 und 17 Uhr 
+    - nächste Woche Dienstag bis 12 Uhr
+- kurze Zusammenfassung des letzten Monats
+    - Erster Prototyp fertiggestellt
+    - Kleinere Probleme in ersten Tests 
+- Unterschreibe mit Nutzernamen
+"""
 ### Phrase
 PHRASE_KEY = "phrase_"
 P_START = PHRASE_KEY+"started"
@@ -59,8 +70,10 @@ P_B_CHANGE = PHRASE_KEY+"change"
 P_T_INPUT = PHRASE_KEY+"user_input"
 # Text
 P_TASK_DESC = """
-    Schreiben Sie die angezeigten Phrasen in das angezeigte Textfeld. 
-    Haben Sie eine Phrase abgeschieben, navigieren Sie sich mit den Buttons weiterruntem zum Abschließen
+    Schreiben Sie die angezeigten Phrasen in das angezeigte Textfeld.\n
+    Bestätigen Sie Ihre Eingabe mit Enter.\n
+    
+    Beenden Sie das Experiment nach dem Abschreiben aller Phrasen
 """
 
 ### Dragging
@@ -79,8 +92,8 @@ D_D_INPUT = DRAG_KEY+"input"
 D_OUT = DRAG_KEY+"outputs"
 # Text
 D_TASK_DESC = '''
-    Bringen sie die Symbole in die richtige Reihenfolge
-    Mit dem Drücken von "Beenden" schließen Sie den Text ab
+    Verschieben Sie die Elemente in die korrekte Box unten per "Drag and Drop".
+    Bestätigen Sie Ihre Eingabe mit einem Blick auf 'nächster Eintrag'\n
 '''
 
 ### Clicking
@@ -99,8 +112,9 @@ C_C_INPUT = CLICK_KEY+"input"
 C_OUT = CLICK_KEY+"outputs"
 # Text
 C_TASK_DESC = '''
-    Bringen sie die Symbole in die richtige Reihenfolge
-    Mit dem Drücken von "Beenden" schließen Sie den Text ab
+    Verschieben Sie die Elemente in die korrekte Box unten.\n
+    Klicken Sie Hierfür zuerst auf das verschiebbare Element oben und danach auf die Zielbox unten.\n
+    Bestätigen Sie Ihre Eingabe mit einem Blick auf 'nächster Eintrag'\n
 '''
 ### Generell
 SUCCESS="Test abgeschlossen"

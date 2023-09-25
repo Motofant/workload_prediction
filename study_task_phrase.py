@@ -1,7 +1,8 @@
 import streamlit as st
 from streamlit import session_state as sts 
+import streamlit.components.v1 as components
 from random import randrange
-from utils import startSubprocesses, getPhrases,manageSubProc
+from utils import startSubprocesses, getPhrases,manageSubProc,getFocusString
 import constants as c
 import config as conf
 from datetime import datetime
@@ -12,9 +13,12 @@ def studyToggle(val:bool):
     manageSubProc("resume")
 
 def phraseChange(change):
-    sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y%m%d%H%M%S%f ') + sts[c.P_T_INPUT]
+    sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y-%m-%d %H:%M:%S,%f, ') + sts[c.P_T_INPUT]
+    if sts[c.P_CURR] == conf.no_phrases-1:
+        endTest()
     sts[c.P_CURR] = min(max(sts[c.P_CURR]+change,0),conf.no_phrases-1)
     sts[c.P_T_INPUT] = ""
+
 
 def endTest():
     # save last value
@@ -53,13 +57,14 @@ def phraseWriteView():
             ## Container --> everything changable 
         phrase_cont = st.container()
         prev,pos,nxt = phrase_cont.columns([1,3,1])
-        prev.button("vohergehender Eintrag",key = c.P_B_PREV, on_click = phraseChange, args=[-1],disabled=sts[c.P_CURR]<=0)
-        nxt.button("nächster Eintrag",key = c.P_B_NEXT, on_click = phraseChange, args=[1],disabled=sts[c.P_CURR]>=conf.no_phrases-1)
-        pos.markdown(f"{sts[c.P_CURR] + 1}/{conf.no_phrases}")
-        phrase_cont.subheader(phrases[sts[c.P_CURR]])
-        phrase_cont.text_input(label="schreiben", key = c.P_T_INPUT)
+        #prev.button("vohergehender Eintrag",key = c.P_B_PREV, on_click = phraseChange, args=[-1],disabled=sts[c.P_CURR]<=0)
+        #nxt.button("nächster Eintrag",key = c.P_B_NEXT, on_click = phraseChange, args=[1],disabled=sts[c.P_CURR]>=conf.no_phrases-1)
+        pos.markdown(f"<center>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
+        phrase_cont.markdown(f"## <center>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
+        components.html(getFocusString(sts[c.FOCUS_SUP]),height=150)
+        phrase_cont.text_input(label="schreiben", key = c.P_T_INPUT, on_change=phraseChange, args=[1])
 
-        st.button("Beende Test",key = c.P_B_END, on_click = endTest,)
+        #st.button("Beende Test",key = c.P_B_END, on_click = endTest,)
 
     
 

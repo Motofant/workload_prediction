@@ -50,5 +50,6 @@ def textWriteView():
         st.button(label="Start Experiment", key=c.W_B_START, on_click=studyToggle, args=[True])   
     # finished --> get to next test
     else:
-        st.text_area(label="Eingabe", key= c.W_T_INPUT)
-        st.button(label="Stop Experiment", key=c.W_B_END, on_click=endTest)
+        st.markdown(c.W_M_TASK)
+        st.text_area(label="Eingabe",height=20, key= c.W_T_INPUT)
+        st.button(label="Beende Experiment", key=c.W_B_END, on_click=endTest)
