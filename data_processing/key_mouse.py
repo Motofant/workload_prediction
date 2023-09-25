@@ -9,9 +9,10 @@ class KeyMouse:
     def __init__(self, all_data, tf_sec) -> None:
         # split data
         self.keyboard_data = all_data.loc[all_data[self.col_perif] == "keyboard"]
-        self.analog_data = all_data.loc[all_data[self.col_perif] == "analog"]
+        #self.analog_data = all_data.loc[all_data[self.col_perif] == "analog"]
         self.mouse_data =  all_data.loc[all_data[self.col_perif] == "mouse"]
-        
+        #print(f"keyboard {len(self.keyboard_data)}")
+        #print(f"mouse {len(self.mouse_data)}")
         # get generell info
         self.time_frame = tf_sec
         self.max_time = all_data.index.max()
@@ -36,17 +37,16 @@ class KeyMouse:
             if len(key_data)>1:
 
                 #print(key)
-                #print(key_data)
                 # remove incomplete presses 
                 key_data_full_presses = key_data.loc[(key_data[self.col_event] == "released").idxmin() :(key_data[self.col_event] == "released")[::-1].idxmax() ]
                 
                 # remove double press event  TODO maybe add number 
                 key_data_rem_duplicate = list(key_data_full_presses.loc[key_data_full_presses[self.col_event].shift() != key_data_full_presses[self.col_event]].groupby(self.col_event))
-                
-                full_presses += [(key, 
-                                key_data_rem_duplicate[1][1].index[num] - key_data_rem_duplicate[0][1].index[num], 
-                                key_data_rem_duplicate[0][1].index[num], 
-                                key_data_rem_duplicate[1][1].index[num] ) for num, _ in enumerate(key_data_rem_duplicate[1][1].values)]
+                if len(key_data_rem_duplicate) == 2: 
+                    full_presses += [(key, 
+                                    key_data_rem_duplicate[1][1].index[num] - key_data_rem_duplicate[0][1].index[num], 
+                                    key_data_rem_duplicate[0][1].index[num], 
+                                    key_data_rem_duplicate[1][1].index[num] ) for num, _ in enumerate(key_data_rem_duplicate[1][1].values)]
         return full_presses
 
     def get_avg_time(self):

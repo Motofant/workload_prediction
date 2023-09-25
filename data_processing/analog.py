@@ -93,6 +93,16 @@ class Analog:
             "time_total": avg_time_total
         }
 
+    def output_dict(self):
+        return {
+            "ana_max_travel":self.avg_max_travel,
+            "ana_total_time":self.avg_total_time,
+            "ana_press_time":self.avg_press_time,
+            "ana_press_vel":self.avg_press_vel,
+            "ana_hold_time":self.avg_hold_time,
+            "ana_release_time":self.avg_release_time,
+            "ana_release_vel":self.avg_release_vel,
+        }
 
 class KeyAction:
     col_loc = "location"
@@ -117,40 +127,41 @@ class KeyAction:
         self.press_vel = (self.max_distance-self.start_distance) / self.press_time if self.press_time else 0
         self.release_vel = self.max_distance / self.release_time if self.release_time else 0
 
-        print(self.start_distance, self.max_distance)
-        print(self.press_time, self.hold_time, self.release_time,self.total_time)
-        print(self.start_press_time, self.start_hold_time, self.end_hold_time, self.end_press_time)
-        print(self.press_vel, self.release_vel)
+        #print(self.start_distance, self.max_distance)
+        #print(self.press_time, self.hold_time, self.release_time,self.total_time)
+        #print(self.start_press_time, self.start_hold_time, self.end_hold_time, self.end_press_time)
+        #print(self.press_vel, self.release_vel)
 ## Testing cases
-data = pd.DataFrame(
-    {
-        "time":[
-            "2023-09-06 18:28:52.808376",
-            "2023-09-06 18:28:52.809376",
-            "2023-09-06 18:28:52.810376",
-            "2023-09-06 18:28:52.811376",
-            "2023-09-06 18:28:52.812377",
-            "2023-09-06 18:28:52.813379",
-            "2023-09-06 18:28:52.814376",
-            "2023-09-06 18:28:52.815376",
-            "2023-09-06 18:28:52.815377",
-            ],
-        "perif":["analog"]*9,
-        "location":[1,1,1,1,2,2,1,2,2],
-        "event":[.5,1,1,.4,.1,.8,0,.6,0],
-    }
-)
+if False:
+    data = pd.DataFrame(
+        {
+            "time":[
+                "2023-09-06 18:28:52.808376",
+                "2023-09-06 18:28:52.809376",
+                "2023-09-06 18:28:52.810376",
+                "2023-09-06 18:28:52.811376",
+                "2023-09-06 18:28:52.812377",
+                "2023-09-06 18:28:52.813379",
+                "2023-09-06 18:28:52.814376",
+                "2023-09-06 18:28:52.815376",
+                "2023-09-06 18:28:52.815377",
+                ],
+            "perif":["analog"]*9,
+            "location":[1,1,1,1,2,2,1,2,2],
+            "event":[.5,1,1,.4,.1,.8,0,.6,0],
+        }
+    )
 
-data_obj = Analog(data)
-data_obj.max_distance()
-data_obj.total_key_action()
-x = data_obj.key_avgs
-print(x)
+    data_obj = Analog(data)
+    data_obj.max_distance()
+    data_obj.total_key_action()
+    x = data_obj.key_avgs
+    print(x)
 
-print("\n\n\n")
-print(f'''
-    anzahl tastendrücke = {len(data_obj.total_actions)}
-avg. key travel = {data_obj.avg_max_travel}
-avg gesamtzeit: {data_obj.avg_total_time} --> press:{data_obj.avg_press_time}, hold:{data_obj.avg_hold_time}, release: {data_obj.avg_release_time}
-avg Geschwindikeiten --> press:{data_obj.avg_press_vel}, release: {data_obj.avg_release_vel}
-''')
+    print("\n\n\n")
+    print(f'''
+        anzahl tastendrücke = {len(data_obj.total_actions)}
+    avg. key travel = {data_obj.avg_max_travel}
+    avg gesamtzeit: {data_obj.avg_total_time} --> press:{data_obj.avg_press_time}, hold:{data_obj.avg_hold_time}, release: {data_obj.avg_release_time}
+    avg Geschwindikeiten --> press:{data_obj.avg_press_vel}, release: {data_obj.avg_release_vel}
+    ''')
