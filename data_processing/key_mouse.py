@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 # inspired by Analysis of Text Entry Performance Metrics 
 class KeyMouse:
     col_perif = "perif"
@@ -19,14 +20,24 @@ class KeyMouse:
 
         # calculate info
         # keyboard
-        self.nr_key_strokes = len(self.keyboard_data.loc[self.keyboard_data[self.col_event] == "pressed"])
-        self.key_presses = self.get_full_press()
-        self.key_press_time  = pd.Series([tup[1] for tup in self.key_presses]).mean()
-        self.key_dead_times = self.get_dead_times()
-        self.key_no_dead_times = len(self.key_dead_times)
-        self.key_dead_time_avg = pd.Series([tup[0] for tup in self.key_dead_times]).mean()
-        self.key_backspaces = 33 # TODO: Is this best way to measure mistakes
-
+        if len(self.keyboard_data)>0:
+            self.nr_key_strokes = len(self.keyboard_data.loc[self.keyboard_data[self.col_event] == "pressed"])
+            self.key_presses = self.get_full_press()
+            self.key_press_time  = pd.Series([tup[1] for tup in self.key_presses]).mean()
+            self.key_dead_times = self.get_dead_times()
+            self.key_no_dead_times = len(self.key_dead_times)
+            self.key_dead_time_avg = pd.Series([tup[0] for tup in self.key_dead_times]).mean()
+            self.key_backspaces = self.get_deletions() # TODO: Is this best way to measure mistakes
+        else:
+            self.nr_key_strokes = 0
+            self.key_presses = 0
+            self.key_press_time = np.nan
+            self.key_dead_times = np.nan
+            self.key_no_dead_times = np.nan
+            self.key_dead_time_avg = np.nan
+            self.key_backspaces = 0 # TODO: Is this best way to measure mistakes
+        # mouse
+        self.avg_distance, self.avg_speed = self.get_move_px()
     def get_full_press(self):
         full_presses = []
         keys_grouped = list(self.keyboard_data.groupby(self.col_loc))
@@ -75,17 +86,57 @@ class KeyMouse:
         dead_times=list((press_edges.iloc[2*i+1].name-press_edges.iloc[2*i].name, press_edges.iloc[2*i].name,press_edges.iloc[2*i+1].name,)  for i in range(int(len(press_edges)/2)))
         #print(all_times.loc[out_col == True])
         return dead_times
+    
+    def get_deletions(self):
+        deletions = self.keyboard_data.loc[((self.keyboard_data["location"] == "key.backspace") | (self.keyboard_data["location"] == "key.delete")) & (self.keyboard_data["event"] == "pressed")]
+        return len(deletions)
+    
 
     def get_move_px(self):
+        # get only mouse movemnts
+        mouse_move = self.mouse_data.loc[self.mouse_data["location"] == "pos"]
         # every 10th mouse move event to sped up code
         # source: https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=d7fd6e066d771b98bbfa566337e231e4ab8ebe21
-        pass
+        mouse_move = mouse_move.iloc[::10, :]
+        # remove douplicates in timestamp --> sometimes duplicates occur --> first value is taken
+        # fastest method as shown here https://stackoverflow.com/questions/13035764/remove-pandas-rows-with-duplicate-indices
+        mouse_remove_doup = mouse_move[~mouse_move.index.duplicated(keep = "first")]
+        mouse_remove_doup['x'] = [int(tup[0][1:]) for tup in mouse_remove_doup['event'].str.split(",")]
+        mouse_remove_doup['y'] = [int(tup[1][:-1]) for tup in mouse_remove_doup['event'].str.split(",")]
 
+        # calc distance between rows via pythagoras 
+        # TODO: split mouse movemnt in swipes (some deadtime between moevments)
+        #for n,col in enumerate(["x","y"]):
+            #mouse_remove_doup[col] = #mouse_remove_doup['event'].apply(lambda location: int(location[n]))
+        mouse_remove_doup["xdiffsq"] = mouse_remove_doup["x"].diff().pow(2)
+        mouse_remove_doup["ydiffsq"] = mouse_remove_doup["y"].diff().pow(2)
+        mouse_remove_doup["timediff"] = mouse_remove_doup.index.to_series().diff().div(np.timedelta64(1, 's'))
+        mouse_remove_doup["distance"] = np.sqrt(mouse_remove_doup["xdiffsq"]+mouse_remove_doup["ydiffsq"])
+        mouse_remove_doup["velocity"] = mouse_remove_doup["distance"].div(mouse_remove_doup["timediff"]) 
+        #mouse_remove_doup
+        
+        output = mouse_remove_doup 
+        return output["distance"].mean(),output["velocity"].mean()  
+    
     def output_string(self):
         # returns console output to test
         print(f'TIME:')
         print(f'Timeframe: {self.time_frame}\nEndtime: {self.max_time}\n')
         print(f'Keyboard:\nN.o. Activations: {self.nr_key_strokes}\nAvg. Presstime: {self.key_press_time}\nAvg. Deadtime: {self.key_dead_time_avg}')
+    
+    def out_dict(self):
+        return{
+            "key_strokes":self.nr_key_strokes, 
+            #"key_presses":self.key_presses,
+            "key_press_time":self.key_press_time,
+            #"key_dead_time":self.key_dead_times,
+            #"key_no_dead_time":self.key_no_dead_times,
+            "key_dead_time_avg":self.key_dead_time_avg,
+            "key_deletions": self.key_backspaces,
+            "mouse_avg_distance":self.avg_distance, 
+            "mouse_avg_speed":self.avg_speed,
+
+        }
 
 class KeyPress:
     # one Keypress

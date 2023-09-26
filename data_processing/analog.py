@@ -18,7 +18,7 @@ class Analog:
             self.avg_total_time = sum([el.total_time for el in self.total_actions])/len(self.total_actions)
             self.avg_press_time = sum([el.press_time for el in self.total_actions])/len(self.total_actions)
             self.avg_press_vel =  sum([el.press_vel*el.press_time for el in self.total_actions])/total_press_time if total_press_time else 0
-            self.avg_hold_time = sum([el.press_time for el in self.total_actions])/len(self.total_actions)
+            self.avg_hold_time = sum([el.hold_time for el in self.total_actions])/len(self.total_actions)
             self.avg_release_time = sum([el.release_time for el in self.total_actions])/len(self.total_actions)
             self.avg_release_vel = sum([el.release_vel*el.release_time for el in self.total_actions])/total_release_time if total_release_time else 0
 
