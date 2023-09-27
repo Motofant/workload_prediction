@@ -2,7 +2,9 @@ import pandas as pd
 import os
 from key_mouse import KeyMouse
 from analog import Analog
+from eyetrack import EyeTrack
 import json
+import numpy as np
 
 # import data ( all of it )
 logging_path = './logging/'
@@ -41,6 +43,12 @@ for name in sorted_files.keys():
                                 quotechar='"',
                                 decimal=",",
                                 ).set_index("time",drop=False)
+    data_write_eye = pd.read_csv([x for x in sorted_files[name]["writing"] if "eye" in x][0],
+                                encoding="ISO-8859-1",
+                                quotechar='"',
+                                dtype={"perif":str, "location":str, "value":object,},
+                                ).set_index("time",drop=False)
+    
     print(len(data_write_ana))
     #data_write_eye = pd.read_csv([x for x in sorted_files[name]["writing"] if "eye" in x][0], encoding="ISO-8859-1").set_index("time",drop=False)
 
@@ -53,19 +61,21 @@ for name in sorted_files.keys():
                                 quotechar='"',
                                 decimal=",",
                                 ).set_index("time",drop=False)    
-
-    data_phrase_key = pd.read_csv([x for x in sorted_files[name]["phrase"] if "key_mouse" in x][0], encoding="ISO-8859-1",quotechar='"',).set_index("time",drop=False)
-    data_phrase_ana = pd.read_csv([x for x in sorted_files[name]["phrase"] if "analog" in x][0], 
-                                encoding="ISO-8859-1",delimiter='|', 
-                                dtype={ "perif":"string","location":int,"event":float,},
-                                parse_dates=["time"],
-                                skiprows=[1],
+    data_phrase_eye = pd.read_csv([x for x in sorted_files[name]["phrase"] if "eye" in x][0],
+                                encoding="ISO-8859-1",
                                 quotechar='"',
-                                decimal=",",
-                                ).set_index("time",drop=False)   
-    data_drag_key = pd.read_csv([x for x in sorted_files[name]["dragging"] if "key_mouse" in x][0], encoding="ISO-8859-1",quotechar='"',).set_index("time",drop=False)
+                                dtype={"perif":str, "location":str, "value":object, },
+                                ).set_index("time",drop=False)
+    
+    data_drag_key = pd.read_csv([x for x in sorted_files[name]["dragging"] if "key_mouse" in x][0], encoding="ISO-8859-1",quotechar='"',).set_index("time",drop=False)   
+    data_drag_eye = pd.read_csv([x for x in sorted_files[name]["dragging"] if "eye" in x][0],
+                                encoding="ISO-8859-1",
+                                quotechar='"',
+                                dtype={"perif":str, "location":str, "value":object},
+                                ).set_index("time",drop=False)
+    
     #data_click_key = pd.read_csv([x for x in sorted_files[name]["clicking"] if "key_mouse" in x][0], encoding="ISO-8859-1").set_index("time",drop=False)
-
+    
     # writing
     start_val =pd.to_datetime(data_write_key.iloc[0]["time"])
     end_val =pd.to_datetime(data_write_key.iloc[-1]["time"])
@@ -83,12 +93,13 @@ for name in sorted_files.keys():
         # get data from every log
         key = data_write_key.loc[(data_write_key["time"] >= curr) & (data_write_key["time"] < diff)]
         ana = data_write_ana.loc[(data_write_ana["time"] >= curr) & (data_write_ana["time"] < diff)]
-        #eye = data_write_eye.loc[(data_write_eye["time"] >= curr) & (data_write_eye["time"] < diff)]
+        eye = data_write_eye.loc[(pd.to_datetime(data_write_eye["time"]) >= curr) & (pd.to_datetime(data_write_eye["time"]) < diff)]
+        
         key_window = KeyMouse(key,window_size)
-        #key_window.output_string()
         ana_window = Analog(ana)
+        eye_window = EyeTrack(eye)
 
-        write_out_dict = {"time": curr,**ana_window.output_dict(),**key_window.out_dict()}
+        write_out_dict = {"time": curr,**ana_window.output_dict(),**key_window.out_dict(), **eye_window.output_dict()}
         print(write_out_dict)
         writing_out = pd.concat([writing_out, pd.DataFrame([write_out_dict])])
         curr += window_step
@@ -113,12 +124,13 @@ for name in sorted_files.keys():
         # get data from every log
         key = data_phrase_key.loc[(data_phrase_key["time"] >= curr) & (data_phrase_key["time"] < diff)]
         ana = data_phrase_ana.loc[(data_phrase_ana["time"] >= curr) & (data_phrase_ana["time"] < diff)]
-        #eye = data_write_eye.loc[(data_write_eye["time"] >= curr) & (data_write_eye["time"] < diff)]
-        key_window = KeyMouse(key,window_size)
-        #key_window.output_string()
-        ana_window = Analog(ana)
+        eye = data_phrase_eye.loc[(pd.to_datetime(data_phrase_eye["time"]) >= curr) & (pd.to_datetime(data_phrase_eye["time"]) < diff)]
 
-        phrase_out_dict = {"time": curr,**ana_window.output_dict(),**key_window.out_dict()}
+        key_window = KeyMouse(key,window_size)
+        ana_window = Analog(ana)
+        eye_window = EyeTrack(eye)
+
+        phrase_out_dict = {"time": curr,**ana_window.output_dict(),**key_window.out_dict(),**eye_window.output_dict()}
         print(phrase_out_dict)
         phrase_out = pd.concat([phrase_out, pd.DataFrame([phrase_out_dict])])
         curr += window_step
@@ -143,14 +155,16 @@ for name in sorted_files.keys():
 
         # get data from every log
         key = data_drag_key.loc[(data_drag_key["time"] >= curr) & (data_drag_key["time"] < diff)]
-        #eye = data_write_eye.loc[(data_write_eye["time"] >= curr) & (data_write_eye["time"] < diff)]
+        eye = data_drag_eye.loc[(pd.to_datetime(data_drag_eye["time"]) >= curr) & (pd.to_datetime(data_drag_eye["time"]) < diff)]
         key_window = KeyMouse(key,window_size)
-        drag_out_dict = {"time": curr,**key_window.out_dict()}
+        eye_window = EyeTrack(eye)
+        drag_out_dict = {"time": curr,**key_window.out_dict(), **eye_window.output_dict()}
         print(drag_out_dict)
         drag_out = pd.concat([drag_out, pd.DataFrame([drag_out_dict])])
         curr += window_step
     drag_out = drag_out.set_index(pd.DatetimeIndex(drag_out["time"])).drop("time",axis=1)
     drag_out.to_csv("./dragging.csv")
+    
 exit(1)
 path = "./test.log"
 
