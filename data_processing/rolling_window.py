@@ -8,6 +8,7 @@ import numpy as np
 
 # import data ( all of it )
 logging_path = './logging/'
+output_path = './processed_data'
 files = [f for f in os.listdir(logging_path)]
 tasks = ["writing", "phrase", "dragging", "clicking"]
 sorted_files = {}
@@ -105,7 +106,7 @@ for name in sorted_files.keys():
         curr += window_step
         print(curr)
     writing_out = writing_out.set_index(pd.DatetimeIndex(writing_out["time"])).drop("time",axis=1)
-    writing_out.to_csv("./writing.csv")
+    writing_out.to_csv(f'{output_path}/writing.csv')
     
     # phrase
     start_val =pd.to_datetime(data_phrase_key.iloc[0]["time"])
@@ -137,7 +138,7 @@ for name in sorted_files.keys():
         print(curr)
     
     phrase_out = phrase_out.set_index(pd.DatetimeIndex(phrase_out["time"])).drop("time",axis=1)
-    phrase_out.to_csv("./phrasing.csv")
+    phrase_out.to_csv(f'{output_path}phrasing.csv')
     
     # dragging
     start_val =pd.to_datetime(data_drag_key.iloc[0]["time"])
@@ -163,36 +164,9 @@ for name in sorted_files.keys():
         drag_out = pd.concat([drag_out, pd.DataFrame([drag_out_dict])])
         curr += window_step
     drag_out = drag_out.set_index(pd.DatetimeIndex(drag_out["time"])).drop("time",axis=1)
-    drag_out.to_csv("./dragging.csv")
-    
-exit(1)
-path = "./test.log"
-
-fct = lambda x : print(x)
-#data_analog = pd.read_csv(path_ana, delimiter= "|")
-data_total = pd.read_csv(path, encoding="ISO-8859-1")
-
-start_val =pd.to_datetime(data_total.iloc[0]["time"])
-end_val =pd.to_datetime(data_total.iloc[-1]["time"])
-data_total = data_total.set_index("time",drop=False)
-data_total.index = pd.to_datetime(data_total.index)
-data_total["time"] = pd.to_datetime(data_total["time"])
-
-curr = start_val
+    drag_out.to_csv(f'{output_path}dragging.csv')
 
 
-
-# rolling window
-while curr < end_val:
-    # get start and end
-    diff = curr + window_size
-
-    # get data from every log
-    x = data_total.loc[(data_total["time"] >= curr) & (data_total["time"] < diff)]
-    y = KeyMouse(x,window_size)
-    y.output_string()
-    curr += window_step
-    #print(pd.to_datetime(x.iloc[-1]["time"])-pd.to_datetime(x.iloc[0]["time"]))
 
 ## Randnotzien
 # Fenstergröße --> 30 sekunden
