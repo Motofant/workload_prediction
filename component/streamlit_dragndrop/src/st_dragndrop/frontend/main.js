@@ -7,6 +7,18 @@ function sendValue(value) {
   Streamlit.setComponentValue(value)
 }
 
+function getTime(){
+  var dt = new Date();
+  var dt_str =  dt.getFullYear()+"-"
+  +(dt.getMonth()+1)+"-"
+  +dt.getDate()+" "
+  +dt.getHours() + ":"
+  +dt.getMinutes() + ":" 
+  +dt.getSeconds() + "."
+  +String(dt.getMilliseconds()).padStart(3, "0");
+  return dt_str
+}
+
 function goalCollition(data, data_goals){
   if (data["b"] < data_goals[0]["top"]){
     return false
@@ -58,7 +70,7 @@ function onMouseUp(el){
   // write to output
   window.output[el.id].push(
     {
-      "time":Date.now(),
+      "time":getTime(),
       "x" : parseInt(window.scrollX)+parseInt(el.style.left), 
       "y": parseInt(window.scrollY)+parseInt(el.style.top), 
       "overlap": overlap
@@ -112,11 +124,10 @@ function onRender(event) {
 
         // added movability
         div.addEventListener('mousedown', function(){onmouseDown(this)})
-        
         // init output 
         window.output[div.id] = [
           {
-            "time":Date.now(),
+            "time":getTime(),
             "x" : parseInt(div.style.left) + (parseInt(div.style.width)/2), 
             "y": parseInt(div.style.top)+parseInt(div.style.height)/2, 
             "overlap":false
@@ -190,7 +201,10 @@ function onRender(event) {
       document.body.appendChild(goal)
 
       */
+     // TODO: send values for the first time
+     
     }
+    sendValue(window.output)
     console.warn(window.output)
     window.rendered = true
     

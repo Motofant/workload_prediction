@@ -1,17 +1,22 @@
 import numpy as np
-
+import pandas as pd
+import statistics
+import json
 class TextInfo:
     
-    def __init__(self, user_data, compare_data) -> None:
+    def __init__(self, user_data, compare_data, mode) -> None:
         self.user_data = user_data
-
+        self.mode = mode
         # claculatee stuff not doable with free text
         # idea from Analysis_of_text_entry_performance_metri20161119-3688-te2saj-libre.pdf
-        if compare_data:
-            self.compare_data = compare_data
+        self.compare_data = compare_data
+        print(self.user_data)
+        print(self.compare_data)
+        self.levenshtein = self.levenshtein_distance() if self.compare_data else [[0]]
 
-            # Minimum String distance
-    
+        self.levenshtein_sum_phrase = [sum(x)for x in self.levenshtein]
+        self.levenshtein_avg_total = statistics.mean(self.levenshtein_sum_phrase)
+        self.levenshtein_sum_total = sum(self.levenshtein_sum_phrase)
         self.words_sum = sum(self.word_count())
         self.chars_space, self.chars_nospace = self.char_count()    
         self.chars_space_sum = sum(self.chars_space)
@@ -76,32 +81,57 @@ class TextInfo:
         else:
             self.user_data = self.user_data.replace("\n"," ")
             return [len(self.user_data)],[len(self.user_data.replace(" ",""))] 
-               
+    
+    def output_dict(self):
+        return{
+            #self.mode+"levenshtein":self.levenshtein,
+            #self.mode+"levenshtein_sum_phrase":self.levenshtein_sum_phrase,
+            self.mode+"levenshtein_sum_total":self.levenshtein_sum_total,
+            self.mode+"levenshtein_avg_total":self.levenshtein_avg_total,
+            self.mode+"word_sum":self.words_sum,
+            #self.mode+"chars_space":self.chars_space, 
+            #self.mode+"chars_nospace":self.chars_nospace,  
+            self.mode+"chars_space_sum":self.chars_space_sum,
+            self.mode+"chars_nospace_sum":self.chars_nospace_sum,
+        }
 
+if __name__ == '__main__':
+    if True:
+        #with open("./logging/Sensor_test_1_easy_phrases.csv", mode='r') as file:
+        #    compare = file.read().splitlines()
+        compare = pd.read_csv("./logging/Sensor_test_1_easy_phrases.csv",header=None)[0].tolist()
+        user_df = pd.read_csv("./logging/Sensor_test_1_phrase_user_entered.csv", index_col=[0],header=None)
+        user = user_df[1].tolist()
+        print(user)
+        print(compare)
+    else:
+        with open("./logging/Sensor_test_1_writing__user_entered.txt", mode='r') as file:
+            user = file.read()
+        compare = None
+        print(user)
+    '''
+    user = [
+        "dolfins heap high out of the waer",
+        "do not say anything" ,
+        "the union will go on strike",
+        "we want grocery shooting",
+        "interactions between men and woman",
+    ]
 
+    compare = [
+        "dolphins leap high out of the water",
+        "do not say anything",
+        "the union will go on strike",
+        "we went grocery shopping",
+        "interactions between men and women",
+    ]
+    '''
+    v = TextInfo(user_data=user, compare_data=compare)
 
-user = [
-    "dolfins heap high out of the waer",
-    "do not say anything" ,
-    "the union will go on strike",
-    "we want grocery shooting",
-    "interactions between men and woman",
-]
+    x = v.word_count()
+    print(f"Anzahl Worte: {x} --> {v.words_sum}")
+    w_s,wo_s = v.char_count()
+    print(f"Anzahl chars(mit space): {w_s} --> {v.chars_space_sum}")
+    print(f"Anzahl chars(ohne space): {wo_s} --> {v.chars_nospace_sum}")
 
-compare = [
-    "dolphins leap high out of the water",
-    "do not say anything",
-    "the union will go on strike",
-    "we went grocery shopping",
-    "interactions between men and women",
-]
-v = TextInfo(user,compare)
-
-e = v.levenshtein_distance()
-
-print(e)
-x = v.word_count()
-print(f"{x} --> {v.words_sum}")
-w_s,wo_s = v.char_count()
-print(f"{w_s} --> {v.chars_space_sum}")
-print(f"{wo_s} --> {v.chars_nospace_sum}")
+    print(json.dumps(v.output_dict(), indent=2))

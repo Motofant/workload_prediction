@@ -7,6 +7,18 @@ function sendValue(value) {
   Streamlit.setComponentValue(value)
 }
 
+function getTime(){
+  var dt = new Date();
+  var dt_str =  dt.getFullYear()+"-"
+  +(dt.getMonth()+1)+"-"
+  +dt.getDate()+" "
+  +dt.getHours() + ":"
+  +dt.getMinutes() + ":" 
+  +dt.getSeconds() + "."
+  +String(dt.getMilliseconds()).padStart(3, "0");
+  return dt_str
+}
+
 /**
  * The component's render function. This will be called immediately after
  * the component is initially loaded, and then again every time the

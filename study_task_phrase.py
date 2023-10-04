@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit import session_state as sts 
 import streamlit.components.v1 as components
-from random import randrange
 from utils import startSubprocesses, getPhrases,manageSubProc,getFocusString
 import constants as c
 import config as conf
@@ -13,7 +12,7 @@ def studyToggle(val:bool):
     manageSubProc("resume")
 
 def phraseChange(change):
-    sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y-%m-%d %H:%M:%S,%f, ') + sts[c.P_T_INPUT]
+    sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f,') + sts[c.P_T_INPUT]
     if sts[c.P_CURR] == conf.no_phrases-1:
         endTest()
     sts[c.P_CURR] = min(max(sts[c.P_CURR]+change,0),conf.no_phrases-1)
@@ -28,7 +27,7 @@ def endTest():
     
     # write outputs in logfile
     sts[c.P_OUT] = [val if val else "__" for val in sts[c.P_OUT] ]
-    with open(f'./logging/{sts[c.USER]}_{c.PHRASE_KEY}user_entered.txt', "w") as f:
+    with open(f'./logging/{sts[c.USER]}_{c.PHRASE_KEY}user_entered.csv', "w") as f:
         for row in sts[c.P_OUT]:
             f.write(row+"\n")
 

@@ -3,6 +3,8 @@ import os
 from key_mouse import KeyMouse
 from analog import Analog
 from eyetrack import EyeTrack
+from text_processing import TextInfo
+from mouse_processing import MouseProcess
 import json
 import numpy as np
 
@@ -31,8 +33,26 @@ print(json.dumps(sorted_files, indent=2))
 
 window_size = pd.Timedelta(seconds=10)
 window_step = pd.Timedelta(seconds=2)
-
+general_info = pd.DataFrame()
 for name in sorted_files.keys():
+    logging_path = logging_path + name
+    # general 
+        # Text
+    gen_text = TextInfo(open([x for x in sorted_files[name]["writing"] if "user_entered" in x][0]).read(), None,  "writing_").output_dict()
+        # Phrase
+    gen_phrase = TextInfo(
+        compare_data = pd.read_csv([x for x in sorted_files[name]["phrase"] if "phrases" in x][0],header=None)[0].tolist(),
+        user_data = pd.read_csv([x for x in sorted_files[name]["phrase"] if "user_entered" in x][0], index_col=[0],header=None)[1].tolist(),
+        mode="writing_",
+        ).output_dict()
+        # Drag
+    gen_drag = MouseProcess(data=json.load(open([x for x in sorted_files[name]["dragging"] if "user_entered" in x][0])), mode = "dragging").output_dict()
+        # Click
+    gen_click = MouseProcess(data=json.load(open([x for x in sorted_files[name]["clicking"] if "user_entered" in x][0])), mode = "clicking").output_dict()
+    x = {"name":name, **gen_text,**gen_phrase,**gen_drag,**gen_click}
+
+    general_info = pd.concat([general_info,pd.DataFrame([x])])
+
     #filerreading
     data_write_key = pd.read_csv([x for x in sorted_files[name]["writing"] if "key_mouse" in x][0], encoding="ISO-8859-1",quotechar='"',).set_index("time",drop=False)
     print(data_write_key)
@@ -49,7 +69,6 @@ for name in sorted_files.keys():
                                 quotechar='"',
                                 dtype={"perif":str, "location":str, "value":object,},
                                 ).set_index("time",drop=False)
-    
     print(len(data_write_ana))
     #data_write_eye = pd.read_csv([x for x in sorted_files[name]["writing"] if "eye" in x][0], encoding="ISO-8859-1").set_index("time",drop=False)
 
@@ -67,7 +86,7 @@ for name in sorted_files.keys():
                                 quotechar='"',
                                 dtype={"perif":str, "location":str, "value":object, },
                                 ).set_index("time",drop=False)
-    
+
     data_drag_key = pd.read_csv([x for x in sorted_files[name]["dragging"] if "key_mouse" in x][0], encoding="ISO-8859-1",quotechar='"',).set_index("time",drop=False)   
     data_drag_eye = pd.read_csv([x for x in sorted_files[name]["dragging"] if "eye" in x][0],
                                 encoding="ISO-8859-1",
@@ -75,7 +94,12 @@ for name in sorted_files.keys():
                                 dtype={"perif":str, "location":str, "value":object},
                                 ).set_index("time",drop=False)
     
-    #data_click_key = pd.read_csv([x for x in sorted_files[name]["clicking"] if "key_mouse" in x][0], encoding="ISO-8859-1").set_index("time",drop=False)
+    data_click_key = pd.read_csv([x for x in sorted_files[name]["clicking"] if "key_mouse" in x][0], encoding="ISO-8859-1").set_index("time",drop=False)
+    data_click_eye = pd.read_csv([x for x in sorted_files[name]["clicking"] if "eye" in x][0],
+                                encoding="ISO-8859-1",
+                                quotechar='"',
+                                dtype={"perif":str, "location":str, "value":object},
+                                ).set_index("time",drop=False)
     
     # writing
     start_val =pd.to_datetime(data_write_key.iloc[0]["time"])
@@ -106,7 +130,7 @@ for name in sorted_files.keys():
         curr += window_step
         print(curr)
     writing_out = writing_out.set_index(pd.DatetimeIndex(writing_out["time"])).drop("time",axis=1)
-    writing_out.to_csv(f'{output_path}/writing.csv')
+    writing_out.to_csv(f'{output_path}/{name}_writing.csv')
     
     # phrase
     start_val =pd.to_datetime(data_phrase_key.iloc[0]["time"])
@@ -138,7 +162,7 @@ for name in sorted_files.keys():
         print(curr)
     
     phrase_out = phrase_out.set_index(pd.DatetimeIndex(phrase_out["time"])).drop("time",axis=1)
-    phrase_out.to_csv(f'{output_path}phrasing.csv')
+    phrase_out.to_csv(f'{output_path}/{name}_phrasing.csv')
     
     # dragging
     start_val =pd.to_datetime(data_drag_key.iloc[0]["time"])
@@ -164,10 +188,34 @@ for name in sorted_files.keys():
         drag_out = pd.concat([drag_out, pd.DataFrame([drag_out_dict])])
         curr += window_step
     drag_out = drag_out.set_index(pd.DatetimeIndex(drag_out["time"])).drop("time",axis=1)
-    drag_out.to_csv(f'{output_path}dragging.csv')
+    drag_out.to_csv(f'{output_path}/{name}_dragging.csv')
 
+    # clicking
+    start_val =pd.to_datetime(data_click_key.iloc[0]["time"])
+    end_val =pd.to_datetime(data_click_key.iloc[-1]["time"])
+    data_click_key = data_click_key.set_index("time",drop=False)
+    data_click_key.index = pd.to_datetime(data_click_key.index)
+    data_click_key["time"] = pd.to_datetime(data_click_key["time"])
+    curr = start_val
+    print(start_val)
+    click_out = pd.DataFrame()
+    # rolling window
+    while curr < end_val:
+        # get start and end
+        diff = curr + window_size
 
-
+        # get data from every log
+        key = data_click_key.loc[(data_click_key["time"] >= curr) & (data_click_key["time"] < diff)]
+        eye = data_click_eye.loc[(pd.to_datetime(data_click_eye["time"]) >= curr) & (pd.to_datetime(data_click_eye["time"]) < diff)]
+        key_window = KeyMouse(key,window_size)
+        eye_window = EyeTrack(eye)
+        click_out_dict = {"time": curr,**key_window.out_dict(), **eye_window.output_dict()}
+        print(click_out_dict)
+        click_out = pd.concat([click_out, pd.DataFrame([click_out_dict])])
+        curr += window_step
+    click_out = click_out.set_index(pd.DatetimeIndex(click_out["time"])).drop("time",axis=1)
+    click_out.to_csv(f'{output_path}/{name}_clicking.csv')
+general_info.to_csv(f'{output_path}/general_info.csv', index=None)
 ## Randnotzien
 # Fenstergröße --> 30 sekunden
 # fensterverschiebung --> 10 sekunden nach Startzeitpunkt (nicht erster wert) --> gleichförmiges Fenster

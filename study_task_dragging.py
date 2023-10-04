@@ -5,6 +5,8 @@ import constants as c
 import config as conf 
 from datetime import datetime
 from utils import startSubprocesses, generateIndex, manageSubProc
+import json
+
 NO_PHRASE = 5
 DATA = {
     "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
@@ -16,8 +18,9 @@ def endTest():
     # end subprocesses
     manageSubProc("kill")
     # write outputs in logfile
-    with open(f'./logging/{sts[c.USER]}_{c.DRAG_KEY}user_entered.txt', "w") as f:
-        print(sts[c.D_OUT],file=f)
+    with open(f'./logging/{sts[c.USER]}_{c.DRAG_KEY}user_entered.json', "w") as f:
+        json.dump(sts[c.D_OUT], fp=f)
+        #print(sts[c.D_OUT],file=f)
 
     # block access to test
     sts[c.D_END] = True
@@ -33,7 +36,7 @@ def studyToggle(val:bool):
 def change(x):
     if not x:
         x = {}
-    x["time_end"] = datetime.now().strftime('%Y%m%d%H%M%S%f')
+    x["time_end"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     sts[c.D_OUT][sts[c.D_CURR]] = x #sts[c.D_D_INPUT]
 
     print("delete")
