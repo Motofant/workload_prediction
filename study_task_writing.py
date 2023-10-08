@@ -51,5 +51,7 @@ def textWriteView():
     # finished --> get to next test
     else:
         st.markdown(c.W_M_TASK)
-        st.text_area(label="Eingabe",height=20, key= c.W_T_INPUT)
+        st.text_area(label="Eingabe",height=400, key= c.W_T_INPUT, label_visibility="collapsed")
+        components.html(getFocusString("textarea"),height=150)
+
         st.button(label="Beende Experiment", key=c.W_B_END, on_click=endTest)

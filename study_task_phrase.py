@@ -60,8 +60,8 @@ def phraseWriteView():
         #nxt.button("nächster Eintrag",key = c.P_B_NEXT, on_click = phraseChange, args=[1],disabled=sts[c.P_CURR]>=conf.no_phrases-1)
         pos.markdown(f"<center>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
         phrase_cont.markdown(f"## <center>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
-        components.html(getFocusString(sts[c.FOCUS_SUP]),height=150)
-        phrase_cont.text_input(label="schreiben", key = c.P_T_INPUT, on_change=phraseChange, args=[1])
+        components.html(getFocusString("input[type=text]"),height=150)
+        phrase_cont.text_input(label="text input", key = c.P_T_INPUT, on_change=phraseChange, args=[1],label_visibility="collapsed")
 
         #st.button("Beende Test",key = c.P_B_END, on_click = endTest,)
 

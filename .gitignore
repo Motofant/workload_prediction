@@ -1,4 +1,5 @@
 test/
+data_processing/example*
 eyeenv/
 volume/
 logging/

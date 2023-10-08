@@ -30,8 +30,9 @@ class TextInfo:
             compare_lst = phrase.split(" ")
             distance_lst = [None]*len(compare_lst)
             for count, word in enumerate(compare_lst):
-
-                user = list(word_lst[count])
+                if len(word)==0:
+                    continue
+                user = list(word_lst[min(count, len(word_lst)-1)]) # to avoid more words
                 compare = list(word)
                 user_len = len(user)
                 compare_len = len(compare)

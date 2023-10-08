@@ -84,11 +84,10 @@ def radioFormat(x):
     }
     return vals[x]
 
-def getFocusString(st_val):
+def getFocusString(input_type):
     return f"""
         <script>
-            var input = window.parent.document.querySelectorAll("input[type=text]");
-
+        var input = window.parent.document.querySelectorAll("{input_type}");
             for (var i = 0; i < input.length; ++i) {{
                 input[i].focus();
             }}

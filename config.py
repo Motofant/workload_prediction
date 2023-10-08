@@ -3,8 +3,8 @@ sensor_active = True
 sensor_console = False
 
 no_phrases = 20 # count to make ~800 symbole
-no_mouse = 5
-no_click = 5
+no_mouse = 20
+no_click = 20
 
 output = [
     "Eine E-Mail ist ein elektronischer Brief.",

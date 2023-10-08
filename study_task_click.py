@@ -5,7 +5,7 @@ import constants as c
 import config as conf 
 from datetime import datetime
 from utils import startSubprocesses, generateIndex, manageSubProc
-NO_CLICKS = 5
+
 DATA = {
         "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
         "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
@@ -33,14 +33,12 @@ def studyToggle(val:bool):
 def change(x):
     if not x:
         x = {}
-    print(x)
     x["time_end"] = datetime.now().strftime('%Y%m%d%H%M%S%f')
     sts[c.C_OUT][sts[c.C_CURR]] = x #sts[c.C_C_INPUT]
-    sts[c.C_CURR] = min(max(sts[c.C_CURR]+1,0),NO_CLICKS-1)
+    sts[c.C_CURR] = min(max(sts[c.C_CURR]+1,0),conf.no_click-1)
     print("delete")
     #sts[c.C_B_NEXT] = None
     if c.C_C_INPUT in sts:
-        print("del")
         del sts[c.C_C_INPUT]
         sts[c.C_B_NEXT] = None
         print(sts)
@@ -67,12 +65,12 @@ def clickingTaskView():
         drag_cont = st.empty()
         _,pos,nxt = drag_cont.columns([1,3,1])
 
-        pos.markdown(f"{sts[c.C_CURR] + 1}/{NO_CLICKS}")
+        pos.markdown(f"{sts[c.C_CURR] + 1}/{conf.no_click}")
         print(sts)
         if c.C_C_INPUT in sts:
             del sts[c.C_C_INPUT]
         x = sc.st_sortclick(DATA,key = c.C_C_INPUT+str(sts[c.C_CURR]))
-        y=nxt.button("nächster Eintrag", on_click = change,args=[x],disabled=sts[c.C_CURR]>=NO_CLICKS-1)
+        y=nxt.button("nächster Eintrag", on_click = change,args=[x],disabled=sts[c.C_CURR]>=conf.no_click-1)
         if y:
             st.experimental_rerun()
             #x = None

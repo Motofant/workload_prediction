@@ -7,7 +7,7 @@ from datetime import datetime
 from utils import startSubprocesses, generateIndex, manageSubProc
 import json
 
-NO_PHRASE = 5
+conf.no_mouse
 DATA = {
     "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
     "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
@@ -45,7 +45,7 @@ def change(x):
         del sts[c.D_D_INPUT+str(sts[c.D_CURR])]
 
 
-    sts[c.D_CURR] = min(max(sts[c.D_CURR]+1,0),NO_PHRASE-1)
+    sts[c.D_CURR] = min(max(sts[c.D_CURR]+1,0),conf.no_mouse-1)
 
 
 def draggingTaskView():
@@ -65,11 +65,11 @@ def draggingTaskView():
     else:
         if c.D_CURR not in sts:
             sts[c.D_CURR] = 0
-        #nxt.button("nächster Eintrag",key=c.D_B_NEXT, on_click = change,disabled=sts[c.D_CURR]>=NO_PHRASE-1)
+        #nxt.button("nächster Eintrag",key=c.D_B_NEXT, on_click = change,disabled=sts[c.D_CURR]>=conf.no_mouse-1)
         _,pos,nxt = st.columns([1,3,1])
-        pos.markdown(f"{sts[c.D_CURR] + 1}/{conf.no_phrases}")
+        pos.markdown(f"{sts[c.D_CURR] + 1}/{conf.no_mouse}")
         x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]))
-        y=nxt.button("nächster Eintrag", on_click = change,args=[x],disabled=sts[c.D_CURR]>=NO_PHRASE-1)
+        y=nxt.button("nächster Eintrag", on_click = change,args=[x],disabled=sts[c.D_CURR]>=conf.no_mouse-1)
         if y:
             st.experimental_rerun()
         st.button("Beende Test",key = c.D_B_END, on_click = endTest,)
