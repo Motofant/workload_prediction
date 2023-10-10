@@ -21,7 +21,7 @@ L_T_NAME = LOGINKEY+"text"
 ### Default
 DEFKEY = "default_"
 DEF_MSG_START = "lets start"
-DEF_MSG_END = "Vielen Dank für die Teilnahme des Teilexperiments"
+DEF_MSG_END = "Vielen Dank für die Teilnahme."
 
 ### Writing
 WRITING_KEY = "writing_"
@@ -36,21 +36,25 @@ W_B_CHANGE = WRITING_KEY+"change"
 W_T_INPUT = WRITING_KEY + "user_input"
 # Text
 W_TASK_DESC ="""
-    In der folgenden Aufgaben schreiben eine Email an einem Kollegen.\n
-    Beachten Sie dabei die Aufgaben, die über dem Textfeld angezeigt werden.\n
-    Schließen Sie den Test mit einem Klick auf 'Beende Experiment' ab.  
+    <p style= "font-size:20px">In der folgenden Aufgaben schreiben eine Email an einem Kollegen.\n
+    <p style= "font-size:20px">Beachten Sie dabei die Aufgaben, die über dem Textfeld angezeigt werden.\n
+    <p style= "font-size:20px">Schließen Sie den Test mit einem Klick auf 'Beenden' ab.
 """
-W_M_TASK = """
-# Inhalte der E-Mail
+W_M_TASK_A = """
 - Anschrift an Empfänger: (Herr Müller)
 - Absage der monatlichen Besprechung 
 - Absagegrund: (Teilnahme an einem Experiment zum Thema verhalten am Arbeitsplatz)
 - 2 Alternativtermine 
     - nächste Woche Montag zwischen 13 und 17 Uhr 
     - nächste Woche Dienstag bis 12 Uhr
+"""
+W_M_TASK_B = """
 - kurze Zusammenfassung des letzten Monats
     - Erster Prototyp fertiggestellt
-    - Kleinere Probleme in ersten Tests 
+    - Kleinere Probleme in ersten Tests festgestellt
+- Frau Meier ist nicht wegen Rückfragen zu erreichen
+    - Wer ist die Vertretung
+- Empfänger muss einer Lieferung am Empfang abholen
 - Unterschreibe mit Nutzernamen
 """
 ### Phrase
@@ -70,10 +74,8 @@ P_B_CHANGE = PHRASE_KEY+"change"
 P_T_INPUT = PHRASE_KEY+"user_input"
 # Text
 P_TASK_DESC = """
-    Schreiben Sie die angezeigten Phrasen in das angezeigte Textfeld.\n
-    Bestätigen Sie Ihre Eingabe mit Enter.\n
-    
-    Beenden Sie das Experiment nach dem Abschreiben aller Phrasen
+    <p style= "font-size:20px">Schreiben Sie die angezeigten englsichen Phrasen in das angezeigte Textfeld.\n
+    <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit Enter.\n
 """
 
 ### Dragging
@@ -92,8 +94,8 @@ D_D_INPUT = DRAG_KEY+"input"
 D_OUT = DRAG_KEY+"outputs"
 # Text
 D_TASK_DESC = '''
-    Verschieben Sie die Elemente in die korrekte Box unten per "Drag and Drop".
-    Bestätigen Sie Ihre Eingabe mit einem Blick auf 'nächster Eintrag'\n
+    <p style= "font-size:20px">Verschieben Sie die Elemente in die entsprechende Box per "Drag and Drop".\n
+    <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit einem Klick auf 'Weiter'.\n
 '''
 
 ### Clicking
@@ -112,9 +114,22 @@ C_C_INPUT = CLICK_KEY+"input"
 C_OUT = CLICK_KEY+"outputs"
 # Text
 C_TASK_DESC = '''
-    Verschieben Sie die Elemente in die korrekte Box unten.\n
-    Klicken Sie Hierfür zuerst auf das verschiebbare Element oben und danach auf die Zielbox unten.\n
-    Bestätigen Sie Ihre Eingabe mit einem Blick auf 'nächster Eintrag'\n
+    <p style= "font-size:20px">Verschieben Sie die Elemente in die entsprechende Box.\n
+    <p style= "font-size:20px">Klicken Sie hierfür zuerst auf ein Element oben und danach auf die Zielbox.\n
+    <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit einem Klick auf 'Weiter'.\n
 '''
 ### Generell
-SUCCESS="Test abgeschlossen"
+SUCCESS='''
+Test abgeschlossen. Um fortzufahren schätzen Sie ein, wie stark Sie diese Aufgabe kognitiv belastet hat (0: sehr niedrig, 20: sehr hoch).
+'''
+
+### Cognitive Load 
+MENTAL = "mental"
+I_SLIDER = DEFKEY+MENTAL
+W_SLIDER = WRITING_KEY+MENTAL
+P_SLIDER = PHRASE_KEY+MENTAL
+D_SLIDER = DRAG_KEY+MENTAL
+C_SLIDER = CLICK_KEY+MENTAL
+
+WORK_OUT = "demand_output"
+NEXT_TEST = "allow_change"

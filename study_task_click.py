@@ -5,6 +5,7 @@ import constants as c
 import config as conf 
 from datetime import datetime
 from utils import startSubprocesses, generateIndex, manageSubProc
+import json
 
 DATA = {
         "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
@@ -12,13 +13,12 @@ DATA = {
         "Textdatein(.docs)":["a.docs","c.docs","b.docs",],
         }
 def endTest():
-    sts[c.C_OUT][sts[c.C_CURR]] = sts[c.C_C_INPUT+str(sts[c.C_CURR])]
+    
     # end subprocesses
     manageSubProc("kill")
     # write outputs in logfile
-    with open(f'./logging/{sts[c.USER]}_{c.CLICK_KEY}user_entered.txt', "w") as f:
-        print(sts[c.C_OUT],file=f)
-
+    with open(f'./logging/{sts[c.USER]}_{c.CLICK_KEY}user_entered.json', "w") as f:
+        json.dump(sts[c.C_OUT], fp=f)
     # block access to test
     sts[c.C_END] = True
 
@@ -33,29 +33,35 @@ def studyToggle(val:bool):
 def change(x):
     if not x:
         x = {}
-    x["time_end"] = datetime.now().strftime('%Y%m%d%H%M%S%f')
+    x["time_end"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     sts[c.C_OUT][sts[c.C_CURR]] = x #sts[c.C_C_INPUT]
-    sts[c.C_CURR] = min(max(sts[c.C_CURR]+1,0),conf.no_click-1)
-    print("delete")
     #sts[c.C_B_NEXT] = None
     if c.C_C_INPUT in sts:
         del sts[c.C_C_INPUT]
         sts[c.C_B_NEXT] = None
-        print(sts)
-    #del sts[c.C_B_END]
-    #clickingTaskView()
+
+    sts[c.C_CURR] += 1
+    if sts[c.C_CURR] >= conf.no_click:
+        endTest()
+    
 
 def clickingTaskView():
     
     if sts[c.C_END]:
         # Test is completed
+        def enableNext():
+            sts[c.WORK_OUT][c.C_SLIDER] = sts[c.C_SLIDER] 
+            sts[c.NEXT_TEST] = False
+
         st.success(c.SUCCESS)
-        print(sts)
-        st.button(label = "Nächster Test", key = c.C_B_CHANGE, on_click=changeTest)
+        slid,_ = st.columns([1,4])
+        slid.slider(label= "Geistige Anforderung", key=c.C_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        st.button(label = "Nächster Test", key = c.C_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.C_START]:
         ## Test is not started yet
-        st.write(c.C_TASK_DESC)
-        st.button(label="Start Experiment", key=c.C_B_START, on_click=studyToggle, args=[True])  
+        sts[c.NEXT_TEST] = True
+        st.write(c.C_TASK_DESC, unsafe_allow_html=True)
+        st.button(label="Starten", key=c.C_B_START, on_click=studyToggle, args=[True])  
         if c.C_OUT not in sts:
             sts[c.C_OUT] = {}
     
@@ -65,15 +71,10 @@ def clickingTaskView():
         drag_cont = st.empty()
         _,pos,nxt = drag_cont.columns([1,3,1])
 
-        pos.markdown(f"{sts[c.C_CURR] + 1}/{conf.no_click}")
-        print(sts)
+        pos.markdown(f"#### <center>{sts[c.C_CURR] + 1}/{conf.no_click}", unsafe_allow_html=True)
         if c.C_C_INPUT in sts:
             del sts[c.C_C_INPUT]
         x = sc.st_sortclick(DATA,key = c.C_C_INPUT+str(sts[c.C_CURR]))
-        y=nxt.button("nächster Eintrag", on_click = change,args=[x],disabled=sts[c.C_CURR]>=conf.no_click-1)
+        y=nxt.button("Weiter", on_click = change,args=[x])
         if y:
             st.experimental_rerun()
-            #x = None
-        #print(sts[c.C_C_INPUT])
-        #print(sts)
-        st.button("Beende Test",key = c.C_B_END, on_click = endTest,)

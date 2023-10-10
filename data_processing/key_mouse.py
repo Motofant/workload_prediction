@@ -130,7 +130,7 @@ class KeyMouse:
             #"key_presses":self.key_presses,
             "key_press_time":self.key_press_time,
             #"key_dead_time":self.key_dead_times,
-            #"key_no_dead_time":self.key_no_dead_times,
+            "key_no_dead_time":self.key_no_dead_times,
             "key_dead_time_avg":self.key_dead_time_avg,
             "key_deletions": self.key_backspaces,
             "mouse_avg_distance":self.avg_distance, 

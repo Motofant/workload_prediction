@@ -21,7 +21,7 @@ def phraseChange(change):
 
 def endTest():
     # save last value
-    sts[c.P_OUT][sts[c.P_CURR]] = sts[c.P_T_INPUT]
+    sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f,')+sts[c.P_T_INPUT]
     # end subprocesses
     manageSubProc("kill")
     
@@ -39,12 +39,20 @@ def changeTest():
 
 def phraseWriteView():
     if sts[c.P_END]:
+
+        def enableNext():
+            sts[c.WORK_OUT][c.P_SLIDER] = sts[c.P_SLIDER] 
+            sts[c.NEXT_TEST] = False
+
         st.success(c.SUCCESS)
-        st.button(label = "Nächster Test", key = c.P_B_CHANGE, on_click=changeTest)
+        slid,_ = st.columns([1,4])
+        slid.slider(label= "Geistige Anforderung", key=c.P_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        st.button(label = "Nächster Test", key = c.P_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.P_START]:
         ## building streamlit components
-        st.write(c.P_TASK_DESC)
-        st.button(label="Start Experiment", key=c.P_B_START, on_click=studyToggle, args=[True])   
+        sts[c.NEXT_TEST] = True
+        st.write(c.P_TASK_DESC, unsafe_allow_html=True)
+        st.button(label="Starten", key=c.P_B_START, on_click=studyToggle, args=[True])   
     
     else:
         ## get sentences displayed in case
@@ -58,7 +66,7 @@ def phraseWriteView():
         prev,pos,nxt = phrase_cont.columns([1,3,1])
         #prev.button("vohergehender Eintrag",key = c.P_B_PREV, on_click = phraseChange, args=[-1],disabled=sts[c.P_CURR]<=0)
         #nxt.button("nächster Eintrag",key = c.P_B_NEXT, on_click = phraseChange, args=[1],disabled=sts[c.P_CURR]>=conf.no_phrases-1)
-        pos.markdown(f"<center>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
+        pos.markdown(f"#### <center>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
         phrase_cont.markdown(f"## <center>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
         components.html(getFocusString("input[type=text]"),height=150)
         phrase_cont.text_input(label="text input", key = c.P_T_INPUT, on_change=phraseChange, args=[1],label_visibility="collapsed")

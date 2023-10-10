@@ -14,7 +14,7 @@ def endTest():
 
     # write outputs in logfile
     
-    with open(f'./logging/{sts[c.USER]}_{c.WRITING_KEY}_user_entered.txt', "w") as f:
+    with open(f'./logging/{sts[c.USER]}_{c.WRITING_KEY}user_entered.txt', "w") as f:
         f.write(sts[c.W_T_INPUT])
     
     # block access to test
@@ -41,17 +41,31 @@ def textWriteView():
     # first start 
     if sts[c.W_END]:
         # Test is completed
+        def enableNext():
+            sts[c.WORK_OUT][c.W_SLIDER] = sts[c.W_SLIDER] 
+            sts[c.NEXT_TEST] = False
+
         st.success(c.SUCCESS)
-        st.button(label = "Nächster Test", key = c.W_B_CHANGE, on_click=changeTest)
+        slid,_ = st.columns([1,4])
+        slid.slider(label= "Geistige Anforderung", key=c.W_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        st.button(label = "Nächster Test", key = c.W_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     # currently running
     elif not sts[c.W_START]:
         ## Test is not started yet
-        st.write(c.W_TASK_DESC)
-        st.button(label="Start Experiment", key=c.W_B_START, on_click=studyToggle, args=[True])   
+        sts[c.NEXT_TEST] = True
+        
+        if c.NEXT_TEST in sts:
+            del sts[c.NEXT_TEST]
+        st.write(c.W_TASK_DESC, unsafe_allow_html=True)
+        st.button(label="Starten", key=c.W_B_START, on_click=studyToggle, args=[True])   
     # finished --> get to next test
     else:
-        st.markdown(c.W_M_TASK)
+        
+        st.markdown("# Inhalte der E-Mail")
+        x,y = st.columns(2)
+        x.markdown(c.W_M_TASK_A)
+        y.markdown(c.W_M_TASK_B)
         st.text_area(label="Eingabe",height=400, key= c.W_T_INPUT, label_visibility="collapsed")
-        components.html(getFocusString("textarea"),height=150)
+        components.html(getFocusString("textarea"),height=1)
 
-        st.button(label="Beende Experiment", key=c.W_B_END, on_click=endTest)
+        st.button(label="Beenden", key=c.W_B_END, on_click=endTest)

@@ -44,20 +44,30 @@ def change(x):
     if c.D_D_INPUT+str(sts[c.D_CURR]) in sts:
         del sts[c.D_D_INPUT+str(sts[c.D_CURR])]
 
+    sts[c.D_CURR] += 1
 
-    sts[c.D_CURR] = min(max(sts[c.D_CURR]+1,0),conf.no_mouse-1)
+    if sts[c.D_CURR] >= conf.no_mouse:
+        endTest()
 
 
 def draggingTaskView():
     
     if sts[c.D_END]:
         # Test is completed
+        def enableNext():
+            sts[c.WORK_OUT][c.D_SLIDER] = sts[c.D_SLIDER] 
+            sts[c.NEXT_TEST] = False
+            
+
         st.success(c.SUCCESS)
-        st.button(label = "Nächster Test", key = c.D_B_CHANGE, on_click=changeTest)
+        slid,_ = st.columns([1,4])
+        slid.slider(label= "Geistige Anforderung", key=c.D_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        st.button(label = "Nächster Test", key = c.D_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.D_START]:
         ## Test is not started yet
-        st.write(c.D_TASK_DESC)
-        st.button(label="Start Experiment", key=c.D_B_START, on_click=studyToggle, args=[True])  
+        sts[c.NEXT_TEST] = True
+        st.write(c.D_TASK_DESC,unsafe_allow_html=True)
+        st.button(label="Starten", key=c.D_B_START, on_click=studyToggle, args=[True])  
         if c.D_OUT not in sts:
             sts[c.D_OUT] = {}
 
@@ -67,14 +77,8 @@ def draggingTaskView():
             sts[c.D_CURR] = 0
         #nxt.button("nächster Eintrag",key=c.D_B_NEXT, on_click = change,disabled=sts[c.D_CURR]>=conf.no_mouse-1)
         _,pos,nxt = st.columns([1,3,1])
-        pos.markdown(f"{sts[c.D_CURR] + 1}/{conf.no_mouse}")
+        pos.markdown(f"#### <center>{sts[c.D_CURR] + 1}/{conf.no_mouse}",unsafe_allow_html=True)
         x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]))
-        y=nxt.button("nächster Eintrag", on_click = change,args=[x],disabled=sts[c.D_CURR]>=conf.no_mouse-1)
+        y=nxt.button("Weiter", on_click = change,args=[x])
         if y:
             st.experimental_rerun()
-        st.button("Beende Test",key = c.D_B_END, on_click = endTest,)
-        
-
-        #print(sts[c.D_D_INPUT])
-        #print(sts)
-        

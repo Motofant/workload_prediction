@@ -13,8 +13,12 @@ st.set_page_config(initial_sidebar_state="expanded",layout="wide")
 
 if c.FOCUS_SUP not in st.session_state:
         st.session_state[c.FOCUS_SUP] = 0
+        
 if c.STATE not in sts:
     sts[c.STATE] = 0
+
+if c.WORK_OUT not in sts:
+    sts[c.WORK_OUT] = {}
 
 if c.USER not in sts:
     print("UserKey undefined")
@@ -35,6 +39,9 @@ if c.D_START not in sts:
 if c.C_START not in sts:
     sts[c.C_START] = False
     sts[c.C_END] = False
+
+if c.NEXT_TEST not in sts:
+    sts[c.NEXT_TEST] = True
    
 if sts[c.USER] == "" or sts[c.STATE] == 0:
     print("before "+sts[c.USER])

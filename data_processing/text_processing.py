@@ -10,8 +10,6 @@ class TextInfo:
         # claculatee stuff not doable with free text
         # idea from Analysis_of_text_entry_performance_metri20161119-3688-te2saj-libre.pdf
         self.compare_data = compare_data
-        print(self.user_data)
-        print(self.compare_data)
         self.levenshtein = self.levenshtein_distance() if self.compare_data else [[0]]
 
         self.levenshtein_sum_phrase = [sum(x)for x in self.levenshtein]

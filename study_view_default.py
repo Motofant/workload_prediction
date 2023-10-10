@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit import session_state as sts
 import constants as c
+import pandas as pd
 
 def defaultView():
     def nextpage():
@@ -10,4 +11,6 @@ def defaultView():
         st.subheader(c.DEF_MSG_START)
         st.button(label="Start", on_click=nextpage)
     elif sts[c.STATE] > 2:
+        mental_demand = pd.DataFrame(data=[sts[c.WORK_OUT]])
+        mental_demand.to_csv(path_or_buf=f"./logging/{sts[c.USER]}_demand.csv", index=None)
         st.success(c.DEF_MSG_END)

@@ -15,6 +15,7 @@ class MouseProcess:
         self.total_res = sum(self.task_res)
         self.total_nan = sum(self.task_nan)
         self.total_move = sum(self.task_move)
+        
     
     def get_tasks(self):
         total_result = []
@@ -37,9 +38,6 @@ class MouseProcess:
             total_result.append(task_result)
             total_moves.append(task_moves)
             total_nan.append(task_nan)
-        print(total_result)
-        print(total_nan)
-        print(total_moves)
         return total_result, total_nan, total_nan
     
     def output_dict(self):

@@ -114,8 +114,9 @@ def main():
         "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
         "Textdatein(.docs)":["a.docs","c.docs","b.docs",],
         }
+    data2={"a":["a"]}
 
-    value = st_dragndrop(values={"a":["a"]})
+    value = st_dragndrop(values=data)
 
     st.write(value)
     print(value)

@@ -23,6 +23,8 @@ function goalCollition(data, data_goals){
   if (data["b"] < data_goals[0]["top"]){
     return false
   }else{
+    console.error(data["b"])
+    console.error(data_goals)
     for (j = 0; j<Object.keys(data_goals).length;j++){
       goal = data_goals[j]
       if ((data["l"]<=goal["r"]) & (data["l"]>=goal["l"]) ||(data["r"]<=goal["r"]) & (data["r"]>=goal["l"])){
@@ -58,6 +60,9 @@ function onMouseUp(el){
   window.removeEventListener('selectstart', disableSelect);
   window.selected_div == " "
   el.style.zIndex = 0
+  console.log(el.style.top)
+  console.log(el.style.height)
+  console.log(window.coll)
   overlap = goalCollition(
     {
       "b":parseInt(el.style.top) + parseInt(el.style.height), 
@@ -66,6 +71,7 @@ function onMouseUp(el){
     }
     ,window.coll
   )
+  console.log(overlap)
   console.warn(typeof(window.output[el.id]))
   // write to output
   window.output[el.id].push(
@@ -109,18 +115,12 @@ function onRender(event) {
         // visual effect
         div.style.position = "absolute"
         div.innerHTML += String(val_lst[i])
-        div.style.left = String(Math.round(Math.random() * document.body.offsetWidth))+"px"
-        div.style.top = "0px"
+        div.style.left = String(Math.round(Math.random() * document.body.offsetWidth*.95))+"px"
+        div.style.top = String(Math.round(Math.random() * window.frames.innerHeight*.3))+"px"
+        div.classList.add('datei')
+        
         div.style.width = "80px"
         div.style.height = "50px"
-        div.style.cursor = "pointer"
-        div.style.textAlign = "center"
-        div.style.verticalAlign = "middle"
-        div.style.backgroundColor = "grey"
-        div.style.color = 'black'
-        div.style.borderStyle = "solid"
-        div.style.borderColor = "black"
-        div.style.borderWidth = "3px"
 
         // added movability
         div.addEventListener('mousedown', function(){onmouseDown(this)})
@@ -141,21 +141,13 @@ function onRender(event) {
       var goal = document.createElement("div")
       goal.id = "goal_"+String(g)
       goal.innerHTML += "Bitte "+String(key)+" ablegen"//"stuff"//style.backroundColor="red"
+      goal.classList.add("goal")
       goal.style.width = String(parseInt(document.body.offsetWidth)*.2) + "px"//Math.floor(goal_width_base/100)*100+"px"//
-      goal.style.height = window.screen.height * .2 +"px"
-      goal.style.position = "absolute"
-      goal.style.cursor = "pointer"
-      goal.style.textAlign = "center"
-      goal.style.verticalAlign = "middle"
-      goal.style.zIndex = -10
       goal.style.bottom = "0px"
-      goal.style.top = goal.style.bottom - goal.style.height
-      goal.style.borderStyle = "solid"
-      goal.style.borderColor = "black"
-      goal.style.borderWidth = "3px"
+      goal.style.height = window.screen.height * .2 +"px"
       goal.style.left = String(((g+1)) * parseInt(goal_width_base) -parseInt(goal.style.width)/2)+"px"
-      goal.style.backgroundColor = "grey"//cols[i]
-      window.coll[g] = {"top" : parseInt(goal.style.top), "l":parseInt(goal.style.left), "r":parseInt(goal.style.left)+parseInt(goal.style.width), "id": goal.id}
+      
+      window.coll[g] = {"top" : parseInt(window.frames.innerHeight) - parseInt(goal.style.height), "l":parseInt(goal.style.left), "r":parseInt(goal.style.left)+parseInt(goal.style.width), "id": goal.id}
 
       // events
 
@@ -207,7 +199,6 @@ function onRender(event) {
     sendValue(window.output)
     console.warn(window.output)
     window.rendered = true
-    
   }
 }
 
