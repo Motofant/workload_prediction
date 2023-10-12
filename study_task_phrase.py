@@ -66,8 +66,8 @@ def phraseWriteView():
         prev,pos,nxt = phrase_cont.columns([1,3,1])
         #prev.button("vohergehender Eintrag",key = c.P_B_PREV, on_click = phraseChange, args=[-1],disabled=sts[c.P_CURR]<=0)
         #nxt.button("nächster Eintrag",key = c.P_B_NEXT, on_click = phraseChange, args=[1],disabled=sts[c.P_CURR]>=conf.no_phrases-1)
-        pos.markdown(f"#### <center>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
-        phrase_cont.markdown(f"## <center>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
+        pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
+        phrase_cont.markdown(f"<center><p style= 'font-size:24px'>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
         components.html(getFocusString("input[type=text]"),height=150)
         phrase_cont.text_input(label="text input", key = c.P_T_INPUT, on_change=phraseChange, args=[1],label_visibility="collapsed")
 

@@ -74,7 +74,7 @@ P_B_CHANGE = PHRASE_KEY+"change"
 P_T_INPUT = PHRASE_KEY+"user_input"
 # Text
 P_TASK_DESC = """
-    <p style= "font-size:20px">Schreiben Sie die angezeigten englsichen Phrasen in das angezeigte Textfeld.\n
+    <p style= "font-size:20px">Schreiben Sie die angezeigten englischen Phrasen in das angezeigte Textfeld.\n
     <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit Enter.\n
 """
 

@@ -6,11 +6,11 @@ from study_task_dragging import draggingTaskView
 from study_task_click import clickingTaskView
 from study_view_login import loginView
 from study_view_default import defaultView
-from utils import radioFormat
+from utils import radioFormat, removeStreamlitElements
 import constants as c
 
 st.set_page_config(initial_sidebar_state="expanded",layout="wide")
-
+st.markdown(removeStreamlitElements(), unsafe_allow_html=True)
 if c.FOCUS_SUP not in st.session_state:
         st.session_state[c.FOCUS_SUP] = 0
         

@@ -14,6 +14,7 @@ body{
   border-color: black;    
   background-color: grey;
   font-size: 125%;
+  user-select: none;
 }
 
 .goal{
@@ -28,4 +29,5 @@ body{
   border-color: black;
   border-width: 3px;
   background-color: grey;
+  user-select: none;
 }

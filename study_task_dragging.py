@@ -9,9 +9,9 @@ import json
 
 conf.no_mouse
 DATA = {
-    "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
+    "Powerpoint(.pptx)":["a.pptx","c.pptx","b.pptx",], 
     "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
-    "Textdatein(.docs)":["a.docs","c.docs","b.docs",],       
+    "Textdatein(.docx)":["a.docx","c.docx","b.docx",],       
 }
 def endTest():
     #pass
@@ -70,14 +70,25 @@ def draggingTaskView():
         st.button(label="Starten", key=c.D_B_START, on_click=studyToggle, args=[True])  
         if c.D_OUT not in sts:
             sts[c.D_OUT] = {}
-
+        form = st.form(key= "hi",clear_on_submit=True)
+        if "test" not in sts:
+            sts["test"] = 0
+        _,pos,nxt = form.columns([1,3,1])
+        pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
+        with form:
+            x = dnd.st_dragndrop({"Textdatei (.txt)":["a.txt"]},key=f"x{sts['test']}")
+        y=nxt.form_submit_button("Weiter")
+        if y:
+            del sts[f"x{sts['test']}"]
+            sts["test"] += 1
+            st.experimental_rerun()
     
     else:
         if c.D_CURR not in sts:
             sts[c.D_CURR] = 0
         #nxt.button("nächster Eintrag",key=c.D_B_NEXT, on_click = change,disabled=sts[c.D_CURR]>=conf.no_mouse-1)
         _,pos,nxt = st.columns([1,3,1])
-        pos.markdown(f"#### <center>{sts[c.D_CURR] + 1}/{conf.no_mouse}",unsafe_allow_html=True)
+        pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.D_CURR] + 1}/{conf.no_mouse}",unsafe_allow_html=True)
         x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]))
         y=nxt.button("Weiter", on_click = change,args=[x])
         if y:

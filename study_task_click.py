@@ -8,10 +8,10 @@ from utils import startSubprocesses, generateIndex, manageSubProc
 import json
 
 DATA = {
-        "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
-        "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
-        "Textdatein(.docs)":["a.docs","c.docs","b.docs",],
-        }
+    "Powerpoint(.pptx)":["a.pptx","c.pptx","b.pptx",], 
+    "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
+    "Textdatein(.docx)":["a.docx","c.docx","b.docx",],       
+}
 def endTest():
     
     # end subprocesses
@@ -64,6 +64,19 @@ def clickingTaskView():
         st.button(label="Starten", key=c.C_B_START, on_click=studyToggle, args=[True])  
         if c.C_OUT not in sts:
             sts[c.C_OUT] = {}
+        form = st.form(key= "hi",clear_on_submit=True)
+        if "test" not in sts:
+            sts["test"] = 0
+        _,pos,nxt = form.columns([1,3,1])
+        pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
+        with form:
+            x = sc.st_sortclick({"Textdatei (.txt)":["a.txt"]}, key=f"x{sts['test']}")
+        y=nxt.form_submit_button("Weiter")
+        if y:
+            del sts[f"x{sts['test']}"]
+            sts["test"] += 1
+            st.experimental_rerun()
+    
     
     else:
         if c.C_CURR not in sts:
@@ -71,7 +84,7 @@ def clickingTaskView():
         drag_cont = st.empty()
         _,pos,nxt = drag_cont.columns([1,3,1])
 
-        pos.markdown(f"#### <center>{sts[c.C_CURR] + 1}/{conf.no_click}", unsafe_allow_html=True)
+        pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.C_CURR] + 1}/{conf.no_click}", unsafe_allow_html=True)
         if c.C_C_INPUT in sts:
             del sts[c.C_C_INPUT]
         x = sc.st_sortclick(DATA,key = c.C_C_INPUT+str(sts[c.C_CURR]))

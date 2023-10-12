@@ -93,7 +93,14 @@ def getFocusString(input_type):
             }}
     </script>
     """
-
+def removeStreamlitElements():
+    hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+    return hide_streamlit_style
 def generateIndex(lst:list, tpe:str):
     start = '''<!DOCTYPE html>
     <html lang="en">

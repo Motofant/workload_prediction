@@ -61,7 +61,7 @@ def textWriteView():
     # finished --> get to next test
     else:
         
-        st.markdown("# Inhalte der E-Mail")
+        st.markdown("<center><p style= 'font-size:36px'>Inhalte der E-Mail",unsafe_allow_html=True)
         x,y = st.columns(2)
         x.markdown(c.W_M_TASK_A)
         y.markdown(c.W_M_TASK_B)
