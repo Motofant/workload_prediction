@@ -35,7 +35,12 @@ def endTest():
     sts[c.P_END] = True
 
 def changeTest():
-    sts[c.STATE] = 4
+    sts[c.EXP_ITER] += 1
+
+    if sts[c.EXP_ITER] >= 3:
+        sts[c.STATE] = 6
+    else:
+        sts[c.STATE] = sts[c.ORDER_EXP][sts[c.STAGE_ITER]][sts[c.EXP_ITER]]
 
 def phraseWriteView():
     if sts[c.P_END]:

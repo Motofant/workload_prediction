@@ -133,3 +133,20 @@ C_SLIDER = CLICK_KEY+MENTAL
 
 WORK_OUT = "demand_output"
 NEXT_TEST = "allow_change"
+
+# experiment order
+ORDER_DICT = {
+    "a":[0,1,2],
+    "b":[1,2,0],
+    "c":[2,0,1],
+    "d":[2,1,0],
+    "e":[0,2,1],
+    "f":[1,0,2],
+}
+STAGE_ITER = "iter_stage"
+EXP_ITER = "iter_exp"
+ORDER_EXP = DEFKEY+"exp"
+ORDER_STAGE = DEFKEY+"stage"
+ORDER_FIRST = DEFKEY+"first"
+ORDER_SEC = DEFKEY+"sec"
+ORDER_THIRD = DEFKEY+"third"

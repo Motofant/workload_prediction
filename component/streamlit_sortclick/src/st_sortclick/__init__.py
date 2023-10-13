@@ -14,6 +14,7 @@ _component_func = components.declare_component(
 # Create the python function that will be called
 def st_sortclick(
     values: list,
+    height: float,
     key: Optional[str] = None,
 ):
     """
@@ -21,7 +22,8 @@ def st_sortclick(
     """
     component_value = _component_func(
         values = values,
-        key=key,
+        comp_height = height,
+        key = key,
     )
 
     return component_value

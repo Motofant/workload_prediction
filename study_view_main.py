@@ -49,7 +49,7 @@ if sts[c.USER] == "" or sts[c.STATE] == 0:
     print(sts[c.USER])
     
 else:
-    if sts[c.USER] == "admin":
+    if "admin" in sts[c.USER]:
 
         def radioChange():
             sts[c.STATE] = sts[c.M_R_TESTS] 
@@ -61,7 +61,7 @@ else:
             format_func=radioFormat,
             on_change=radioChange
             )
-    if sts[c.STATE] in [1,6]:
+    if sts[c.STATE] in [1,6,7]:
         defaultView()
     elif sts[c.STATE] == 2:
         textWriteView()

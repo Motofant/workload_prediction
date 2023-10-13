@@ -21,7 +21,7 @@ def endTest():
     sts[c.W_END] = True
 
 def changeTest():
-    sts[c.STATE] = 3
+    sts[c.STATE] = 7
 
 def studyToggle(val:bool):
     sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],c.WRITING_KEY)

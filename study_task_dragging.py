@@ -4,7 +4,7 @@ from streamlit import session_state as sts
 import constants as c
 import config as conf 
 from datetime import datetime
-from utils import startSubprocesses, generateIndex, manageSubProc
+from utils import startSubprocesses, manageSubProc
 import json
 
 conf.no_mouse
@@ -26,7 +26,12 @@ def endTest():
     sts[c.D_END] = True
 
 def changeTest():
-    sts[c.STATE] = 5
+    sts[c.EXP_ITER] += 1
+
+    if sts[c.EXP_ITER] >= 3:
+        sts[c.STATE] = 6
+    else:
+        sts[c.STATE] = sts[c.ORDER_EXP][sts[c.STAGE_ITER]][sts[c.EXP_ITER]]
 
 def studyToggle(val:bool):
     sub_procs = startSubprocesses(c.DRAG_KEY,sts[c.USER],c.DRAG_KEY)
@@ -76,7 +81,7 @@ def draggingTaskView():
         _,pos,nxt = form.columns([1,3,1])
         pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
         with form:
-            x = dnd.st_dragndrop({"Textdatei (.txt)":["a.txt"]},key=f"x{sts['test']}")
+            x = dnd.st_dragndrop({"Textdatei (.txt)":["a.txt"]},key=f"x{sts['test']}", height=.6)
         y=nxt.form_submit_button("Weiter")
         if y:
             del sts[f"x{sts['test']}"]
@@ -86,10 +91,9 @@ def draggingTaskView():
     else:
         if c.D_CURR not in sts:
             sts[c.D_CURR] = 0
-        #nxt.button("nächster Eintrag",key=c.D_B_NEXT, on_click = change,disabled=sts[c.D_CURR]>=conf.no_mouse-1)
         _,pos,nxt = st.columns([1,3,1])
         pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.D_CURR] + 1}/{conf.no_mouse}",unsafe_allow_html=True)
-        x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]))
+        x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]),height=.8)
         y=nxt.button("Weiter", on_click = change,args=[x])
         if y:
             st.experimental_rerun()

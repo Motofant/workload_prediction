@@ -30,7 +30,7 @@ function onRender(event) {
     // You most likely want to get the data passed in like this
     // const {input1, input2, input3} = event.detail.args
     // values format --> dict {Ziel:[Filenamen]}
-    const {values, key} = event.detail.args
+    const {values, comp_height, key} = event.detail.args
     window.output = {}
     console.warn(document.body.offsetWidth)
     const goal_width_base = document.body.offsetWidth/(Object.keys(values).length +1)
@@ -114,6 +114,7 @@ function onRender(event) {
     }
     sendValue(window.output)
     window.rendered = true
+    Streamlit.setFrameHeight(window.screen.height*comp_height)
   }
 }
 

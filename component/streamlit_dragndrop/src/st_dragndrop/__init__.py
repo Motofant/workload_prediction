@@ -89,6 +89,7 @@ _component_func = components.declare_component(
 # Create the python function that will be called
 def st_dragndrop(
     values: list,
+    height: float,
     key: Optional[str] = None,
 ):
     """
@@ -96,6 +97,7 @@ def st_dragndrop(
     """
     component_value = _component_func(
         values = values,
+        comp_height = height,
         key = key,
     )
 
@@ -116,7 +118,7 @@ def main():
         }
     data2={"a":["a"]}
 
-    value = st_dragndrop(values=data)
+    value = st_dragndrop(values=data, height=.7)
 
     st.write(value)
     print(value)
