@@ -10,7 +10,7 @@ from pathlib import Path
 PHRASE_PATH = 'volume/phrases.txt'
 CONSOLE_SHOWN = subprocess.CREATE_NEW_CONSOLE if conf.sensor_console else subprocess.CREATE_NO_WINDOW
 
-def startSubprocesses(site_key:str, name:str, task :str):
+def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
     lst_sub = []
     # start logging scripts
     # keyboard/mouse
@@ -36,23 +36,45 @@ def startSubprocesses(site_key:str, name:str, task :str):
         sts[f'{site_key}{c.SUB_EY}'] = eyetr
         lst_sub.append(f'{site_key}{c.SUB_EY}')
 
-    sts[c.SUB_LST] = lst_sub
+    sts[sub_group] = lst_sub
     return [f'{site_key}{c.SUB_KM}',f'{site_key}{c.SUB_AN}',f'{site_key}{c.SUB_EY}',]
 
-def manageSubProc(mode:str):
+def startNBack(name:str,sub_group = str):
+    lst_sub = []
+    if c.SUB_NB not in sts:
+        mic_in = subprocess.Popen(f"{sys.executable} ./n_back/sound_record.py {name}", shell = False,creationflags = CONSOLE_SHOWN)
+        psutil.Process(mic_in.pid).suspend()
+        sts[c.SUB_SR] = mic_in
+        lst_sub.append(c.SUB_SR)
+        
+        n_back = subprocess.Popen(f"{sys.executable} ./n_back/n_back_gen.py {name}", shell = False,creationflags = CONSOLE_SHOWN)
+        psutil.Process(n_back.pid).suspend()
+        sts[c.SUB_NB] = n_back
+        lst_sub.append(c.SUB_NB)
+
+    sts[sub_group] = lst_sub
+    return [c.SUB_NB,c.SUB_SR,]
+
+def manageSubProc(mode:str, sub_group = str):
+    print(sub_group)
     if mode == "resume":
-        for proc in sts[c.SUB_LST]:
+        for proc in sts[sub_group]:
             psutil.Process(sts[proc].pid).resume()
         
     elif mode == "suspend":
-        for proc in sts[c.SUB_LST]:
+        for proc in sts[sub_group]:
             psutil.Process(sts[proc].pid).suspend()
 
     elif mode == "kill":
-        for proc in sts[c.SUB_LST]:
-            psutil.Process(sts[proc].pid).kill()
-            del sts[proc]
-        sts[c.SUB_LST] = []
+        for proc in sts[sub_group]:
+            try:
+                psutil.Process(sts[proc].pid).kill()
+                del sts[proc]
+            except Exception as e:
+                print(e)
+                print(proc)
+            
+        sts[sub_group] = []
 
 def getPhrases(site_key:str,n_o_phrase: int):
     # phrases used from https://www.yorku.ca/mack/chi03b.pdf
@@ -106,12 +128,22 @@ def removeStreamlitElements():
 def getExpOrder(input_name:str):
     mapping = c.ORDER_DICT
     add_value = 3
-    gen = mapping[input_name[0]]
-    sts[c.ORDER_EXP] = {
-        0:[x+add_value for x in mapping[input_name[1]]],
-        1:[x+add_value for x in mapping[input_name[2]]],
-        2:[x+add_value for x in mapping[input_name[3]]],
-    }
+    try:
+        sts[c.ORDER_STAGE]  = mapping[input_name[0]]
+        sts[c.ORDER_EXP] = {
+            0:[x+add_value for x in mapping[input_name[1]]],
+            1:[x+add_value for x in mapping[input_name[2]]],
+            2:[x+add_value for x in mapping[input_name[3]]],
+        }
+    except KeyError:
+        print("forgot code")
+        sts[c.ORDER_STAGE]
+        sts[c.ORDER_EXP] = {
+            0:[x+add_value for x in mapping["a"]],
+            1:[x+add_value for x in mapping["a"]],
+            2:[x+add_value for x in mapping["a"]],
+        }
+
     sts[c.STAGE_ITER] = 0
     sts[c.EXP_ITER] = 0
     

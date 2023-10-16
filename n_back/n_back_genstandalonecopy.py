@@ -6,7 +6,6 @@ from pynput.keyboard import Key, Listener
 import logging
 import io
 import csv
-import sys
 # based on 
 # https://www.frontiersin.org/articles/10.3389/fnagi.2016.00240/full --> genutzt bei z.B. https://www.frontiersin.org/articles/10.3389/fnagi.2019.00160/full#B7
 # --> Zahlen 0-9, 2,5 sec pause
@@ -18,20 +17,34 @@ class CSVFormatter(logging.Formatter):
         self.output=io.StringIO()
         self.writer=csv.writer(self.output)
 
-filename = f'./logging/{sys.argv[1]}_n_back_in.log'
+filename = "test"
 
-fp = open(filename,mode="w")
+fp = open(f'./{filename}.log',mode="w")
 fp.write('time,number,event\n')
 fp.close()
-logging.basicConfig(filename=filename, filemode='a',level=logging.DEBUG,format='%(message)s')#%(asctime)s|
+logging.basicConfig(filename=f'./{filename}.log', filemode='a',level=logging.DEBUG,format='%(message)s')#%(asctime)s|
 
 logger = logging.getLogger(__name__)
 print(__name__)
 logging.root.handlers[0].setFormatter(CSVFormatter())
 
-FILE_PATH = "./n_back/speech/"
+end = False
+def on_press (key):
+    if key == Key.enter:
+        global end
+        print("fals")
+        end = True
+    print(f'{datetime.datetime.now()},{str(key).lower()}, pressed')
+    logging.info(f'{datetime.datetime.now()},{key}, pressed')
 
-while True:
+listener = Listener(
+    on_press=on_press,
+    )
+listener.start()
+
+FILE_PATH = "./speech/"
+
+while not end:
     x = random.randint(0, 9)
     logging.info(f"{datetime.datetime.now()}, {x}, called")
     print(f"{datetime.datetime.now()}, {x}, called")

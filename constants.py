@@ -12,7 +12,10 @@ FOCUS_SUP = "focus"
 SUB_KM = "key_mouse"
 SUB_AN = "analog"
 SUB_EY = "eyetr"
+SUB_NB = "n_back"
+SUB_SR = "sound_record"
 SUB_LST = "sub_list"
+SUB_SEC  = "sub_sec"
 
 ### Login
 LOGINKEY = "login_"
@@ -41,21 +44,28 @@ W_TASK_DESC ="""
     <p style= "font-size:20px">Schließen Sie den Test mit einem Klick auf 'Beenden' ab.
 """
 W_M_TASK_A = """
-- Anschrift an Empfänger: (Herr Müller)
-- Absage der monatlichen Besprechung 
-- Absagegrund: (Teilnahme an einem Experiment zum Thema verhalten am Arbeitsplatz)
-- 2 Alternativtermine 
-    - nächste Woche Montag zwischen 13 und 17 Uhr 
-    - nächste Woche Dienstag bis 12 Uhr
+<ul style="user-select:none">
+    <li style="font-size:20px">Anschrift an Empfänger: (Herr Müller)</li>
+    <li style="font-size:20px">Absage der monatlichen Besprechung</li>
+    <li style="font-size:20px">Absagegrund: (Teilnahme an einem Experiment zum Thema verhalten am Arbeitsplatz)</li>
+    <li style="font-size:20px">2 Alternativtermine </li>
+        <ul style="padding-left:30px">
+            <li style="font-size:18px">nächste Woche Montag zwischen 13 und 17 Uhr </li>
+            <li style="font-size:18px">nächste Woche Dienstag bis 12 Uhr</li>
+        </ul>
+</ul>
 """
 W_M_TASK_B = """
-- kurze Zusammenfassung des letzten Monats
-    - Erster Prototyp fertiggestellt
-    - Kleinere Probleme in ersten Tests festgestellt
-- Frau Meier ist nicht wegen Rückfragen zu erreichen
-    - Wer ist die Vertretung
-- Empfänger muss einer Lieferung am Empfang abholen
-- Unterschreibe mit Nutzernamen
+<ul style="user-select:none">
+<li style="font-size:20px">kurze Zusammenfassung des letzten Monats</li>
+<ul style="padding-left:30px">
+    <li style="font-size:18px">Erster Prototyp fertiggestellt</li>
+    <li style="font-size:18px">Kleinere Probleme in ersten Tests festgestellt</li></ul>
+<li style="font-size:20px">Frau Meier ist nicht wegen Rückfragen zu erreichen</li>
+<ul style="padding-left:30px">
+    <li style="font-size:18px">Wer ist die Vertretung</li></ul>
+<li style="font-size:20px">Empfänger muss einer Lieferung am Empfang abholen</li>
+<li style="font-size:20px">Unterschreibe mit Nutzernamen</li></ul>
 """
 ### Phrase
 PHRASE_KEY = "phrase_"
@@ -74,7 +84,7 @@ P_B_CHANGE = PHRASE_KEY+"change"
 P_T_INPUT = PHRASE_KEY+"user_input"
 # Text
 P_TASK_DESC = """
-    <p style= "font-size:20px">Schreiben Sie die angezeigten englischen Phrasen in das angezeigte Textfeld.\n
+    <p style= "font-size:20px">Schreiben Sie die angezeigten englischen Phrasen in das Textfeld.\n
     <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit Enter.\n
 """
 
@@ -133,6 +143,22 @@ C_SLIDER = CLICK_KEY+MENTAL
 
 WORK_OUT = "demand_output"
 NEXT_TEST = "allow_change"
+
+SEC_TASK_DESC = {
+    0:"""<p style= "font-size:20px">Während der folgenden Stufe wird keine sekundäre Aufgabe durchgeführt.""",
+    1:"""<p style= "font-size:20px">Während der folgenden Stufe wird nebenbei ein 0-Back-Task durchgeführt. Das bedeutet:
+        <ul>
+        <li style= "font-size:20px">Dir werden währdend der Aufgaben in einem regelmäßigen Abstand Ziffern angesagt.</li>
+        <li style= "font-size:20px">Du sagst die zuletzt genannte Zahl an.</li>
+        </ul>
+    """,
+    2:"""<p style= "font-size:20px">Während der folgenden Stufe wird nebenbei ein 1-Back-Task durchgeführt. Das bedeutet:
+        <ul>
+        <li style= "font-size:20px">Dir werden während der Aufgaben in einem regelmäßigen Abstand Ziffern angesagt.</li>
+        <li style= "font-size:20px">Du sagst die Zahl an, die der zuletzt genannten vorausging.</li>
+        </ul>
+    """
+}
 
 # experiment order
 ORDER_DICT = {

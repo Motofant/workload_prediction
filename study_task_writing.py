@@ -10,7 +10,7 @@ from utils import startSubprocesses, manageSubProc, getFocusString
 
 def endTest():
     # end subprocesses
-    manageSubProc("kill")
+    manageSubProc("kill",sub_group=c.SUB_LST)
 
     # write outputs in logfile
     
@@ -24,9 +24,9 @@ def changeTest():
     sts[c.STATE] = 7
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],c.WRITING_KEY)
+    sub_procs = startSubprocesses(c.WRITING_KEY,sts[c.USER],c.WRITING_KEY,sub_group=c.SUB_LST)
     sts[c.W_START] = val
-    manageSubProc("resume")
+    manageSubProc("resume",sub_group=c.SUB_LST)
 
 def initSessionState(elements):
     session_elements = {}
@@ -53,7 +53,6 @@ def textWriteView():
     elif not sts[c.W_START]:
         ## Test is not started yet
         sts[c.NEXT_TEST] = True
-        
         if c.NEXT_TEST in sts:
             del sts[c.NEXT_TEST]
         st.write(c.W_TASK_DESC, unsafe_allow_html=True)
@@ -63,8 +62,8 @@ def textWriteView():
         
         st.markdown("<center><p style= 'font-size:36px'>Inhalte der E-Mail",unsafe_allow_html=True)
         x,y = st.columns(2)
-        x.markdown(c.W_M_TASK_A)
-        y.markdown(c.W_M_TASK_B)
+        x.write(c.W_M_TASK_A,unsafe_allow_html=True)
+        y.write(c.W_M_TASK_B,unsafe_allow_html=True)
         st.text_area(label="Eingabe",height=400, key= c.W_T_INPUT, label_visibility="collapsed")
         components.html(getFocusString("textarea"),height=1)
 

@@ -16,9 +16,9 @@ DATA = {
 def endTest():
     #pass
     # end subprocesses
-    manageSubProc("kill")
+    manageSubProc("kill",sub_group=c.SUB_LST)
     # write outputs in logfile
-    with open(f'./logging/{sts[c.USER]}_{c.DRAG_KEY}user_entered.json', "w") as f:
+    with open(f'./logging/{sts[c.USER]}_{c.DRAG_KEY}_user_entered.json', "w") as f:
         json.dump(sts[c.D_OUT], fp=f)
         #print(sts[c.D_OUT],file=f)
 
@@ -34,9 +34,9 @@ def changeTest():
         sts[c.STATE] = sts[c.ORDER_EXP][sts[c.STAGE_ITER]][sts[c.EXP_ITER]]
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.DRAG_KEY,sts[c.USER],c.DRAG_KEY)
+    sub_procs = startSubprocesses(c.DRAG_KEY,sts[c.USER],c.DRAG_KEY,sub_group=c.SUB_LST)
     sts[c.D_START] = val
-    manageSubProc("resume")
+    manageSubProc("resume",sub_group=c.SUB_LST)
 
 def change(x):
     if not x:

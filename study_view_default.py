@@ -1,11 +1,18 @@
 import streamlit as st
 from streamlit import session_state as sts
+from utils import startNBack,manageSubProc
 import constants as c
 import pandas as pd
 
 def defaultView():
     def nextpage(page):
         sts[c.STATE] = page
+        print(sts[c.ORDER_STAGE][sts[c.STAGE_ITER]])
+        if page not in [2,7] and sts[c.ORDER_STAGE][sts[c.STAGE_ITER]] != 0:
+            print("gestartet")
+            startNBack(name = sts[c.USER], sub_group=c.SUB_SEC)
+            manageSubProc("resume",sub_group=c.SUB_SEC)
+            
 
     # introduction to Experiment
     if sts[c.STATE] == 1:
@@ -14,7 +21,11 @@ def defaultView():
 
     # introduction to Stage
     elif sts[c.STATE] == 7:
-        st.subheader("Introduction of stage")
+        #st.subheader("Introduction of stage")
+        st.write(
+            c.SEC_TASK_DESC[
+                sts[c.ORDER_STAGE]
+                    [sts[c.STAGE_ITER]]], unsafe_allow_html=True)
         st.button(
             label="Start", 
             on_click=nextpage, 
@@ -28,6 +39,10 @@ def defaultView():
     else:
         mental_demand = pd.DataFrame(data=[sts[c.WORK_OUT]])
         mental_demand.to_csv(path_or_buf=f"./logging/{sts[c.USER]}_demand.csv", index=None)
+        if c.SUB_SEC in sts:   
+            manageSubProc("kill", c.SUB_SEC)
+            del sts[c.SUB_SEC]
+        
         st.success(c.DEF_MSG_END)
         # resetting everything
         sts[c.C_START] = False
@@ -50,11 +65,8 @@ def defaultView():
             x = st.button(
                 label="nächste Stufe", 
                 on_click=nextpage, 
-                args=[
-                    sts[c.ORDER_EXP]
-                    [sts[c.STAGE_ITER]]
-                    [sts[c.EXP_ITER]]
-                    ])
+                args=[7]
+                )
 
             if x:
                 st.experimental_rerun()

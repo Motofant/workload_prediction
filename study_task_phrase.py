@@ -7,9 +7,9 @@ import config as conf
 from datetime import datetime
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.PHRASE_KEY)
+    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.PHRASE_KEY,sub_group=c.SUB_LST)
     sts[c.P_START] = val
-    manageSubProc("resume")
+    manageSubProc("resume",sub_group=c.SUB_LST)
 
 def phraseChange(change):
     sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f,') + sts[c.P_T_INPUT]
@@ -23,7 +23,7 @@ def endTest():
     # save last value
     sts[c.P_OUT][sts[c.P_CURR]] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f,')+sts[c.P_T_INPUT]
     # end subprocesses
-    manageSubProc("kill")
+    manageSubProc("kill",sub_group=c.SUB_LST)
     
     # write outputs in logfile
     sts[c.P_OUT] = [val if val else "__" for val in sts[c.P_OUT] ]
