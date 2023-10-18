@@ -81,7 +81,7 @@ function onRender(event) {
           console.warn(this.style.left)
           console.warn(window.selected_div)
           console.warn(moving_div.style.width)
-          moving_div.style.top = String(parseInt(window.screen.height*.7)-(parseInt(this.style.height))+parseInt(moving_div.id.charAt(0)+1)*2 + 20) +"px"
+          moving_div.style.top = String(parseInt(parseFloat(window.screen.height)*comp_height)-(parseInt(this.style.height))+parseInt(moving_div.id.charAt(0)+1)*2 + 20) +"px"
           moving_div.style.left = String(parseInt(this.style.left) + parseInt(moving_div.id.split("_").pop()+ 1)*9)+"px"//String(parseInt(this.style.left) + Math.floor(Math.random() * (parseInt(this.style.width)*.8  + 1)))+"px"
           //Math.floor(Math.random() * (parseInt(this.style.width)*.8  + 1))
           moving_div.style.borderColor = "black"
@@ -114,7 +114,8 @@ function onRender(event) {
     }
     sendValue(window.output)
     window.rendered = true
-    Streamlit.setFrameHeight(window.screen.height*comp_height)
+    Streamlit.setFrameHeight(parseFloat(window.screen.height)*comp_height)
+    //Streamlit.setFrameHeight(window.screen.height*comp_height)
   }
 }
 
@@ -123,4 +124,4 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
 // Tell Streamlit that the component is ready to receive events
 Streamlit.setComponentReady()
 // Render with the correct height, if this is a fixed-height component
-Streamlit.setFrameHeight(window.screen.height*.7)
+Streamlit.setFrameHeight(window.screen.height*.9)

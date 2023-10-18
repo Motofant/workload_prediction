@@ -76,7 +76,7 @@ def clickingTaskView():
         pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
         with form:
             x = sc.st_sortclick({"Textdatei (.txt)":["a.txt"]}, key=f"x{sts['test']}", height=.6)
-        y=nxt.form_submit_button("Weiter")
+        y=nxt.form_submit_button("Beispiel zurücksetzen")
         if y:
             del sts[f"x{sts['test']}"]
             sts["test"] += 1
