@@ -3,9 +3,11 @@ import streamlit as st
 from streamlit import session_state as sts
 import constants as c
 import config as conf 
-from datetime import datetime
 from utils import startSubprocesses, manageSubProc
 import json
+import time
+from datetime import datetime as dt
+import datetime
 
 conf.no_mouse
 DATA = {
@@ -41,7 +43,7 @@ def studyToggle(val:bool):
 def change(x):
     if not x:
         x = {}
-    x["time_end"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    x["time_end"] = dt.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     sts[c.D_OUT][sts[c.D_CURR]] = x #sts[c.D_D_INPUT]
 
     print("delete")
@@ -54,9 +56,48 @@ def change(x):
     if sts[c.D_CURR] >= conf.no_mouse:
         endTest()
 
-
-def draggingTaskView():
+def draggingExampleView():
+    # used to introduce user to type of experiment
+    if "started" not in sts:
+        sts["started"] = False 
     
+    if not sts["started"]:
+        # show explanation
+        st.write("Example: Dragging",unsafe_allow_html=True)
+        st.write(c.D_TASK_DESC,unsafe_allow_html=True)
+        start = st.button("start example")
+        if start:
+            sts["started"] = True
+            st.experimental_rerun()
+    else:
+        # timer 
+        if "time" not in sts:
+            sts["time"] = dt.now()
+        time_in_min = 10
+        
+        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_min)): 
+            if c.D_OUT not in sts:
+                sts[c.D_OUT] = {}
+            form = st.form(key= "hi",clear_on_submit=True)
+            if "test" not in sts:
+                sts["test"] = 0
+            _,pos,nxt = form.columns([1,3,1])
+            pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
+            with form:
+                x = dnd.st_dragndrop({"Textdatei (.txt)":["a.txt"]},key=f"x{sts['test']}", height=.6)
+            y=nxt.form_submit_button("Beispiel zurücksetzen")
+            if y:
+                del sts[f"x{sts['test']}"]
+                sts["test"] += 1
+                st.experimental_rerun()
+        else:
+            # call toggle to nex example
+            sts[c.STATE] = 9
+            del sts["time"]
+            del sts["started"]
+            st.experimental_rerun()
+
+def draggingTaskView(): 
     if sts[c.D_END]:
         # Test is completed
         def enableNext():

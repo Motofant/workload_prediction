@@ -14,7 +14,7 @@ def loginView():
         # write orders in sessionstate
         getExpOrder(x[-4:])
         #sts[c.STATE] = 3 if x[-1] in ["2","3"] else 2 # skip freetext when n back task  
-        #sts[c.STATE] = 1
-        sts[c.STATE] = 2
+        sts[c.STATE] = 1
+        #sts[c.STATE] = 2
         print(sts[c.USER])
         st.experimental_rerun()

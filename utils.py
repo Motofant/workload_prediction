@@ -76,11 +76,11 @@ def manageSubProc(mode:str, sub_group = str):
             
         sts[sub_group] = []
 
-def getPhrases(site_key:str,n_o_phrase: int):
+def getPhrases(site_key:str,n_o_phrase: int, path:str):
     # phrases used from https://www.yorku.ca/mack/chi03b.pdf
     if f"{site_key}phrases" not in sts:
         all_phrases = []
-        with open(PHRASE_PATH, 'r') as f:
+        with open(path, 'r') as f:
             all_phrases = [line.strip() for line in f]
 
         all_ids = random.sample(population = range(len(all_phrases)), k=n_o_phrase)
@@ -103,6 +103,11 @@ def radioFormat(x):
         3: "phrase",
         4: "maus_drag",
         5: "mouse_click",
+        6: "mouse_click",
+        7: "mouse_click",
+        8: "draggingexample",
+        9: "clickingexample",
+        10: "phrasesexample",
     }
     return vals[x]
 

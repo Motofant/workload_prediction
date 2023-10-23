@@ -17,7 +17,7 @@ def defaultView():
     # introduction to Experiment
     if sts[c.STATE] == 1:
         st.subheader(c.DEF_MSG_START)
-        st.button(label="Start", on_click=nextpage, args=[2])
+        st.button(label="Start", on_click=nextpage, args=[8])
 
     # introduction to Stage
     elif sts[c.STATE] == 7:

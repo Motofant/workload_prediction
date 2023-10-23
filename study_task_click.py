@@ -3,9 +3,10 @@ import streamlit as st
 from streamlit import session_state as sts
 import constants as c
 import config as conf 
-from datetime import datetime
 from utils import startSubprocesses, manageSubProc
 import json
+from datetime import datetime as dt
+import datetime
 
 DATA = {
     "Powerpoint(.pptx)":["a.pptx","c.pptx","b.pptx",], 
@@ -38,7 +39,7 @@ def studyToggle(val:bool):
 def change(x):
     if not x:
         x = {}
-    x["time_end"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    x["time_end"] = dt.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     sts[c.C_OUT][sts[c.C_CURR]] = x #sts[c.C_C_INPUT]
     #sts[c.C_B_NEXT] = None
     if c.C_C_INPUT in sts:
@@ -49,6 +50,46 @@ def change(x):
     if sts[c.C_CURR] >= conf.no_click:
         endTest()
     
+def clickingExampleView():
+    # used to introduce user to type of experiment
+    if "started" not in sts:
+        sts["started"] = False 
+    
+    if not sts["started"]:
+        # show explanation
+        st.write("Example: Clicking",unsafe_allow_html=True)
+        st.write(c.D_TASK_DESC,unsafe_allow_html=True)
+        start = st.button("start example")
+        if start:
+            sts["started"] = True
+            st.experimental_rerun()
+    else:
+        # timer 
+        if "time" not in sts:
+            sts["time"] = dt.now()
+        time_in_min = 10
+        
+        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_min)): 
+            if c.C_OUT not in sts:
+                sts[c.C_OUT] = {}
+            form = st.form(key= "hi",clear_on_submit=True)
+            if "test" not in sts:
+                sts["test"] = 0
+            _,pos,nxt = form.columns([1,3,1])
+            pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
+            with form:
+                x = sc.st_sortclick({"Textdatei (.txt)":["a.txt"]}, key=f"x{sts['test']}", height=.6)
+            y=nxt.form_submit_button("Beispiel zurücksetzen")
+            if y:
+                del sts[f"x{sts['test']}"]
+                sts["test"] += 1
+                st.experimental_rerun()
+        else:
+            # call toggle to nex example
+            sts[c.STATE] = 10
+            del sts["time"]
+            del sts["started"]
+            st.experimental_rerun()
 
 def clickingTaskView():
     

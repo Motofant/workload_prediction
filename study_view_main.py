@@ -1,9 +1,9 @@
 import streamlit as st
 from streamlit import session_state as sts
 from study_task_writing import textWriteView
-from study_task_phrase import phraseWriteView
-from study_task_dragging import draggingTaskView
-from study_task_click import clickingTaskView
+from study_task_phrase import phraseWriteView,phraseExampleView
+from study_task_dragging import draggingTaskView, draggingExampleView
+from study_task_click import clickingTaskView, clickingExampleView
 from study_view_login import loginView
 from study_view_default import defaultView
 from utils import radioFormat, removeStreamlitElements
@@ -56,7 +56,7 @@ else:
 
         test = st.sidebar.radio(
             label="Admin Page view",
-            options=(0,1,2,3,4,5),
+            options=list(range(11)),
             key=c.M_R_TESTS,
             format_func=radioFormat,
             on_change=radioChange
@@ -71,3 +71,14 @@ else:
         draggingTaskView()
     elif sts[c.STATE] == 5:
         clickingTaskView()
+    ## example cases
+    # no sensors, half a minute just to experience tasks
+
+    elif sts[c.STATE] == 8:
+        draggingExampleView()
+    elif sts[c.STATE] == 9:
+        clickingExampleView()
+    elif sts[c.STATE] == 10: 
+        phraseExampleView()
+    else:
+        st.write("You shoulödnt be here")
