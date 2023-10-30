@@ -111,16 +111,25 @@ function onRender(event) {
         // generate movable div
         var div = document.createElement('div')
         div.id = String(g)+'_'+String(i)
+        div.classList.add("datei_container")
 
-        // visual effect
-        div.style.position = "absolute"
-        div.innerHTML += String(val_lst[i])
+        // define starting location
         div.style.left = String(Math.round(Math.random() * document.body.offsetWidth*.95))+"px"
         div.style.top = String(Math.round(Math.random() * window.frames.innerHeight*.3))+"px"
-        div.classList.add('datei')
-        
-        div.style.width = "80px"
+        div.style.width = "50px"
         div.style.height = "50px"
+        
+        img = document.createElement('img')
+        img.src = "./Datei.png"
+        img.classList.add("datei_img")
+        
+        file_name = document.createElement('div')
+        file_name.classList.add("datei_name")
+        file_name.innerHTML += String(val_lst[i])
+        
+        div.appendChild(img)
+        div.appendChild(file_name)
+        
 
         // added movability
         div.addEventListener('mousedown', function(){onmouseDown(this)})
@@ -153,8 +162,6 @@ function onRender(event) {
         "r":parseInt(goal.style.left)+parseInt(goal.style.width), 
         "id": goal.id
       }
-
-      // events
 
       // add goals to doc
       document.body.appendChild(goal)

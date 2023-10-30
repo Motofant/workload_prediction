@@ -5,7 +5,6 @@ import constants as c
 import config as conf 
 from utils import startSubprocesses, manageSubProc
 import json
-import time
 from datetime import datetime as dt
 import datetime
 
@@ -15,6 +14,11 @@ DATA = {
     "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
     "Textdatein(.docx)":["a.docx","c.docx","b.docx",],       
 }
+DATA = {
+        "Datein aus Kalenderwoche 20":["dataKW20.txt","infoKW20.txt","info2KW20.txt",], 
+        "Datein aus Kalenderwoche 30":["dataKW30.txt","infoKW30.txt","info2KW30.txt",],
+        "Datein aus Kalenderwoche 40":["dataKW40.txt","infoKW40.txt","info2KW40.txt",],
+        }
 def endTest():
     #pass
     # end subprocesses
@@ -63,9 +67,9 @@ def draggingExampleView():
     
     if not sts["started"]:
         # show explanation
-        st.write("Example: Dragging",unsafe_allow_html=True)
+        st.header("Beispiel: Ziehen")
         st.write(c.D_TASK_DESC,unsafe_allow_html=True)
-        start = st.button("start example")
+        start = st.button("Beginne Aufgabe")
         if start:
             sts["started"] = True
             st.experimental_rerun()
@@ -73,9 +77,9 @@ def draggingExampleView():
         # timer 
         if "time" not in sts:
             sts["time"] = dt.now()
-        time_in_min = 10
+        time_in_sec = conf.sec_per_example
         
-        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_min)): 
+        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_sec)): 
             if c.D_OUT not in sts:
                 sts[c.D_OUT] = {}
             form = st.form(key= "hi",clear_on_submit=True)
@@ -85,7 +89,7 @@ def draggingExampleView():
             pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
             with form:
                 x = dnd.st_dragndrop({"Textdatei (.txt)":["a.txt"]},key=f"x{sts['test']}", height=.6)
-            y=nxt.form_submit_button("Beispiel zurücksetzen")
+            y=nxt.form_submit_button("weiter")
             if y:
                 del sts[f"x{sts['test']}"]
                 sts["test"] += 1
@@ -112,22 +116,9 @@ def draggingTaskView():
     elif not sts[c.D_START]:
         ## Test is not started yet
         sts[c.NEXT_TEST] = True
+        st.header("Ziehen")
         st.write(c.D_TASK_DESC,unsafe_allow_html=True)
         st.button(label="Starten", key=c.D_B_START, on_click=studyToggle, args=[True])  
-        if c.D_OUT not in sts:
-            sts[c.D_OUT] = {}
-        form = st.form(key= "hi",clear_on_submit=True)
-        if "test" not in sts:
-            sts["test"] = 0
-        _,pos,nxt = form.columns([1,3,1])
-        pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
-        with form:
-            x = dnd.st_dragndrop({"Textdatei (.txt)":["a.txt"]},key=f"x{sts['test']}", height=.6)
-        y=nxt.form_submit_button("Beispiel zurücksetzen")
-        if y:
-            del sts[f"x{sts['test']}"]
-            sts["test"] += 1
-            st.experimental_rerun()
     
     else:
         if c.D_CURR not in sts:

@@ -1,19 +1,48 @@
 body{
-    background-color:rgb(50,50,50);
-  }
+  background-color:rgb(50,50,50);
+  user-select: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  vertical-align : middle;
 
-.datei {
-  position:absolute;
-  width : 80px;
-  height : 50px;
+}
+
+.datei_container{
   cursor : pointer;
+  border-width: 3px;
+  border-style: none;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-color: red;
+}
+
+.datei_name{
+  cursor : pointer;
+  font-size: 100%;
+  margin-left: -100%;
+  margin-right: -100%;
   text-align : center;
   vertical-align : middle;
-  border-style: solid;
-  border-width: 3px;
-  border-color: black;    
-  background-color: grey;
-  font-size: 125%;
+}
+
+.datei_img {
+  cursor : pointer;
+  font-size: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 

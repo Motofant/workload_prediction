@@ -13,6 +13,11 @@ DATA = {
     "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
     "Textdatein(.docx)":["a.docx","c.docx","b.docx",],       
 }
+DATA={
+        "Datein aus Kalenderwoche 20":["dataKW20.txt","infoKW20.txt","info2KW20.txt",], 
+        "Datein aus Kalenderwoche 30":["dataKW30.txt","infoKW30.txt","info2KW30.txt",],
+        "Datein aus Kalenderwoche 40":["dataKW40.txt","infoKW40.txt","info2KW40.txt",],
+        }
 def endTest():
     
     # end subprocesses
@@ -57,9 +62,9 @@ def clickingExampleView():
     
     if not sts["started"]:
         # show explanation
-        st.write("Example: Clicking",unsafe_allow_html=True)
-        st.write(c.D_TASK_DESC,unsafe_allow_html=True)
-        start = st.button("start example")
+        st.header("Beispiel: Klick")
+        st.write(c.C_TASK_DESC,unsafe_allow_html=True)
+        start = st.button("Beginne Aufgabe")
         if start:
             sts["started"] = True
             st.experimental_rerun()
@@ -67,9 +72,9 @@ def clickingExampleView():
         # timer 
         if "time" not in sts:
             sts["time"] = dt.now()
-        time_in_min = 10
+        time_in_sec = conf.sec_per_example
         
-        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_min)): 
+        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_sec)): 
             if c.C_OUT not in sts:
                 sts[c.C_OUT] = {}
             form = st.form(key= "hi",clear_on_submit=True)
@@ -79,7 +84,7 @@ def clickingExampleView():
             pos.markdown(f"<center><p style= 'font-size:20px'>1/?",unsafe_allow_html=True)
             with form:
                 x = sc.st_sortclick({"Textdatei (.txt)":["a.txt"]}, key=f"x{sts['test']}", height=.6)
-            y=nxt.form_submit_button("Beispiel zurücksetzen")
+            y=nxt.form_submit_button("Weiter")
             if y:
                 del sts[f"x{sts['test']}"]
                 sts["test"] += 1
@@ -106,8 +111,10 @@ def clickingTaskView():
     elif not sts[c.C_START]:
         ## Test is not started yet
         sts[c.NEXT_TEST] = True
+        st.header("Klick")
         st.write(c.C_TASK_DESC, unsafe_allow_html=True)
         st.button(label="Starten", key=c.C_B_START, on_click=studyToggle, args=[True])  
+        """ 
         if c.C_OUT not in sts:
             sts[c.C_OUT] = {}
         form = st.form(key= "hi",clear_on_submit=True)
@@ -121,7 +128,7 @@ def clickingTaskView():
         if y:
             del sts[f"x{sts['test']}"]
             sts["test"] += 1
-            st.experimental_rerun()
+            st.experimental_rerun() """
     
     
     else:

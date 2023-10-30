@@ -7,5 +7,7 @@ c_sharp/logs/*
 *.log
 logs/
 *.txt
+*.zip
 __pycache__/
 *.csv
+.venvs/*

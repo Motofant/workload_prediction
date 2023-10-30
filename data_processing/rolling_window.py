@@ -12,12 +12,14 @@ import numpy as np
 #logging_path = './logging/'
 #logging_path = './example_only_keymouse/'
 logging_path = './example_user/'
+#logging_path = './logging/'
 output_path = './processed_data'
 files = [f for f in os.listdir(logging_path)]
 tasks = ["writing", "phrase", "dragging", "clicking"]
 key_mouse_sensor = "key_mouse"
 analog_sensor = "analog"
 eye_sensor = "eye"
+sensors = [key_mouse_sensor,eye_sensor]
 sensors = [key_mouse_sensor, analog_sensor, eye_sensor]
 sorted_files = {}
 for f in files:

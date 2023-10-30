@@ -16,25 +16,44 @@ def defaultView():
 
     # introduction to Experiment
     if sts[c.STATE] == 1:
-        st.subheader(c.DEF_MSG_START)
+        st.header(c.DEF_MSG_START)
+        st.write("""
+                Zu Beginn lernen Sie die drei Aufgaben kennen, die innerhalb des Experiments wiederholt durchgeführt werden.
+                 
+                Hierfür wird Ihnen jede Aufgabe für 30 Sekunden vorgelegt.
+                 
+                Bearbeite Sie diese so gut wie möglich.
+                 
+                Wenn Sie bereit sind, klicken Sie auf 'Start'. 
+""")
         st.button(label="Start", on_click=nextpage, args=[8])
 
     # introduction to Stage
     elif sts[c.STATE] == 7:
-        #st.subheader("Introduction of stage")
+        st.header("Vorstellung der Stufe")
         st.write(
             c.SEC_TASK_DESC[
                 sts[c.ORDER_STAGE]
                     [sts[c.STAGE_ITER]]], unsafe_allow_html=True)
         st.button(
-            label="Start", 
+            label="Beginne Stufe", 
             on_click=nextpage, 
             args=[
                 sts[c.ORDER_EXP]
                 [sts[c.STAGE_ITER]]
                 [sts[c.EXP_ITER]]
                 ])
-        
+    elif sts[c.STATE] == 12:
+        st.header("Einführung")
+        st.write("""
+                Sie haben die Einführung erfolgreich abgeschlossen. Ab jetzt beginnt das Experiment.
+                 
+                 Als nächstes Bearbeiten Sie eine Aufgabe, die Sie bis jetzt noch nicht kennen. Folgen Sie dafür den Anweisungen auf dem Bildschirm.
+""")
+        st.button(
+            label="Start", 
+            on_click=nextpage, 
+            args=[2])
     # Last page of experiment
     else:
         mental_demand = pd.DataFrame(data=[sts[c.WORK_OUT]])

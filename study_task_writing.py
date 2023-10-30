@@ -55,12 +55,13 @@ def textWriteView():
         sts[c.NEXT_TEST] = True
         if c.NEXT_TEST in sts:
             del sts[c.NEXT_TEST]
+        st.header("Fließtext schreiben")
         st.write(c.W_TASK_DESC, unsafe_allow_html=True)
         st.button(label="Starten", key=c.W_B_START, on_click=studyToggle, args=[True])   
     # finished --> get to next test
     else:
-        
-        st.markdown("<center><p style= 'font-size:36px'>Inhalte der E-Mail",unsafe_allow_html=True)
+        _,header = st.columns([1,3])
+        header.markdown("<h1>Inhalte der E-Mail",unsafe_allow_html=True)
         x,y = st.columns(2)
         x.write(c.W_M_TASK_A,unsafe_allow_html=True)
         y.write(c.W_M_TASK_B,unsafe_allow_html=True)

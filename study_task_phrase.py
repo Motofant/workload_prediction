@@ -56,9 +56,9 @@ def phraseExampleView():
 
         # show explanation
         
-        st.write("Example: Phrases",unsafe_allow_html=True)
+        st.header("Beispiel: Phrasen")
         st.write(c.P_TASK_DESC,unsafe_allow_html=True)
-        start = st.button("start example")
+        start = st.button("Beginne Aufgabe")
         
         if start:
             sts["started"] = True
@@ -68,28 +68,29 @@ def phraseExampleView():
         if "time" not in sts:
             sts["time"] = dt.now()
    
-        time_in_min = 2
+        time_in_sec = conf.sec_per_example
         phrases = sts[c.P_PHRASES]
-        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_min)): 
+        if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_sec)): 
             if c.C_OUT not in sts:
                 sts[c.C_OUT] = {}
             if "test" not in sts:
                 sts["test"] = 0
             _,pos,nxt = st.columns([1,3,1])
-            pos.markdown(f"<center><p style= 'font-size:20px'>{(sts[c.P_CURR])%30 + 1}/?",unsafe_allow_html=True)
-            st.markdown(f"<center><p style= 'font-size:24px'>{phrases[sts[c.P_CURR]%30]}",unsafe_allow_html=True)
+            pos.markdown(f"<center><h3>{(sts[c.P_CURR])%30 + 1}/?",unsafe_allow_html=True)
+            st.markdown(f"<center><h1>{phrases[sts[c.P_CURR]%30]}",unsafe_allow_html=True)
             components.html(getFocusString("input[type=text]"),height=1)
             def newExample():
                 print(sts["time"])
                 print(dt.now())
                 sts[c.P_T_INPUT] = ""
                 sts[c.P_CURR] += 1
-            st.text_input(label="text input", key = c.P_T_INPUT, on_change=newExample,label_visibility="collapsed")
+            _,col,_ = st.columns([1,5,1]) 
+            col.text_input(label="text input", key = c.P_T_INPUT, on_change=newExample,label_visibility="collapsed")
 
         else:
             print(sts["time"])
             # call toggle to nex example
-            sts[c.STATE] = 2
+            sts[c.STATE] = 12
             del sts["time"]
             del sts["started"]
             del sts[f"{c.PHRASE_KEY}phrases"]
@@ -113,6 +114,7 @@ def phraseWriteView():
     elif not sts[c.P_START]:
         ## building streamlit components
         sts[c.NEXT_TEST] = True
+        st.header("Phrasen")
         st.write(c.P_TASK_DESC, unsafe_allow_html=True)
         st.button(label="Starten", key=c.P_B_START, on_click=studyToggle, args=[True])   
     
@@ -125,13 +127,13 @@ def phraseWriteView():
         
             ## Container --> everything changable 
         phrase_cont = st.container()
-        prev,pos,nxt = phrase_cont.columns([1,3,1])
+        prev,pos,nxt = phrase_cont.columns([1,5,1])
         #prev.button("vohergehender Eintrag",key = c.P_B_PREV, on_click = phraseChange, args=[-1],disabled=sts[c.P_CURR]<=0)
         #nxt.button("nächster Eintrag",key = c.P_B_NEXT, on_click = phraseChange, args=[1],disabled=sts[c.P_CURR]>=conf.no_phrases-1)
-        pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
-        phrase_cont.markdown(f"<center><p style= 'font-size:24px'>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
+        pos.markdown(f"<center><h3>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
+        pos.markdown(f"<center><h1>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
         components.html(getFocusString("input[type=text]"),height=150)
-        phrase_cont.text_input(label="text input", key = c.P_T_INPUT, on_change=phraseChange, args=[1],label_visibility="collapsed")
+        pos.text_input(label="text input", key = c.P_T_INPUT, on_change=phraseChange, args=[1],label_visibility="collapsed")
 
         #st.button("Beende Test",key = c.P_B_END, on_click = endTest,)
 

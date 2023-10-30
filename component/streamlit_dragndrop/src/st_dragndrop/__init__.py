@@ -112,9 +112,9 @@ def main():
 
     st.write("## Example")
     data  ={
-        "Powerpoint(.ppx)":["a.ppx","c.ppx","b.ppx",], 
-        "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
-        "Textdatein(.docs)":["a.docs","c.docs","b.docs",],
+        "Datein aus Kalenderwoche 20":["dataKW20.txt","infoKW20.txt","info2KW20.txt",], 
+        "Datein aus Kalenderwoche 30":["dataKW30.txt","infoKW30.txt","info2KW30.txt",],
+        "Datein aus Kalenderwoche 40":["dataKW40.txt","infoKW40.txt","info2KW40.txt",],
         }
     data2={"a":["a"]}
 

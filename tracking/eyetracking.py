@@ -1,5 +1,4 @@
 import tobii_research as tr
-import time
 import logging
 import io
 import csv
@@ -9,7 +8,7 @@ import datetime
 # help https://stackoverflow.com/questions/60470644/tobii-eyetracker-with-python-unable-to-print-gaze-data
 # https://developer.tobiipro.com/tobii.research/python/reference/1.10.1.24-alpha-g6e250341/index.html
 print("started")
-
+screen_dimensions = [1920, 1080] 
 class CSVFormatter(logging.Formatter):
     def __init__(self):
         super().__init__()
@@ -38,10 +37,15 @@ logging.debug(f"{datetime.datetime.now()}|eyetrack|gen|listener started")
 
 def gaze_data_callback(gaze_data):
     # Print gaze points of left and right eye
-    print("Left eye: ({gaze_left_eye}) \t Right eye: ({gaze_right_eye})".format(
-        gaze_left_eye=gaze_data['left_gaze_point_on_display_area'],
-        gaze_right_eye=gaze_data['right_gaze_point_on_display_area']))
-    logging.info(f'{gaze_data["system_time_stamp"]}|eyetrack|pupil_diameter|{(gaze_data["left_gaze_point_on_display_area"],gaze_data["right_gaze_point_on_display_area"])}')
+
+    #print("Left eye: {gaze_left_eye} \t Right eye: {gaze_right_eye}".format(gaze_left_eye=gaze_data['left_gaze_point_on_display_area'],gaze_right_eye=gaze_data['right_gaze_point_on_display_area']))
+    # print in screendimensions
+    left_eye = (int(gaze_data['left_gaze_point_on_display_area'][0]*screen_dimensions[0]),int(gaze_data['left_gaze_point_on_display_area'][1]*screen_dimensions[1]))
+    right_eye = (int(gaze_data['right_gaze_point_on_display_area'][0]*screen_dimensions[0]),int(gaze_data['right_gaze_point_on_display_area'][1]*screen_dimensions[1]))
+    print(f"Left: {left_eye}, Right: {right_eye}")
+    #logging.info(f'{gaze_data["system_time_stamp"]}|eyetrack|gaze_pos|{(gaze_data["left_gaze_point_on_display_area"],gaze_data["right_gaze_point_on_display_area"])}')
+    logging.info(f'{datetime.datetime.now()}|eyetrack|gaze_left|{left_eye}')
+    logging.info(f'{datetime.datetime.now()}|eyetrack|gaze_right|{right_eye}')
     
 def pupil_data_callback(data):
     # pupil diameter
@@ -63,6 +67,7 @@ while True:
         print("Serial number: " + my_eyetracker.serial_number)
 
         my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, pupil_data_callback, as_dictionary = True)
+        my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, gaze_data_callback, as_dictionary = True)
         time.sleep(1000000)
         break
     except:

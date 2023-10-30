@@ -11,6 +11,11 @@ import constants as c
 
 st.set_page_config(initial_sidebar_state="expanded",layout="wide")
 st.markdown(removeStreamlitElements(), unsafe_allow_html=True)
+st.markdown("""
+        <style>
+        .css-15zrgzn {display: none}
+        </style>
+        """, unsafe_allow_html=True)
 if c.FOCUS_SUP not in st.session_state:
         st.session_state[c.FOCUS_SUP] = 0
         
@@ -61,7 +66,7 @@ else:
             format_func=radioFormat,
             on_change=radioChange
             )
-    if sts[c.STATE] in [1,6,7]:
+    if sts[c.STATE] in [1,6,7,12]:
         defaultView()
     elif sts[c.STATE] == 2:
         textWriteView()

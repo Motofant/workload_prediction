@@ -23,7 +23,7 @@ L_T_NAME = LOGINKEY+"text"
 
 ### Default
 DEFKEY = "default_"
-DEF_MSG_START = "lets start"
+DEF_MSG_START = "Einführung"
 DEF_MSG_END = "Vielen Dank für die Teilnahme."
 
 ### Writing
@@ -40,32 +40,32 @@ W_T_INPUT = WRITING_KEY + "user_input"
 # Text
 W_TASK_DESC ="""
     <p style= "font-size:20px">In der folgenden Aufgaben schreiben eine Email an einem Kollegen.\n
-    <p style= "font-size:20px">Beachten Sie dabei die Aufgaben, die über dem Textfeld angezeigt werden.\n
+    <p style= "font-size:20px">Beachten Sie dabei die Informationen, die über dem Textfeld angezeigt werden.\n
     <p style= "font-size:20px">Schließen Sie den Test mit einem Klick auf 'Beenden' ab.
 """
 W_M_TASK_A = """
 <ul style="user-select:none">
-    <li style="font-size:20px">Anschrift an Empfänger: (Herr Müller)</li>
-    <li style="font-size:20px">Absage der monatlichen Besprechung</li>
-    <li style="font-size:20px">Absagegrund: (Teilnahme an einem Experiment zum Thema verhalten am Arbeitsplatz)</li>
-    <li style="font-size:20px">2 Alternativtermine </li>
+    <li style="font-size:24px">Anschrift an Empfänger: (Herr Müller)</li>
+    <li style="font-size:24px">Absage der monatlichen Besprechung</li>
+    <li style="font-size:24px">Absagegrund: (Teilnahme an einem Experiment zum Thema verhalten am Arbeitsplatz)</li>
+    <li style="font-size:24px">2 Alternativtermine </li>
         <ul style="padding-left:30px">
-            <li style="font-size:18px">nächste Woche Montag zwischen 13 und 17 Uhr </li>
-            <li style="font-size:18px">nächste Woche Dienstag bis 12 Uhr</li>
+            <li style="font-size:20px">nächste Woche Montag zwischen 13 und 17 Uhr </li>
+            <li style="font-size:20px">nächste Woche Dienstag bis 12 Uhr</li>
         </ul>
 </ul>
 """
 W_M_TASK_B = """
 <ul style="user-select:none">
-<li style="font-size:20px">kurze Zusammenfassung des letzten Monats</li>
+<li style="font-size:24px">kurze Zusammenfassung des letzten Monats</li>
 <ul style="padding-left:30px">
-    <li style="font-size:18px">Erster Prototyp fertiggestellt</li>
-    <li style="font-size:18px">Kleinere Probleme in ersten Tests festgestellt</li></ul>
-<li style="font-size:20px">Frau Meier ist nicht wegen Rückfragen zu erreichen</li>
+    <li style="font-size:20px">Erster Prototyp fertiggestellt</li>
+    <li style="font-size:20px">Kleinere Probleme in ersten Tests festgestellt</li></ul>
+<li style="font-size:24px">Frau Meier ist nicht wegen Rückfragen zu erreichen</li>
 <ul style="padding-left:30px">
     <li style="font-size:18px">Wer ist die Vertretung</li></ul>
-<li style="font-size:20px">Empfänger muss einer Lieferung am Empfang abholen</li>
-<li style="font-size:20px">Unterschreibe mit Nutzernamen</li></ul>
+<li style="font-size:24px">Empfänger muss einer Lieferung am Empfang abholen</li>
+<li style="font-size:24px">Unterschreibe mit Nutzernamen</li></ul>
 """
 ### Phrase
 PHRASE_KEY = "phrase_"
@@ -104,7 +104,7 @@ D_D_INPUT = DRAG_KEY+"input"
 D_OUT = DRAG_KEY+"outputs"
 # Text
 D_TASK_DESC = '''
-    <p style= "font-size:20px">Verschieben Sie die Elemente in die entsprechende Box per "Drag and Drop".\n
+    <p style= "font-size:20px">Bewegen Sie die Elemente in die entsprechende Box per "Drag and Drop".\n
     <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit einem Klick auf 'Weiter'.\n
 '''
 
@@ -124,8 +124,9 @@ C_C_INPUT = CLICK_KEY+"input"
 C_OUT = CLICK_KEY+"outputs"
 # Text
 C_TASK_DESC = '''
-    <p style= "font-size:20px">Verschieben Sie die Elemente in die entsprechende Box.\n
-    <p style= "font-size:20px">Klicken Sie hierfür zuerst auf ein Element oben und danach auf die Zielbox.\n
+    <p style= "font-size:20px">Bewegen Sie die Elemente in die entsprechende Box.\n
+    <p style= "font-size:20px">Klicken Sie hierfür zuerst auf das zu bewegende Element und danach auf die Zielbox.\n
+    <p style= "font-size:20px">Durch das erneute Anklicken eines zugeordneten Elementes kann dieses entfernt werden.\n
     <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit einem Klick auf 'Weiter'.\n
 '''
 ### Generell
@@ -148,14 +149,14 @@ SEC_TASK_DESC = {
     0:"""<p style= "font-size:20px">Während der folgenden Stufe wird keine sekundäre Aufgabe durchgeführt.""",
     1:"""<p style= "font-size:20px">Während der folgenden Stufe wird nebenbei ein 0-Back-Task durchgeführt. Das bedeutet:
         <ul>
-        <li style= "font-size:20px">Dir werden währdend der Aufgaben in einem regelmäßigen Abstand Ziffern angesagt.</li>
-        <li style= "font-size:20px">Du sagst die zuletzt genannte Zahl an.</li>
+        <li style= "font-size:20px">Ihnen werden währdend den Aufgaben in einem regelmäßigen Abstand Ziffern angesagt.</li>
+        <li style= "font-size:20px">Sie antworten mit der zuletzt genannten Zahl.</li>
         </ul>
     """,
     2:"""<p style= "font-size:20px">Während der folgenden Stufe wird nebenbei ein 1-Back-Task durchgeführt. Das bedeutet:
         <ul>
-        <li style= "font-size:20px">Dir werden während der Aufgaben in einem regelmäßigen Abstand Ziffern angesagt.</li>
-        <li style= "font-size:20px">Du sagst die Zahl an, die der zuletzt genannten vorausging.</li>
+        <li style= "font-size:20px">Ihnen werden während der Aufgaben in einem regelmäßigen Abstand Ziffern angesagt.</li>
+        <li style= "font-size:20px">Sie antworten mit der Zahl, die der zuletzt genannten vorausging.</li>
         </ul>
     """
 }

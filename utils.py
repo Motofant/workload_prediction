@@ -29,8 +29,8 @@ def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
 
     # eyetracker
     if f'{site_key}{c.SUB_EY}' not in sts:
-        cmd = [f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}]
-        
+        #cmd = f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}
+        cmd = f"{sys.executable} ./tracking/eyetracking.py {name} {task}"
         eyetr = subprocess.Popen(cmd, shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(eyetr.pid).suspend()
         sts[f'{site_key}{c.SUB_EY}'] = eyetr
