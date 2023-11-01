@@ -105,13 +105,19 @@ def draggingTaskView():
     if sts[c.D_END]:
         # Test is completed
         def enableNext():
-            sts[c.WORK_OUT][c.D_SLIDER] = sts[c.D_SLIDER] 
+            sts[c.WORK_OUT][c.D_M_SLIDER] = sts[c.D_M_SLIDER] 
+            sts[c.WORK_OUT][c.D_E_SLIDER] = sts[c.D_E_SLIDER] 
+            sts[c.WORK_OUT][c.D_F_SLIDER] = sts[c.D_F_SLIDER] 
+
             sts[c.NEXT_TEST] = False
-            
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
-        slid.slider(label= "Geistige Anforderung", key=c.D_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
+        slid.slider(label= "Geistige Anforderung", key=c.D_M_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        slid.slider(label= "Anstrengung", key=c.D_E_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        slid.slider(label= "Frustration", key=c.D_F_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+
         st.button(label = "Nächster Test", key = c.D_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.D_START]:
         ## Test is not started yet

@@ -8,7 +8,8 @@ from mouse_processing import MouseProcess
 import json
 import numpy as np
 
-# import data ( all of it )
+# importpath ( all of it )
+
 #logging_path = './logging/'
 #logging_path = './example_only_keymouse/'
 logging_path = './example_user/'
@@ -41,6 +42,7 @@ print(json.dumps(sorted_files, indent=2))
 
 window_size = pd.Timedelta(seconds=10)
 window_step = pd.Timedelta(seconds=1 )
+init_ignore = pd.Timedelta(seconds=1) # no seconds ignored in the beginning 
 general_info = pd.DataFrame()
 
 for name in sorted_files.keys():
@@ -90,7 +92,7 @@ for name in sorted_files.keys():
             data_key.index = pd.to_datetime(data_key.index)
             data_key["time"] = pd.to_datetime(data_key["time"])
             # use as main timestamps 
-            start_val = pd.to_datetime(data_key.iloc[0]["time"])
+            start_val = pd.to_datetime(data_key.iloc[0]["time"]) + init_ignore
             end_val = pd.to_datetime(data_key.iloc[-1]["time"])
             curr = start_val
 

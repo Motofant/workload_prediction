@@ -13,7 +13,7 @@ The Tasks are shown via a frontend build in [streamlit](https://streamlit.io), t
 ## Setup
 ### App
 1. create new venv using python3.10
-2. access venv and execute `pip install -r ./volume/requirements_total.txt`
+2. access venv and execute `pip install -r ./requirements.txt`
 ### Additional Software
 Only necessary if the following peripheral are used. 
 #### Tobii Pro Spark 

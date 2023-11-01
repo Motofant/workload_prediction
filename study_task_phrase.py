@@ -104,12 +104,19 @@ def phraseWriteView():
     if sts[c.P_END]:
 
         def enableNext():
-            sts[c.WORK_OUT][c.P_SLIDER] = sts[c.P_SLIDER] 
+            sts[c.WORK_OUT][c.P_M_SLIDER] = sts[c.P_M_SLIDER] 
+            sts[c.WORK_OUT][c.P_E_SLIDER] = sts[c.P_E_SLIDER] 
+            sts[c.WORK_OUT][c.P_F_SLIDER] = sts[c.P_F_SLIDER] 
+
             sts[c.NEXT_TEST] = False
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
-        slid.slider(label= "Geistige Anforderung", key=c.P_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
+        slid.slider(label= "Geistige Anforderung", key=c.P_M_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        slid.slider(label= "Anstrengung", key=c.P_E_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        slid.slider(label= "Frustration", key=c.P_F_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+
         st.button(label = "Nächster Test", key = c.P_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.P_START]:
         ## building streamlit components

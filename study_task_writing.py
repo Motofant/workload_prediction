@@ -42,12 +42,18 @@ def textWriteView():
     if sts[c.W_END]:
         # Test is completed
         def enableNext():
-            sts[c.WORK_OUT][c.W_SLIDER] = sts[c.W_SLIDER] 
+            sts[c.WORK_OUT][c.W_M_SLIDER] = sts[c.W_M_SLIDER] 
+            sts[c.WORK_OUT][c.W_E_SLIDER] = sts[c.W_E_SLIDER] 
+            sts[c.WORK_OUT][c.W_F_SLIDER] = sts[c.W_F_SLIDER] 
+
             sts[c.NEXT_TEST] = False
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
-        slid.slider(label= "Geistige Anforderung", key=c.W_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
+        slid.slider(label= "Geistige Anforderung", key=c.W_M_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        slid.slider(label= "Anstrengung", key=c.W_E_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        slid.slider(label= "Frustration", key=c.W_F_SLIDER,min_value=0, max_value=20, on_change= enableNext)
         st.button(label = "Nächster Test", key = c.W_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     # currently running
     elif not sts[c.W_START]:

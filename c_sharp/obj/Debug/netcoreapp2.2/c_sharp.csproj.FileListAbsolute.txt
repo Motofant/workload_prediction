@@ -1,0 +1,11 @@
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\bin\Debug\netcoreapp2.2\c_sharp.deps.json
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\bin\Debug\netcoreapp2.2\c_sharp.runtimeconfig.json
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\bin\Debug\netcoreapp2.2\c_sharp.runtimeconfig.dev.json
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\bin\Debug\netcoreapp2.2\c_sharp.dll
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\bin\Debug\netcoreapp2.2\c_sharp.pdb
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\obj\Debug\netcoreapp2.2\c_sharp.csprojAssemblyReference.cache
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\obj\Debug\netcoreapp2.2\c_sharp.csproj.CoreCompileInputs.cache
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\obj\Debug\netcoreapp2.2\c_sharp.AssemblyInfoInputs.cache
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\obj\Debug\netcoreapp2.2\c_sharp.AssemblyInfo.cs
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\obj\Debug\netcoreapp2.2\c_sharp.dll
+C:\Users\Erik\Documents\Uni\Master\Code\c_sharp\obj\Debug\netcoreapp2.2\c_sharp.pdb
