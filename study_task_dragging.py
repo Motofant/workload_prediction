@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit import session_state as sts
 import constants as c
 import config as conf 
-from utils import startSubprocesses, manageSubProc
+from utils import startSubprocesses, manageSubProc,format_gen,format_perf
 import json
 from datetime import datetime as dt
 import datetime
@@ -104,19 +104,31 @@ def draggingExampleView():
 def draggingTaskView(): 
     if sts[c.D_END]:
         # Test is completed
+        # Test is completed
         def enableNext():
             sts[c.WORK_OUT][c.D_M_SLIDER] = sts[c.D_M_SLIDER] 
             sts[c.WORK_OUT][c.D_E_SLIDER] = sts[c.D_E_SLIDER] 
             sts[c.WORK_OUT][c.D_F_SLIDER] = sts[c.D_F_SLIDER] 
-
+            sts[c.WORK_OUT][c.D_PHY_SLIDER] = sts[c.D_PHY_SLIDER] 
+            sts[c.WORK_OUT][c.D_T_SLIDER] = sts[c.D_T_SLIDER] 
+            sts[c.WORK_OUT][c.D_P_SLIDER] = sts[c.D_P_SLIDER] 
+            print(sts[c.WORK_OUT])
             sts[c.NEXT_TEST] = False
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
         # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
-        slid.slider(label= "Geistige Anforderung", key=c.D_M_SLIDER,min_value=0, max_value=20, on_change= enableNext)
-        slid.slider(label= "Anstrengung", key=c.D_E_SLIDER,min_value=0, max_value=20, on_change= enableNext)
-        slid.slider(label= "Frustration", key=c.D_F_SLIDER,min_value=0, max_value=20, on_change= enableNext)
+        slid.select_slider(label="Geistige Anforderungen", key=c.D_M_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.MENTAL_DESC)
+        slid.markdown("""---""")
+        slid.select_slider(label="Körperliche Anforderungen", key=c.D_PHY_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.PHYS_DESC)
+        slid.markdown("""---""")
+        slid.select_slider(label="Zeitliche Anforderungen", key=c.D_T_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.TEMP_DESC)
+        slid.markdown("""---""")
+        slid.select_slider(label="Leistung", key=c.D_P_SLIDER, options=range(21),value=10, format_func=format_perf, on_change=enableNext, help=c.PERF_DESC)
+        slid.markdown("""---""")
+        slid.select_slider(label="Anstrengung", key=c.D_E_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.EFFORT_DESC)
+        slid.markdown("""---""")
+        slid.select_slider(label="Frustration", key=c.D_F_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.FRUST_DESC)
 
         st.button(label = "Nächster Test", key = c.D_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.D_START]:

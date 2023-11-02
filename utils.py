@@ -151,4 +151,19 @@ def getExpOrder(input_name:str):
 
     sts[c.STAGE_ITER] = 0
     sts[c.EXP_ITER] = 0
+
+def format_gen(option):
+    if option == 0:
+        return "gering"
+    elif option == 20:
+        return "hoch"
+    else:
+        return str(option)
     
+def format_perf(option):
+    if option == 0:
+        return "gut"
+    elif option == 20:
+        return "schlecht"
+    else:
+        return str(option)

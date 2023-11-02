@@ -136,13 +136,37 @@ Test abgeschlossen. Um fortzufahren schätzen Sie ein, wie stark Sie diese Aufga
 
 ### Cognitive Load 
 MENTAL = "mental"
+PHYS = "physical"
+TEMP = "temporal"
+PERF = "performance"
 EFFORT = "effort"
 FRUST = "frustration"
-I_SLIDER = DEFKEY+MENTAL
+MENTAL_DESC = "Wie geistig anspruchsvoll war die Aufgabe?"
+PHYS_DESC = "Wie körperlich anstrengend war die Aufgabe?"
+TEMP_DESC = "Wie hoch war der empfundene Zeitdruck?"
+PERF_DESC = "Wie erfolgreich waren Sie bei der Bewältigung der Aufgabe?"
+EFFORT_DESC = "Wie hart mussten Sie arbeiten, um Ihr Leistungsniveau zu erreichen?"
+FRUST_DESC = "Wie verunsichert, gereizt, gestresst und genervt waren Sie während der Aufgabe?"
+
 W_M_SLIDER = WRITING_KEY+MENTAL
 P_M_SLIDER = PHRASE_KEY+MENTAL
 D_M_SLIDER = DRAG_KEY+MENTAL
 C_M_SLIDER = CLICK_KEY+MENTAL
+
+W_PHY_SLIDER = WRITING_KEY+PHYS
+P_PHY_SLIDER = PHRASE_KEY+PHYS
+D_PHY_SLIDER = DRAG_KEY+PHYS
+C_PHY_SLIDER = CLICK_KEY+PHYS
+
+W_T_SLIDER = WRITING_KEY+TEMP
+P_T_SLIDER = PHRASE_KEY+TEMP
+D_T_SLIDER = DRAG_KEY+TEMP
+C_T_SLIDER = CLICK_KEY+TEMP
+
+W_P_SLIDER = WRITING_KEY+PERF
+P_P_SLIDER = PHRASE_KEY+PERF
+D_P_SLIDER = DRAG_KEY+PERF
+C_P_SLIDER = CLICK_KEY+PERF
 
 W_E_SLIDER = WRITING_KEY+EFFORT
 P_E_SLIDER = PHRASE_KEY+EFFORT
