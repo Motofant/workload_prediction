@@ -8,7 +8,7 @@ def defaultView():
     def nextpage(page):
         sts[c.STATE] = page
         print(sts[c.ORDER_STAGE][sts[c.STAGE_ITER]])
-        if page not in [2,7] and sts[c.ORDER_STAGE][sts[c.STAGE_ITER]] != 0:
+        if page not in [2,7] and sts[c.ORDER_STAGE][sts[c.STAGE_ITER]] != 0 and not sts["tutorial"]:
             print("gestartet")
             startNBack(name = sts[c.USER], sub_group=c.SUB_SEC)
             manageSubProc("resume",sub_group=c.SUB_SEC)
@@ -22,7 +22,7 @@ def defaultView():
                  
                 Hierfür wird Ihnen jede Aufgabe für 30 Sekunden vorgelegt.
                  
-                Bearbeite Sie diese so gut wie möglich.
+                Bearbeiten Sie diese so gut wie möglich.
                  
                 Wenn Sie bereit sind, klicken Sie auf 'Start'. 
 """)
@@ -50,6 +50,7 @@ def defaultView():
                  
                  Als nächstes Bearbeiten Sie eine Aufgabe, die Sie bis jetzt noch nicht kennen. Folgen Sie dafür den Anweisungen auf dem Bildschirm.
 """)
+        sts["tutorial"] = False
         st.button(
             label="Start", 
             on_click=nextpage, 

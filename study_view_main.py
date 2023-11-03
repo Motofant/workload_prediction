@@ -18,7 +18,11 @@ st.markdown("""
         """, unsafe_allow_html=True)
 if c.FOCUS_SUP not in st.session_state:
         st.session_state[c.FOCUS_SUP] = 0
-        
+
+if "tutorial" not in sts:
+    
+    sts["tutorial"] = True
+
 if c.STATE not in sts:
     sts[c.STATE] = 0
 
