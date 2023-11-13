@@ -34,6 +34,7 @@ def endTest():
             f.write(row+"\n")
 
     # block access to test
+    del sts[f"{c.PHRASE_KEY}phrases"]
     sts[c.P_END] = True
 
 def changeTest():

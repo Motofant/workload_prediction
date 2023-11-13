@@ -42,7 +42,7 @@ def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
 def startNBack(name:str,sub_group = str):
     lst_sub = []
     if c.SUB_NB not in sts:
-        mic_in = subprocess.Popen(f"{sys.executable} ./n_back/sound_record.py {name}", shell = False,creationflags = CONSOLE_SHOWN)
+        mic_in = subprocess.Popen(f"{sys.executable} ./n_back/new_sound_record.py {name}", shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(mic_in.pid).suspend()
         sts[c.SUB_SR] = mic_in
         lst_sub.append(c.SUB_SR)
@@ -79,6 +79,7 @@ def manageSubProc(mode:str, sub_group = str):
 def getPhrases(site_key:str,n_o_phrase: int, path:str):
     # phrases used from https://www.yorku.ca/mack/chi03b.pdf
     if f"{site_key}phrases" not in sts:
+        print("yxou shouldnt be here")
         all_phrases = []
         with open(path, 'r') as f:
             all_phrases = [line.strip() for line in f]

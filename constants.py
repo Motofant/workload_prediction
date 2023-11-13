@@ -104,7 +104,7 @@ D_D_INPUT = DRAG_KEY+"input"
 D_OUT = DRAG_KEY+"outputs"
 # Text
 D_TASK_DESC = '''
-    <p style= "font-size:20px">Bewegen Sie die Elemente in die entsprechende Box per "Drag and Drop".\n
+    <p style= "font-size:20px">Bewegen Sie die Dokumente in die entsprechende Box per "Drag and Drop".\n
     <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit einem Klick auf 'Weiter'.\n
 '''
 
@@ -124,9 +124,9 @@ C_C_INPUT = CLICK_KEY+"input"
 C_OUT = CLICK_KEY+"outputs"
 # Text
 C_TASK_DESC = '''
-    <p style= "font-size:20px">Bewegen Sie die Elemente in die entsprechende Box.\n
-    <p style= "font-size:20px">Klicken Sie hierfür zuerst auf das zu bewegende Element und danach auf die Zielbox.\n
-    <p style= "font-size:20px">Durch das erneute Anklicken eines zugeordneten Elementes kann dieses entfernt werden.\n
+    <p style= "font-size:20px">Bewegen Sie die Dokumente in die entsprechende Box.\n
+    <p style= "font-size:20px">Klicken Sie hierfür zuerst auf das zu bewegende Dokument und danach auf die Zielbox.\n
+    <p style= "font-size:20px">Durch das erneute Anklicken eines zugeordneten Dokumentes kann dieses entfernt werden.\n
     <p style= "font-size:20px">Bestätigen Sie Ihre Eingabe mit einem Klick auf 'Weiter'.\n
 '''
 ### Generell

@@ -1,7 +1,6 @@
 test/
 data_processing/example*
 eyeenv/
-volume/
 logging/
 c_sharp/logs/*
 *.log
