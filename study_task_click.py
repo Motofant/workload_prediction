@@ -37,7 +37,7 @@ def changeTest():
         sts[c.STATE] = sts[c.ORDER_EXP][sts[c.STAGE_ITER]][sts[c.EXP_ITER]]
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.CLICK_KEY,sub_group=c.SUB_LST)
+    sub_procs = startSubprocesses(c.CLICK_KEY,sts[c.USER],c.CLICK_KEY,sub_group=c.SUB_LST)
     sts[c.C_START] = val
     manageSubProc("resume",sub_group=c.SUB_LST)
 
@@ -59,16 +59,21 @@ def clickingExampleView():
     # used to introduce user to type of experiment
     if "started" not in sts:
         sts["started"] = False 
+        sts["init"] = True
     
     if not sts["started"]:
         # show explanation
-        st.header("Beispiel: Klick")
+        st.header("Beispiel: Klicken")
         st.write(c.C_TASK_DESC,unsafe_allow_html=True)
         start = st.button("Beginne Aufgabe")
         if start:
             sts["started"] = True
             st.experimental_rerun()
     else:
+        if sts["init"]:
+            startSubprocesses(c.CLICK_KEY,sts[c.USER],c.CLICK_KEY+"test_",sub_group=c.SUB_LST)
+            manageSubProc("resume",sub_group=c.SUB_LST)
+            sts["init"] = False
         # timer 
         if "time" not in sts:
             sts["time"] = dt.now()
@@ -90,6 +95,7 @@ def clickingExampleView():
                 sts["test"] += 1
                 st.experimental_rerun()
         else:
+            manageSubProc("kill",sub_group=c.SUB_LST)
             # call toggle to nex example
             sts[c.STATE] = 10
             del sts["time"]
@@ -109,28 +115,28 @@ def clickingTaskView():
             sts[c.WORK_OUT][c.C_T_SLIDER] = sts[c.C_T_SLIDER] 
             sts[c.WORK_OUT][c.C_P_SLIDER] = sts[c.C_P_SLIDER] 
             print(sts[c.WORK_OUT])
-            sts[c.NEXT_TEST] = False
+            sts[c.NEXT_TEST] = 21 in sts[c.WORK_OUT].values()
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
         # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
-        slid.select_slider(label="Geistige Anforderungen", key=c.C_M_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.MENTAL_DESC)
+        slid.select_slider(label="Geistige Anforderungen", key=c.C_M_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.MENTAL_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Körperliche Anforderungen", key=c.C_PHY_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.PHYS_DESC)
+        slid.select_slider(label="Körperliche Anforderungen", key=c.C_PHY_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.PHYS_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Zeitliche Anforderungen", key=c.C_T_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.TEMP_DESC)
+        slid.select_slider(label="Zeitliche Anforderungen", key=c.C_T_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.TEMP_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Leistung", key=c.C_P_SLIDER, options=range(21),value=10, format_func=format_perf, on_change=enableNext, help=c.PERF_DESC)
+        slid.select_slider(label="Leistung", key=c.C_P_SLIDER, options=range(22),value=21, format_func=format_perf, on_change=enableNext, help=c.PERF_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Anstrengung", key=c.C_E_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.EFFORT_DESC)
+        slid.select_slider(label="Anstrengung", key=c.C_E_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.EFFORT_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Frustration", key=c.C_F_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.FRUST_DESC)
+        slid.select_slider(label="Frustration", key=c.C_F_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.FRUST_DESC)
 
         st.button(label = "Nächster Test", key = c.C_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.C_START]:
         ## Test is not started yet
         sts[c.NEXT_TEST] = True
-        st.header("Klick")
+        st.header("Klicken")
         st.write(c.C_TASK_DESC, unsafe_allow_html=True)
         st.button(label="Starten", key=c.C_B_START, on_click=studyToggle, args=[True])  
         """ 

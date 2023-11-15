@@ -37,8 +37,8 @@ logging.debug(f"{datetime.datetime.now()}|eyetrack|gen|listener started")
 
 def gaze_data_callback(gaze_data):
     # print in screendimensions
-    left_eye = (int(gaze_data['left_gaze_point_on_display_area'][0]*screen_dimensions[0]),int(gaze_data['left_gaze_point_on_display_area'][1]*screen_dimensions[1]))
-    right_eye = (int(gaze_data['right_gaze_point_on_display_area'][0]*screen_dimensions[0]),int(gaze_data['right_gaze_point_on_display_area'][1]*screen_dimensions[1]))
+    left_eye = (gaze_data['left_gaze_point_on_display_area'][0]*screen_dimensions[0],gaze_data['left_gaze_point_on_display_area'][1]*screen_dimensions[1])
+    right_eye = (gaze_data['right_gaze_point_on_display_area'][0]*screen_dimensions[0],gaze_data['right_gaze_point_on_display_area'][1]*screen_dimensions[1])
     print(f"Left: {left_eye}, Right: {right_eye}")
     #logging.info(f'{gaze_data["system_time_stamp"]}|eyetrack|gaze_pos|{(gaze_data["left_gaze_point_on_display_area"],gaze_data["right_gaze_point_on_display_area"])}')
     logging.info(f'{datetime.datetime.now()}|eyetrack|gaze_left|{left_eye}')

@@ -47,10 +47,13 @@ function onRender(event) {
         div.classList.add("datei_container")
         div.style.left = String(Math.round(Math.random() * (document.body.offsetWidth*.95)))+"px"//String(Math.round(i * 100))+"px"
         div.style.top = String(Math.round(Math.random() *  window.frames.innerHeight*.3))+"px"//"0px"
-
+        div.style.height = "50px"
+        div.style.width = "50px"
         // add container selection
         div.addEventListener("mouseup", function(){
           if (window.selected_div!=" "){
+            //window.selected_div.style.top = String(Math.min(window.frameElement.height-parseInt(window.selected_div.style.height),Math.max(0,event.clientY - parseInt(window.selected_div.style.height)/2))) + 'px';
+            //window.selected_div.style.left = Math.min(window.frameElement.width-parseInt(window.selected_div.style.width),Math.max(0,event.clientX - parseInt(window.selected_div.style.width)/2)) + 'px';
             var last_selected = document.getElementById(window.selected_div)
             last_selected.style.borderStyle = "none"
           } 
@@ -98,15 +101,24 @@ function onRender(event) {
       goal.style.left = String(((g+1)) * parseInt(goal_width_base) -parseInt(goal.style.width)/2)+"px"
       
       // add component movement from and to goal
-      goal.addEventListener("mouseup", function(){
+      //goal.addEventListener("mouseup", function(event){
+      goal.addEventListener("mouseup", function(event){
         if (window.selected_div != " "){
+          console.warn(window)
           // change location of movable div
           var moving_div = document.getElementById(window.selected_div)
+          console.warn(moving_div.getAttribute("height"))
           //console.warn(this.style.left)
           //console.warn(window.selected_div)
           //console.warn(moving_div.style.width)
-          moving_div.style.top = String(parseInt(parseFloat(window.screen.height)*comp_height)-(parseInt(this.style.height))+parseInt(moving_div.id.charAt(0)+1)*2 + 40) +"px"
-          moving_div.style.left = String(parseInt(this.style.left) + parseInt(moving_div.id.split("_").pop()+ 1)*12 +20)+"px"//String(parseInt(this.style.left) + Math.floor(Math.random() * (parseInt(this.style.width)*.8  + 1)))+"px"
+          //moving_div.style.top = String(parseInt(parseFloat(window.screen.height)*comp_height)-(parseInt(this.style.height))+parseInt(moving_div.id.charAt(0)+1)*2 + 40) +"px"
+          //moving_div.style.left = String(parseInt(this.style.left) + parseInt(moving_div.id.split("_").pop()+ 1)*12 +20)+"px"//String(parseInt(this.style.left) + Math.floor(Math.random() * (parseInt(this.style.width)*.8  + 1)))+"px"
+          console.warn(Math.max(0,event.clientY - parseInt(moving_div.style.height)/2))
+          console.warn(event.screenX)
+          console.warn(parseInt(moving_div.style.height)/2)
+          console.warn(String(Math.min(window.frameElement.height-parseInt(moving_div.style.height),Math.max(0,event.clientY - parseInt(moving_div.style.height)/2))) + 'px')
+          moving_div.style.top = String(Math.min(window.frameElement.height-parseInt(moving_div.style.height),Math.max(0,event.clientY - parseInt(moving_div.style.height)/2))) + 'px';
+          moving_div.style.left = Math.min(window.frameElement.width-parseInt(moving_div.style.width),Math.max(0,event.clientX - parseInt(moving_div.style.width)/2)) + 'px';
           moving_div.style.borderStyle = "none"
 
           window.selected_div = " "
@@ -119,11 +131,12 @@ function onRender(event) {
               "overlap":this.id,
             }
           )
+          
           // return updated value
           sendValue(window.output)
         }
       })
-
+      /*
       // catch clicks outside of defined divs
       document.body.addEventListener("mouseup",function(){
         if (window.selected_div != " "){  
@@ -132,6 +145,7 @@ function onRender(event) {
           moving_div.style.left = window.output[moving_div.id][0]["x"]
         } 
       })
+      */
       document.body.appendChild(goal)
       console.warn(key)
       console.warn(val_lst)

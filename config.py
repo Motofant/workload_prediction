@@ -1,11 +1,11 @@
 # start params
 sensor_active = True
-sensor_console = False
+sensor_console = True
 
 no_phrases = 10 # count to make ~200 symbole
 no_mouse = 5
 no_click = 5
-sec_per_example = 30
+sec_per_example = 3
 
 output = [
     "Eine E-Mail ist ein elektronischer Brief.",
