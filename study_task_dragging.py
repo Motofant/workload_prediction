@@ -149,6 +149,7 @@ def draggingTaskView():
         _,pos,nxt = st.columns([1,3,1])
         pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.D_CURR] + 1}/{conf.no_mouse}",unsafe_allow_html=True)
         x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]),height=.8)
-        y=nxt.button("Weiter", on_click = change,args=[x])
+        button_ack = sum([len(v) > 1 for z, v in x.items() ])<1 if x else False # activate button when component is updated first
+        y=nxt.button("Weiter", on_click = change,args=[x],disabled=button_ack)
         if y:
             st.experimental_rerun()

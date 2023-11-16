@@ -165,7 +165,9 @@ def clickingTaskView():
         pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.C_CURR] + 1}/{conf.no_click}", unsafe_allow_html=True)
         if c.C_C_INPUT in sts:
             del sts[c.C_C_INPUT]
+        x = {}
         x = sc.st_sortclick(DATA,key = c.C_C_INPUT+str(sts[c.C_CURR]), height=.8)
-        y=nxt.button("Weiter", on_click = change,args=[x])
+        button_ack = sum([len(v) > 1 for z, v in x.items() ])<1 if x else False # activate button when component is updated first
+        y=nxt.button("Weiter", on_click = change,args=[x],disabled=button_ack) 
         if y:
             st.experimental_rerun()
