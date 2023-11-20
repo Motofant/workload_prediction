@@ -3,6 +3,8 @@ data_processing/example*
 eyeenv/
 logging/
 c_sharp/logs/*
+c_sharp/bin/*
+c_sharp/obj/*
 *.log
 logs/
 *.zip

@@ -40,7 +40,7 @@ for f in files:
 
 print(json.dumps(sorted_files, indent=2))
 
-window_size = pd.Timedelta(seconds=10)
+window_size = pd.Timedelta(seconds=2)
 window_step = pd.Timedelta(seconds=1 )
 init_ignore = pd.Timedelta(seconds=1) # no seconds ignored in the beginning 
 general_info = pd.DataFrame()
