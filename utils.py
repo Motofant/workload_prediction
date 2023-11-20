@@ -11,6 +11,7 @@ PHRASE_PATH = 'volume/phrases.txt'
 CONSOLE_SHOWN = subprocess.CREATE_NEW_CONSOLE if conf.sensor_console else subprocess.CREATE_NO_WINDOW
 
 def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
+    print(f"{site_key}  subproc started")
     lst_sub = []
     output = []
     # start logging scripts
@@ -38,7 +39,8 @@ def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
         lst_sub.append(f'{site_key}{c.SUB_EY}')
     
     # start audio part if n-back active
-    if sts[c.ORDER_STAGE][sts[c.STAGE_ITER]] != 0 and not sts["tutorial"]:
+    # not in tutorial, writing task, without secondary task
+    if sts[c.ORDER_STAGE][sts[c.STAGE_ITER]] != 0 and not sts["tutorial"] and sts[c.STATE] != 2:
         mic_in = subprocess.Popen(f"{sys.executable} ./n_back/new_sound_record.py {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(mic_in.pid).suspend()
         sts[c.SUB_SR] = mic_in
@@ -110,6 +112,8 @@ def manageSubProc(mode:str, sub_group = str):
             psutil.Process(sts[proc].pid).suspend()
 
     elif mode == "kill":
+        print("kills process")
+        sts[sub_group]
         for proc in sts[sub_group]:
             try:
                 psutil.Process(sts[proc].pid).kill()

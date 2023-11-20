@@ -49,7 +49,7 @@ def textWriteView():
             sts[c.WORK_OUT][c.W_F_SLIDER] = sts[c.W_F_SLIDER] 
             sts[c.WORK_OUT][c.W_P_SLIDER] = sts[c.W_P_SLIDER] 
             print(sts[c.WORK_OUT])
-            sts[c.NEXT_TEST] = False
+            sts[c.NEXT_TEST] = 21 in sts[c.WORK_OUT].values()
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
@@ -85,4 +85,4 @@ def textWriteView():
         st.text_area(label="Eingabe",height=400, key= c.W_T_INPUT, label_visibility="collapsed")
         components.html(getFocusString("textarea"),height=1)
 
-        st.button(label="Beenden", key=c.W_B_END, on_click=endTest)
+        st.button(label="Fertig", key=c.W_B_END, on_click=endTest)

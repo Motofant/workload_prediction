@@ -48,7 +48,7 @@ def defaultView():
         st.write("""
                 Sie haben die Einführung erfolgreich abgeschlossen. Ab jetzt beginnt das Experiment.
                  
-                 Als nächstes Bearbeiten Sie eine Aufgabe, die Sie bis jetzt noch nicht kennen. Folgen Sie dafür den Anweisungen auf dem Bildschirm.
+                 Als Nächstes bearbeiten Sie eine Aufgabe, die Sie bis jetzt noch nicht kennen. Folgen Sie dafür den Anweisungen auf dem Bildschirm.
 """)
         sts["tutorial"] = False
         st.button(

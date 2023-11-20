@@ -49,6 +49,7 @@ def phraseExampleView():
     # used to introduce user to type of experiment
     if "started" not in sts:
         sts["started"] = False 
+        sts["init"] = True
     
     if not sts["started"]:
         # read data:
@@ -66,6 +67,10 @@ def phraseExampleView():
             st.experimental_rerun()
     else:
         # timer 
+        if sts["init"]:
+            startSubprocesses(site_key=c.PHRASE_KEY+"test_",name=sts[c.USER],task=c.PHRASE_KEY+"test_",sub_group=c.SUB_LST)
+            manageSubProc("resume",sub_group=c.SUB_LST)
+            sts["init"] = False
         if "time" not in sts:
             sts["time"] = dt.now()
    
@@ -89,6 +94,8 @@ def phraseExampleView():
             col.text_input(label="text input", key = c.P_T_INPUT, on_change=newExample,label_visibility="collapsed")
 
         else:
+            print("example ended")
+            manageSubProc("kill",sub_group=c.SUB_LST)
             print(sts["time"])
             # call toggle to nex example
             sts[c.STATE] = 12
@@ -113,7 +120,7 @@ def phraseWriteView():
             sts[c.WORK_OUT][c.P_T_SLIDER] = sts[c.P_T_SLIDER] 
             sts[c.WORK_OUT][c.P_P_SLIDER] = sts[c.P_P_SLIDER] 
             print(sts[c.WORK_OUT])
-            sts[c.NEXT_TEST] = False
+            sts[c.NEXT_TEST] = 21 in sts[c.WORK_OUT].values()
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])

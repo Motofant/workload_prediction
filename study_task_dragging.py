@@ -64,7 +64,7 @@ def draggingExampleView():
     # used to introduce user to type of experiment
     if "started" not in sts:
         sts["started"] = False 
-    
+        sts["init"] = True
     if not sts["started"]:
         # show explanation
         st.header("Beispiel: Ziehen")
@@ -75,6 +75,10 @@ def draggingExampleView():
             st.experimental_rerun()
     else:
         # timer 
+        if sts["init"]:
+            startSubprocesses(site_key=c.DRAG_KEY+"test_",name=sts[c.USER],task=c.DRAG_KEY+"test_",sub_group=c.SUB_LST)
+            manageSubProc("resume",sub_group=c.SUB_LST)
+            sts["init"] = False
         if "time" not in sts:
             sts["time"] = dt.now()
         time_in_sec = conf.sec_per_example
@@ -96,6 +100,7 @@ def draggingExampleView():
                 st.experimental_rerun()
         else:
             # call toggle to nex example
+            manageSubProc("kill",sub_group=c.SUB_LST)
             sts[c.STATE] = 9
             del sts["time"]
             del sts["started"]
@@ -113,7 +118,7 @@ def draggingTaskView():
             sts[c.WORK_OUT][c.D_T_SLIDER] = sts[c.D_T_SLIDER] 
             sts[c.WORK_OUT][c.D_P_SLIDER] = sts[c.D_P_SLIDER] 
             print(sts[c.WORK_OUT])
-            sts[c.NEXT_TEST] = False
+            sts[c.NEXT_TEST] = 21 in sts[c.WORK_OUT].values()
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
@@ -144,6 +149,7 @@ def draggingTaskView():
         _,pos,nxt = st.columns([1,3,1])
         pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.D_CURR] + 1}/{conf.no_mouse}",unsafe_allow_html=True)
         x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]),height=.8)
-        y=nxt.button("Weiter", on_click = change,args=[x])
+        button_ack = sum([len(v) > 1 for z, v in x.items() ])<1 if x else False # activate button when component is updated first
+        y=nxt.button("Weiter", on_click = change,args=[x],disabled=button_ack)
         if y:
             st.experimental_rerun()

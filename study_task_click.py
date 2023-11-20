@@ -37,7 +37,7 @@ def changeTest():
         sts[c.STATE] = sts[c.ORDER_EXP][sts[c.STAGE_ITER]][sts[c.EXP_ITER]]
 
 def studyToggle(val:bool):
-    sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.CLICK_KEY,sub_group=c.SUB_LST)
+    sub_procs = startSubprocesses(c.CLICK_KEY,sts[c.USER],c.CLICK_KEY,sub_group=c.SUB_LST)
     sts[c.C_START] = val
     manageSubProc("resume",sub_group=c.SUB_LST)
 
@@ -59,16 +59,21 @@ def clickingExampleView():
     # used to introduce user to type of experiment
     if "started" not in sts:
         sts["started"] = False 
+        sts["init"] = True
     
     if not sts["started"]:
         # show explanation
-        st.header("Beispiel: Klick")
+        st.header("Beispiel: Klicken")
         st.write(c.C_TASK_DESC,unsafe_allow_html=True)
         start = st.button("Beginne Aufgabe")
         if start:
             sts["started"] = True
             st.experimental_rerun()
     else:
+        if sts["init"]:
+            startSubprocesses(c.CLICK_KEY,sts[c.USER],c.CLICK_KEY+"test_",sub_group=c.SUB_LST)
+            manageSubProc("resume",sub_group=c.SUB_LST)
+            sts["init"] = False
         # timer 
         if "time" not in sts:
             sts["time"] = dt.now()
@@ -90,6 +95,7 @@ def clickingExampleView():
                 sts["test"] += 1
                 st.experimental_rerun()
         else:
+            manageSubProc("kill",sub_group=c.SUB_LST)
             # call toggle to nex example
             sts[c.STATE] = 10
             del sts["time"]
@@ -109,7 +115,7 @@ def clickingTaskView():
             sts[c.WORK_OUT][c.C_T_SLIDER] = sts[c.C_T_SLIDER] 
             sts[c.WORK_OUT][c.C_P_SLIDER] = sts[c.C_P_SLIDER] 
             print(sts[c.WORK_OUT])
-            sts[c.NEXT_TEST] = False
+            sts[c.NEXT_TEST] = 21 in sts[c.WORK_OUT].values()
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
@@ -130,7 +136,7 @@ def clickingTaskView():
     elif not sts[c.C_START]:
         ## Test is not started yet
         sts[c.NEXT_TEST] = True
-        st.header("Klick")
+        st.header("Klicken")
         st.write(c.C_TASK_DESC, unsafe_allow_html=True)
         st.button(label="Starten", key=c.C_B_START, on_click=studyToggle, args=[True])  
         """ 
@@ -159,7 +165,9 @@ def clickingTaskView():
         pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.C_CURR] + 1}/{conf.no_click}", unsafe_allow_html=True)
         if c.C_C_INPUT in sts:
             del sts[c.C_C_INPUT]
+        x = {}
         x = sc.st_sortclick(DATA,key = c.C_C_INPUT+str(sts[c.C_CURR]), height=.8)
-        y=nxt.button("Weiter", on_click = change,args=[x])
+        button_ack = sum([len(v) > 1 for z, v in x.items() ])<1 if x else False # activate button when component is updated first
+        y=nxt.button("Weiter", on_click = change,args=[x],disabled=button_ack) 
         if y:
             st.experimental_rerun()

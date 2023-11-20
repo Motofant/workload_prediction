@@ -39,7 +39,7 @@ W_B_CHANGE = WRITING_KEY+"change"
 W_T_INPUT = WRITING_KEY + "user_input"
 # Text
 W_TASK_DESC ="""
-    <p style= "font-size:20px">In der folgenden Aufgaben schreiben eine Email an einem Kollegen.\n
+    <p style= "font-size:20px">In der folgenden Aufgaben schreiben eine E-Mail an einem Kollegen.\n
     <p style= "font-size:20px">Beachten Sie dabei die Informationen, die über dem Textfeld angezeigt werden.\n
     <p style= "font-size:20px">Schließen Sie den Test mit einem Klick auf 'Beenden' ab.
 """
