@@ -15,9 +15,9 @@ DATA = {
     "Textdatein(.docx)":["a.docx","c.docx","b.docx",],       
 }
 DATA = {
-        "Datein aus Kalenderwoche 20":["dataKW20.txt","infoKW20.txt","info2KW20.txt",], 
-        "Datein aus Kalenderwoche 30":["dataKW30.txt","infoKW30.txt","info2KW30.txt",],
-        "Datein aus Kalenderwoche 40":["dataKW40.txt","infoKW40.txt","info2KW40.txt",],
+        "Dateien aus Kalenderwoche 20":["dataKW20.txt","infoKW20.txt","info2KW20.txt",], 
+        "Dateien aus Kalenderwoche 30":["dataKW30.txt","infoKW30.txt","info2KW30.txt",],
+        "Dateien aus Kalenderwoche 40":["dataKW40.txt","infoKW40.txt","info2KW40.txt",],
         }
 def endTest():
     #pass
@@ -118,17 +118,17 @@ def draggingTaskView():
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
         # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
-        slid.select_slider(label="Geistige Anforderungen", key=c.D_M_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.MENTAL_DESC)
+        slid.select_slider(label="Geistige Anforderungen", key=c.D_M_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.MENTAL_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Körperliche Anforderungen", key=c.D_PHY_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.PHYS_DESC)
+        slid.select_slider(label="Körperliche Anforderungen", key=c.D_PHY_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.PHYS_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Zeitliche Anforderungen", key=c.D_T_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.TEMP_DESC)
+        slid.select_slider(label="Zeitliche Anforderungen", key=c.D_T_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.TEMP_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Leistung", key=c.D_P_SLIDER, options=range(21),value=10, format_func=format_perf, on_change=enableNext, help=c.PERF_DESC)
+        slid.select_slider(label="Leistung", key=c.D_P_SLIDER, options=range(22),value=21, format_func=format_perf, on_change=enableNext, help=c.PERF_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Anstrengung", key=c.D_E_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.EFFORT_DESC)
+        slid.select_slider(label="Anstrengung", key=c.D_E_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.EFFORT_DESC)
         slid.markdown("""---""")
-        slid.select_slider(label="Frustration", key=c.D_F_SLIDER, options=range(21),value=10, format_func=format_gen, on_change=enableNext, help=c.FRUST_DESC)
+        slid.select_slider(label="Frustration", key=c.D_F_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.FRUST_DESC)
 
         st.button(label = "Nächster Test", key = c.D_B_CHANGE, on_click=changeTest, disabled= sts[c.NEXT_TEST])
     elif not sts[c.D_START]:

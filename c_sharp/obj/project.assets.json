@@ -1524,23 +1524,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Erik\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\erikzimmermann\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Erik\\Documents\\Uni\\Master\\Code\\c_sharp\\c_sharp.csproj",
+      "projectUniqueName": "C:\\Users\\erikzimmermann\\Documents\\MA\\workload_prediction\\c_sharp\\c_sharp.csproj",
       "projectName": "c_sharp",
-      "projectPath": "C:\\Users\\Erik\\Documents\\Uni\\Master\\Code\\c_sharp\\c_sharp.csproj",
-      "packagesPath": "C:\\Users\\Erik\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Erik\\Documents\\Uni\\Master\\Code\\c_sharp\\obj\\",
+      "projectPath": "C:\\Users\\erikzimmermann\\Documents\\MA\\workload_prediction\\c_sharp\\c_sharp.csproj",
+      "packagesPath": "C:\\Users\\erikzimmermann\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\erikzimmermann\\Documents\\MA\\workload_prediction\\c_sharp\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Erik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\erikzimmermann\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1603,7 +1599,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

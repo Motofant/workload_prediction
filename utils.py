@@ -12,6 +12,50 @@ CONSOLE_SHOWN = subprocess.CREATE_NEW_CONSOLE if conf.sensor_console else subpro
 
 def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
     lst_sub = []
+    output = []
+    # start logging scripts
+    # keyboard/mouse
+    if f'{site_key}{c.SUB_KM}' not in sts:
+        key_mouse = subprocess.Popen(f"{sys.executable} ./tracking/keyboard_mouse_tracker.py {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
+        psutil.Process(key_mouse.pid).suspend()
+        sts[f'{site_key}{c.SUB_KM}'] = key_mouse
+        lst_sub.append(f'{site_key}{c.SUB_KM}')
+
+    # analog
+    if f'{site_key}{c.SUB_AN}' not in sts:
+        analog = subprocess.Popen(f"dotnet run --project ./c_sharp/ {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
+        psutil.Process(analog.pid).suspend()
+        sts[f'{site_key}{c.SUB_AN}'] = analog
+        lst_sub.append(f'{site_key}{c.SUB_AN}')
+
+    # eyetracker
+    if f'{site_key}{c.SUB_EY}' not in sts:
+        #cmd = f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}
+        cmd = f"{sys.executable} ./tracking/eyetracking.py {name} {task}"
+        eyetr = subprocess.Popen(cmd, shell = False,creationflags = CONSOLE_SHOWN)
+        psutil.Process(eyetr.pid).suspend()
+        sts[f'{site_key}{c.SUB_EY}'] = eyetr
+        lst_sub.append(f'{site_key}{c.SUB_EY}')
+    
+    # start audio part if n-back active
+    if sts[c.ORDER_STAGE][sts[c.STAGE_ITER]] != 0 and not sts["tutorial"]:
+        mic_in = subprocess.Popen(f"{sys.executable} ./n_back/new_sound_record.py {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
+        psutil.Process(mic_in.pid).suspend()
+        sts[c.SUB_SR] = mic_in
+        lst_sub.append(c.SUB_SR)
+        
+        n_back = subprocess.Popen(f"{sys.executable} ./n_back/n_back_gen.py {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
+        psutil.Process(n_back.pid).suspend()
+        sts[c.SUB_NB] = n_back
+        lst_sub.append(c.SUB_NB)
+        output = [f'{site_key}{c.SUB_SR}',f'{site_key}{c.SUB_NB}']
+    
+    sts[sub_group] = lst_sub
+    output  += [f'{site_key}{c.SUB_KM}',f'{site_key}{c.SUB_AN}',f'{site_key}{c.SUB_EY}',]
+    return output
+
+def startSubprocesses_old(site_key:str, name:str, task :str,sub_group = str):
+    lst_sub = []
     # start logging scripts
     # keyboard/mouse
     if f'{site_key}{c.SUB_KM}' not in sts:
@@ -127,7 +171,11 @@ def removeStreamlitElements():
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
+                        .css-pxxe24 {
+            visibility: hidden;
+            }
             </style>
+
             """
     return hide_streamlit_style
 
@@ -158,6 +206,8 @@ def format_gen(option):
         return "gering"
     elif option == 20:
         return "hoch"
+    elif option == 21:
+        return "keine Angabe"
     else:
         return str(option)
     
@@ -166,5 +216,7 @@ def format_perf(option):
         return "gut"
     elif option == 20:
         return "schlecht"
+    elif option == 21:
+        return "keine Angabe"
     else:
         return str(option)

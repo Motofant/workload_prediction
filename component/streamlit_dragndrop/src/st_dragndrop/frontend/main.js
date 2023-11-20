@@ -149,7 +149,7 @@ function onRender(event) {
       // generate goal structure
       var goal = document.createElement("div")
       goal.id = "goal_"+String(g)
-      goal.innerHTML += "Bitte "+String(key)+" ablegen"//"stuff"//style.backroundColor="red"
+      goal.innerHTML += "Bitte hier "+String(key)+" ablegen"//"stuff"//style.backroundColor="red"
       goal.classList.add("goal")
       goal.style.width = String(parseInt(document.body.offsetWidth)*.2) + "px"//Math.floor(goal_width_base/100)*100+"px"//
       goal.style.bottom = "0px"

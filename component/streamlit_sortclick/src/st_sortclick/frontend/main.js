@@ -91,7 +91,7 @@ function onRender(event) {
       goal.classList.add('goal')
 
       // add dynamic elements 
-      goal.innerHTML += "Bitte "+String(key)+" ablegen"//"stuff"//style.backroundColor="red"
+      goal.innerHTML += "Bitte hier klicken um "+String(key)+" ablegen"//"stuff"//style.backroundColor="red"
       goal.style.width = String(parseInt(document.body.offsetWidth)*.2) + "px"//Math.floor(goal_width_base/100)*100+"px"//
       goal.style.height = window.screen.height * .2 +"px"
       goal.style.top = goal.style.bottom - goal.style.height

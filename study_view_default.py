@@ -10,8 +10,8 @@ def defaultView():
         print(sts[c.ORDER_STAGE][sts[c.STAGE_ITER]])
         if page not in [2,7] and sts[c.ORDER_STAGE][sts[c.STAGE_ITER]] != 0 and not sts["tutorial"]:
             print("gestartet")
-            startNBack(name = sts[c.USER], sub_group=c.SUB_SEC)
-            manageSubProc("resume",sub_group=c.SUB_SEC)
+            #startNBack(name = sts[c.USER], sub_group=c.SUB_SEC)
+            #manageSubProc("resume",sub_group=c.SUB_SEC)
             
 
     # introduction to Experiment

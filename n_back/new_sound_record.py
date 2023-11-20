@@ -5,7 +5,7 @@ from datetime import datetime as dt
 import sys
 import wave
 import numpy as np
-FILENAME = f"./logging/{sys.argv[1]}_n_back_output.wav"
+FILENAME = f"./logging/{sys.argv[1]}_{sys.argv[2]}_n_back_output.wav"
 def update_wav(audio):
     result = []
     '''

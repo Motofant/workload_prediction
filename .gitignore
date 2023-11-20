@@ -9,3 +9,4 @@ logs/
 __pycache__/
 *.csv
 .venvs/*
+*venv*

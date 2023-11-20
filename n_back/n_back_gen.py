@@ -18,7 +18,7 @@ class CSVFormatter(logging.Formatter):
         self.output=io.StringIO()
         self.writer=csv.writer(self.output)
 
-filename = f'./logging/{sys.argv[1]}_n_back_in.log'
+filename = f'./logging/{sys.argv[1]}_{sys.argv[2]}_n_back_in.log'
 
 fp = open(filename,mode="w")
 fp.write('time,number,event\n')
