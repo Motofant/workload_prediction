@@ -25,14 +25,14 @@ class CSVFormatter(logging.Formatter):
         return data.strip()
     
 fp = open(f'./logging/{sys.argv[1]}_{sys.argv[2]}eye_logging.log',mode="w")
-fp.write('time,perif,location,event\n')
+fp.write('time,perif,location,event,valid\n')
 fp.close()
 logging.basicConfig(filename=f'./logging/{sys.argv[1]}_{sys.argv[2]}eye_logging.log', filemode='a',level=logging.DEBUG,format='%(message)s')
 
 logger = logging.getLogger(__name__)
 print(__name__)
 logging.root.handlers[0].setFormatter(CSVFormatter())
-logging.debug(f"{datetime.datetime.now()}|eyetrack|gen|listener started")
+logging.debug(f"{datetime.datetime.now()}|eyetrack|gen|listener started|start")
 
 
 def gaze_data_callback(gaze_data):
@@ -40,18 +40,23 @@ def gaze_data_callback(gaze_data):
     left_eye = (gaze_data['left_gaze_point_on_display_area'][0]*screen_dimensions[0],gaze_data['left_gaze_point_on_display_area'][1]*screen_dimensions[1])
     right_eye = (gaze_data['right_gaze_point_on_display_area'][0]*screen_dimensions[0],gaze_data['right_gaze_point_on_display_area'][1]*screen_dimensions[1])
     print(f"Left: {left_eye}, Right: {right_eye}")
+    dat = datetime.datetime.now()
     #logging.info(f'{gaze_data["system_time_stamp"]}|eyetrack|gaze_pos|{(gaze_data["left_gaze_point_on_display_area"],gaze_data["right_gaze_point_on_display_area"])}')
-    logging.info(f'{datetime.datetime.now()}|eyetrack|gaze_left|{left_eye}')
-    logging.info(f'{datetime.datetime.now()}|eyetrack|gaze_right|{right_eye}')
+    logging.info(f'{dat}|eyetrack|gaze_left|{left_eye}')
+    logging.info(f'{dat}|eyetrack|gaze_right|{right_eye}')
     
 def pupil_data_callback(data):
     # pupil diameter
     print(f'pupil data ((left|right)): ({data["left_pupil_diameter"]}|{data["right_pupil_diameter"]}) at {data["system_time_stamp"]}')
     t = data["system_time_stamp"]/1000000
     dobj = datetime.datetime.fromtimestamp(t)
-    print(dobj)
+    #print(dobj)
     #logging.info(f'{dobj}|eyetrack|pupil_diameter|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}')
-    logging.info(f'{datetime.datetime.now()}|eyetrack|pupil_diameter|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}')
+    dat = datetime.datetime.now()
+    logging.info(f'{dat}|eyetrack|pupil_diameter|{(data["left_pupil_diameter"],data["right_pupil_diameter"])}')
+    logging.info(f'{dat}|eyetrack|pupil_valid|{(data["left_pupil_validity"],data["right_pupil_validity"])}')
+    logging.info(f'{dat}|eyetrack|pupil_timest|{data["system_time_stamp"]}')
+    
 
 while True:
     try:
