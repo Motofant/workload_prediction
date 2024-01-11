@@ -23,15 +23,14 @@ class EyeTrack:
         self.gaze_right[self.value] = self.gaze_right[self.value].str[1:-1]
         self.gaze_right["x"] = [float(tup[0]) for tup in self.gaze_right[self.value].str.split(",")]
         self.gaze_right["y"] = [float(tup[1]) for tup in self.gaze_right[self.value].str.split(",")]
-
-        #self.avg_distance_right, self.avg_speed_right = self.get_eye_movements(self.gaze_right)
+        self.avg_distance_right, self.avg_speed_right = self.get_eye_movements(self.gaze_right)
 
 
         self.gaze_left = data.loc[data[self.dimension] == "gaze_left"]
         self.gaze_left[self.value] = self.gaze_left[self.value].str[1:-1]
         self.gaze_left["x"] = [float(tup[0]) for tup in self.gaze_left[self.value].str.split(",")]
         self.gaze_left["y"] = [float(tup[1]) for tup in self.gaze_left[self.value].str.split(",")]
-        #self.avg_distance_left, self.avg_speed_left = self.get_eye_movements(self.gaze_left)
+        self.avg_distance_left, self.avg_speed_left = self.get_eye_movements(self.gaze_left)
 
     def get_eye_movements(self,data):
         eye_remove_doup = data[~data.index.duplicated(keep = "first")]
@@ -39,7 +38,6 @@ class EyeTrack:
         #eye_remove_doup['y'] = [int(tup[1][:-1]) for tup in eye_remove_doup['event'].str.split(",")]
 
         # calc distance between rows via pythagoras 
-        # TODO: split mouse movemnt in swipes (some deadtime between moevments)
         #for n,col in enumerate(["x","y"]):
             #mouse_remove_doup[col] = #mouse_remove_doup['event'].apply(lambda location: int(location[n]))
         eye_remove_doup["xdiffsq"] = eye_remove_doup["x"].diff().pow(2)
@@ -72,10 +70,10 @@ class EyeTrack:
             "max_size_right":self.max_size_right,
             "min_size_right":self.min_size_right,
             "nan_pup_right":int(self.nan_pup_right),
-            #"avg_distance_right":self.avg_distance_right, 
-            #"avg_speed_right":self.avg_speed_right,
-            #"avg_distance_left":self.avg_distance_left, 
-            #"avg_speed_left":self.avg_speed_left,
+            "avg_distance_right":self.avg_distance_right, 
+            "avg_speed_right":self.avg_speed_right,
+            "avg_distance_left":self.avg_distance_left, 
+            "avg_speed_left":self.avg_speed_left,
 
         }
 if __name__ == '__main__':

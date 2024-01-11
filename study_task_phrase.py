@@ -1,3 +1,6 @@
+## Phrase Task
+
+# imports 
 import streamlit as st
 from streamlit import session_state as sts 
 import streamlit.components.v1 as components
@@ -6,14 +9,20 @@ import constants as c
 import config as conf
 from datetime import datetime as dt
 import datetime
+
+#constants
 PHRASE_PATH = 'volume/phrases.txt'
 EXAMPLE_PATH = 'volume/example_phrases.txt'
+
+# functions 
 def studyToggle(val:bool):
+    # start sensor logging when task is started
     sub_procs = startSubprocesses(c.PHRASE_KEY,sts[c.USER],c.PHRASE_KEY,sub_group=c.SUB_LST)
     sts[c.P_START] = val
     manageSubProc("resume",sub_group=c.SUB_LST)
 
 def phraseChange(change):
+    # display new phrase or end task 
     sts[c.P_OUT][sts[c.P_CURR]] = dt.now().strftime('%Y-%m-%d %H:%M:%S.%f,') + sts[c.P_T_INPUT]
     if sts[c.P_CURR] == conf.no_phrases-1:
         endTest()
@@ -38,6 +47,7 @@ def endTest():
     sts[c.P_END] = True
 
 def changeTest():
+    # change page to new test 
     sts[c.EXP_ITER] += 1
 
     if sts[c.EXP_ITER] >= 3:
@@ -109,6 +119,7 @@ def phraseExampleView():
             st.experimental_rerun()
 
 def phraseWriteView():
+    # phrase task
     if sts[c.P_END]:
 
         # Test is completed
@@ -124,6 +135,8 @@ def phraseWriteView():
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
+                
+        # show Raw TLX
         # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
         slid.select_slider(label="Geistige Anforderungen", key=c.P_M_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.MENTAL_DESC)
         slid.markdown("""---""")
@@ -155,14 +168,9 @@ def phraseWriteView():
             ## Container --> everything changable 
         phrase_cont = st.container()
         prev,pos,nxt = phrase_cont.columns([1,5,1])
-        #prev.button("vohergehender Eintrag",key = c.P_B_PREV, on_click = phraseChange, args=[-1],disabled=sts[c.P_CURR]<=0)
-        #nxt.button("nächster Eintrag",key = c.P_B_NEXT, on_click = phraseChange, args=[1],disabled=sts[c.P_CURR]>=conf.no_phrases-1)
         pos.markdown(f"<center><h3>{sts[c.P_CURR] + 1}/{conf.no_phrases}",unsafe_allow_html=True)
         pos.markdown(f"<center><h1>{phrases[sts[c.P_CURR]]}",unsafe_allow_html=True)
         components.html(getFocusString("input[type=text]"),height=150)
         pos.text_input(label="text input", key = c.P_T_INPUT, on_change=phraseChange, args=[1],label_visibility="collapsed")
-
-        #st.button("Beende Test",key = c.P_B_END, on_click = endTest,)
-
     
 

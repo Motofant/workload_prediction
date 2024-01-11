@@ -3,3 +3,6 @@ pandas
 numpy
 tensorflow
 matplotlib
+scipy
+openpyxl
+xgboost

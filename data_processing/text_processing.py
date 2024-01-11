@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import statistics
 import json
+from  Levenshtein import distance
 class TextInfo:
     
     def __init__(self, user_data, compare_data, mode) -> None:
@@ -10,9 +11,9 @@ class TextInfo:
         # claculatee stuff not doable with free text
         # idea from Analysis_of_text_entry_performance_metri20161119-3688-te2saj-libre.pdf
         self.compare_data = compare_data
-        self.levenshtein = self.levenshtein_distance() if self.compare_data else [[0]]
-
-        self.levenshtein_sum_phrase = [sum(x)for x in self.levenshtein]
+        #self.levenshtein = self.levenshtein_distance() if self.compare_data else [[0]]
+        #self.levenshtein_sum_phrase = [sum(x)for x in self.levenshtein]
+        self.levenshtein_sum_phrase = self.levenshtein_distance() if self.compare_data else [0]
         self.levenshtein_avg_total = statistics.mean(self.levenshtein_sum_phrase)
         self.levenshtein_sum_total = sum(self.levenshtein_sum_phrase)
         self.words_sum = sum(self.word_count())
@@ -27,6 +28,8 @@ class TextInfo:
             word_lst = self.user_data[number].split(" ")
             compare_lst = phrase.split(" ")
             distance_lst = [None]*len(compare_lst)
+            output_lst[number] = distance(self.user_data[number],phrase)
+            ''' 
             for count, word in enumerate(compare_lst):
                 if len(word)==0:
                     continue
@@ -49,7 +52,9 @@ class TextInfo:
 
                 # word doesnt exist
                 #distance_lst[number] = len(compare)
-            output_lst[number] = distance_lst
+                '''
+            #output_lst[number] = distance_lst
+        print(output_lst)
 
         return output_lst
     
@@ -98,8 +103,12 @@ if __name__ == '__main__':
     if True:
         #with open("./logging/Sensor_test_1_easy_phrases.csv", mode='r') as file:
         #    compare = file.read().splitlines()
-        compare = pd.read_csv("./logging/Sensor_test_1_easy_phrases.csv",header=None)[0].tolist()
-        user_df = pd.read_csv("./logging/Sensor_test_1_phrase_user_entered.csv", index_col=[0],header=None)
+        name_c = "./logging/Sensor_test_1_easy_phrases.csv"
+        name_u = "./logging/Sensor_test_1_phrase_user_entered.csv"
+        name_c = "./data_processing/stufaef/stufaef1_easy_phrases.txt"
+        name_u = "./data_processing/stufaef/stufaef1_phrase_user_entered.csv"
+        compare = pd.read_csv(name_c,header=None)[0].tolist()
+        user_df = pd.read_csv(name_u, index_col=[0],header=None)
         user = user_df[1].tolist()
         print(user)
         print(compare)
@@ -125,7 +134,7 @@ if __name__ == '__main__':
         "interactions between men and women",
     ]
     '''
-    v = TextInfo(user_data=user, compare_data=compare)
+    v = TextInfo(user_data=user, compare_data=compare, mode="hjasdg")
 
     x = v.word_count()
     print(f"Anzahl Worte: {x} --> {v.words_sum}")

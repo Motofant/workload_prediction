@@ -29,16 +29,16 @@ class MouseProcess:
                 if movable == "time_end":
                     continue
                 if res[-1]['overlap']:
-                    task_result.append(movable[0]==res[-1]['overlap'][-1])
+                    task_result.append(int(movable[0])==int(res[-1]['overlap'][-1]))
                 else:
                     task_result.append(False)
                 task_nan.append(not res[-1]['overlap'])
-
                 task_moves.append(len(res)-1)
             total_result.append(task_result)
             total_moves.append(task_moves)
             total_nan.append(task_nan)
-        return total_result, total_nan, total_nan
+
+        return total_result, total_nan, total_moves
     
     def output_dict(self):
         return{
@@ -53,12 +53,14 @@ class MouseProcess:
         }
 
 if __name__ == "__main__":
-    with open("./logging/Sensor_test_1_dragging_user_entered.json",mode = "r") as file:
+    x = "./logging/Sensor_test_1_dragging_user_entered.json"
+    x = "./example_study/studefabdc2_dragging__user_entered.json"
+    with open(x,mode = "r") as file:
         #data = file.read().splitlines()
         data = json.load(file)
-    print(json.dumps(data, indent=2))
+    #print(json.dumps(data, indent=2))
 
     #print(data)
-    x = MouseProcess(data=data)
+    x = MouseProcess(data=data, mode = "dragging")
     x.get_tasks()
     print(json.dumps(x.output_dict(), indent=2))

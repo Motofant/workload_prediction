@@ -1,10 +1,7 @@
 test/
-data_processing/example*
 eyeenv/
 logging/
-c_sharp/logs/*
-c_sharp/bin/*
-c_sharp/obj/*
+
 *.log
 logs/
 *.zip
@@ -13,3 +10,17 @@ __pycache__/
 .venvs/*
 *venv*
 */Debug/*
+#remove data folders from processing and analysis
+data_processing/stu*/*
+data_processing/pro*/*
+data_processing/*data/*
+
+*.xlsx
+*.dat
+*.gv
+
+# removal c# stuff
+c_sharp/obj/*
+c_sharp/logs/*
+c_sharp/bin/*
+

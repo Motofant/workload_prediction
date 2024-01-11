@@ -7,3 +7,4 @@ pyaudio==0.2.13
 pandas==1.3.5
 tobii-research==1.11.0
 scipy
+joblib

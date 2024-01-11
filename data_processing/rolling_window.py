@@ -1,3 +1,7 @@
+## processing loggingdata
+## used to create traindata
+
+# imports
 import pandas as pd
 import os
 from key_mouse import KeyMouse
@@ -8,14 +12,44 @@ from mouse_processing import MouseProcess
 import json
 import numpy as np
 
-# importpath ( all of it )
+ORDER_DICT = {
+    "a":[0,1,2],
+    "b":[1,2,0],
+    "c":[2,0,1],
+    "d":[2,1,0],
+    "e":[0,2,1],
+    "f":[1,0,2],
+}
 
+# import paths
+w_size = 2
+w_step = 1
 #logging_path = './logging/'
 #logging_path = './example_only_keymouse/'
-logging_path = './example_user/'
+logging_path = './stufaef/'
+logging_path = './stubacf/'
+#logging_path = './all_data/'
 #logging_path = './logging/'
-output_path = './processed_data'
-files = [f for f in os.listdir(logging_path)]
+output_path = f'./processed_{w_size}_{w_step}apart'
+#output_path = f'./processed_no_window'
+#output_path = f'./processed_{w_size}_{w_step}apart'
+
+multiple_users = True
+
+users = [
+    #"probe1bcab",
+    #"probe2cabb",
+    #"stuafce",
+    #"stubacf",
+    #"studdac",
+    #"studfed",
+    #"stuebcd",
+    #"stuecfa",
+    #"stufaef",
+    "stucdea",
+    #"stufeac",
+    ]
+
 tasks = ["writing", "phrase", "dragging", "clicking"]
 key_mouse_sensor = "key_mouse"
 analog_sensor = "analog"
@@ -23,8 +57,23 @@ eye_sensor = "eye"
 sensors = [key_mouse_sensor,eye_sensor]
 sensors = [key_mouse_sensor, analog_sensor, eye_sensor]
 sorted_files = {}
+test_files = []
+
+if multiple_users:
+    files = [f for user_path in users for f in os.listdir(f"./{user_path}/")]
+    
+else:
+    files = [f for f in os.listdir(logging_path)]
+
 for f in files:
-    split_str = f.split("_") 
+    
+    split_str = f.split("_")
+    logging_path = f"./{split_str[0][:-1]}/"
+    print(f,logging_path)
+
+    if "test" in f:
+        test_files.append(logging_path+f)
+        continue
     # 1. sort by user (safety) --> is also difficulty
     # 2. sort by task 
     if split_str[0] not in sorted_files.keys():
@@ -38,18 +87,16 @@ for f in files:
     if "clicking" in f:
         sorted_files[split_str[0]]["clicking"].append(logging_path+f)
 
-print(json.dumps(sorted_files, indent=2))
-
-window_size = pd.Timedelta(seconds=2)
-window_step = pd.Timedelta(seconds=1 )
+window_size = pd.Timedelta(seconds=w_size)
+window_step = pd.Timedelta(seconds=w_step)
 init_ignore = pd.Timedelta(seconds=1) # no seconds ignored in the beginning 
 general_info = pd.DataFrame()
-
+print(sorted_files)
 for name in sorted_files.keys():
     if len(sorted_files[name]["writing"]) ==0:
         del sorted_files[name]["writing"]
     logging_path = logging_path + name
-    user_info = {"name":name}
+    user_info = {"name":name, "difficulty": ORDER_DICT[name[-5]][int(name[-1])]}
     # general 
         # Text
     if 'writing' in sorted_files[name].keys():
@@ -65,12 +112,12 @@ for name in sorted_files.keys():
         user_info.update(gen_phrase)
         # Drag
 
-    #if "dragging" in sorted_files[name].keys():
-    #    gen_drag = MouseProcess(data=json.load(open([x for x in sorted_files[name]["dragging"] if "user_entered" in x][0])), mode = "dragging").output_dict()
-    #    user_info.update(gen_drag)
+    if "dragging" in sorted_files[name].keys():
+        gen_drag = MouseProcess(data=json.load(open([x for x in sorted_files[name]["dragging"] if "user_entered" in x][0])), mode = "dragging_").output_dict()
+        user_info.update(gen_drag)
     # Click
     if "clicking" in sorted_files[name].keys():
-        gen_click = MouseProcess(data=json.load(open([x for x in sorted_files[name]["clicking"] if "user_entered" in x][0])), mode = "clicking").output_dict()
+        gen_click = MouseProcess(data=json.load(open([x for x in sorted_files[name]["clicking"] if "user_entered" in x][0])), mode = "clicking_").output_dict()
         user_info.update(gen_click)
 
     general_info = pd.concat([general_info,pd.DataFrame([user_info])])
@@ -88,6 +135,7 @@ for name in sorted_files.keys():
         # reading files
         # key and mouse
         if key_mouse_sensor in sensors:
+            print([x for x in sorted_files[name][task] if "key_mouse" in x][0])
             data_key = pd.read_csv([x for x in sorted_files[name][task] if "key_mouse" in x][0], encoding="ISO-8859-1",quotechar='"',).set_index("time",drop=False)
             data_key.index = pd.to_datetime(data_key.index)
             data_key["time"] = pd.to_datetime(data_key["time"])
@@ -133,6 +181,7 @@ for name in sorted_files.keys():
             task_out = pd.concat([task_out, pd.DataFrame([task_temp_dict])])
             print(curr)
             curr += window_step
+            #curr = end_val
         task_out.to_csv(f'{output_path}/{name}_{task}.csv', index=None)
 
 general_info.to_csv(f'{output_path}/general_info.csv', index=None)

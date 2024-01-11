@@ -52,8 +52,6 @@ function onRender(event) {
         // add container selection
         div.addEventListener("mouseup", function(){
           if (window.selected_div!=" "){
-            //window.selected_div.style.top = String(Math.min(window.frameElement.height-parseInt(window.selected_div.style.height),Math.max(0,event.clientY - parseInt(window.selected_div.style.height)/2))) + 'px';
-            //window.selected_div.style.left = Math.min(window.frameElement.width-parseInt(window.selected_div.style.width),Math.max(0,event.clientX - parseInt(window.selected_div.style.width)/2)) + 'px';
             var last_selected = document.getElementById(window.selected_div)
             last_selected.style.borderStyle = "none"
           } 

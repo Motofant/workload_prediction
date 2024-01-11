@@ -1,3 +1,6 @@
+## Draging Task
+
+# imports
 import component.streamlit_dragndrop.src.st_dragndrop as dnd
 import streamlit as st
 from streamlit import session_state as sts
@@ -8,30 +11,27 @@ import json
 from datetime import datetime as dt
 import datetime
 
-conf.no_mouse
-DATA = {
-    "Powerpoint(.pptx)":["a.pptx","c.pptx","b.pptx",], 
-    "Rohdaten(.xlsx)":["a.xlsx","c.xlsx","b.xlsx",],
-    "Textdatein(.docx)":["a.docx","c.docx","b.docx",],       
-}
+# constants
 DATA = {
         "Dateien aus Kalenderwoche 20":["dataKW20.txt","infoKW20.txt","info2KW20.txt",], 
         "Dateien aus Kalenderwoche 30":["dataKW30.txt","infoKW30.txt","info2KW30.txt",],
         "Dateien aus Kalenderwoche 40":["dataKW40.txt","infoKW40.txt","info2KW40.txt",],
         }
+
+#functions
 def endTest():
-    #pass
+    # finishing task
     # end subprocesses
     manageSubProc("kill",sub_group=c.SUB_LST)
     # write outputs in logfile
     with open(f'./logging/{sts[c.USER]}_{c.DRAG_KEY}_user_entered.json', "w") as f:
         json.dump(sts[c.D_OUT], fp=f)
-        #print(sts[c.D_OUT],file=f)
 
     # block access to test
     sts[c.D_END] = True
 
 def changeTest():
+    # change page to new test 
     sts[c.EXP_ITER] += 1
 
     if sts[c.EXP_ITER] >= 3:
@@ -40,18 +40,18 @@ def changeTest():
         sts[c.STATE] = sts[c.ORDER_EXP][sts[c.STAGE_ITER]][sts[c.EXP_ITER]]
 
 def studyToggle(val:bool):
+    # start sensor logging when task is started
     sub_procs = startSubprocesses(c.DRAG_KEY,sts[c.USER],c.DRAG_KEY,sub_group=c.SUB_LST)
     sts[c.D_START] = val
     manageSubProc("resume",sub_group=c.SUB_LST)
 
 def change(x):
+    # save user input of task occurence 
     if not x:
         x = {}
     x["time_end"] = dt.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     sts[c.D_OUT][sts[c.D_CURR]] = x #sts[c.D_D_INPUT]
 
-    print("delete")
-    #sts[c.D_B_NEXT] = None
     if c.D_D_INPUT+str(sts[c.D_CURR]) in sts:
         del sts[c.D_D_INPUT+str(sts[c.D_CURR])]
 
@@ -61,6 +61,7 @@ def change(x):
         endTest()
 
 def draggingExampleView():
+    # draw task example
     # used to introduce user to type of experiment
     if "started" not in sts:
         sts["started"] = False 
@@ -74,15 +75,18 @@ def draggingExampleView():
             sts["started"] = True
             st.experimental_rerun()
     else:
-        # timer 
+        # draw example task
         if sts["init"]:
             startSubprocesses(site_key=c.DRAG_KEY+"test_",name=sts[c.USER],task=c.DRAG_KEY+"test_",sub_group=c.SUB_LST)
             manageSubProc("resume",sub_group=c.SUB_LST)
             sts["init"] = False
+        
+        # timer
         if "time" not in sts:
             sts["time"] = dt.now()
         time_in_sec = conf.sec_per_example
         
+        # draw new example until 
         if dt.now() < (sts["time"] + datetime.timedelta(seconds=time_in_sec)): 
             if c.D_OUT not in sts:
                 sts[c.D_OUT] = {}
@@ -99,16 +103,17 @@ def draggingExampleView():
                 sts["test"] += 1
                 st.experimental_rerun()
         else:
-            # call toggle to nex example
+            # end sensor logging
             manageSubProc("kill",sub_group=c.SUB_LST)
+            # call toggle to nex example
             sts[c.STATE] = 9
             del sts["time"]
             del sts["started"]
             st.experimental_rerun()
 
 def draggingTaskView(): 
+    # draw task
     if sts[c.D_END]:
-        # Test is completed
         # Test is completed
         def enableNext():
             sts[c.WORK_OUT][c.D_M_SLIDER] = sts[c.D_M_SLIDER] 
@@ -122,6 +127,8 @@ def draggingTaskView():
 
         st.success(c.SUCCESS)
         slid,_ = st.columns([1,4])
+        
+        # show Raw TLX
         # translation based on http://www.interaction-design-group.de/toolbox/wp-content/uploads/2016/05/NASA-TLX.pdf
         slid.select_slider(label="Geistige Anforderungen", key=c.D_M_SLIDER, options=range(22),value=21, format_func=format_gen, on_change=enableNext, help=c.MENTAL_DESC)
         slid.markdown("""---""")
@@ -144,10 +151,13 @@ def draggingTaskView():
         st.button(label="Starten", key=c.D_B_START, on_click=studyToggle, args=[True])  
     
     else:
+        # task ongoing 
         if c.D_CURR not in sts:
             sts[c.D_CURR] = 0
         _,pos,nxt = st.columns([1,3,1])
         pos.markdown(f"<center><p style= 'font-size:20px'>{sts[c.D_CURR] + 1}/{conf.no_mouse}",unsafe_allow_html=True)
+
+        # create custom component 
         x = dnd.st_dragndrop(DATA,key = c.D_D_INPUT+str(sts[c.D_CURR]),height=.8)
         button_ack = sum([len(v) > 1 for z, v in x.items() ])<1 if x else False # activate button when component is updated first
         y=nxt.button("Weiter", on_click = change,args=[x],disabled=button_ack)
