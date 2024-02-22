@@ -132,7 +132,7 @@ class KeyAction:
         #print(self.start_press_time, self.start_hold_time, self.end_hold_time, self.end_press_time)
         #print(self.press_vel, self.release_vel)
 ## Testing cases
-if False:
+if __name__ == "__main__":
     data = pd.DataFrame(
         {
             "time":[

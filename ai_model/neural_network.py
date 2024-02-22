@@ -1,26 +1,18 @@
 import pandas as pd
 import numpy as np
-import tensorflow as tf
 import keras
 from keras.models import Sequential
 from keras.utils import to_categorical
-from keras.constraints import max_norm
 from keras.layers import MaxPool1D, Dense, Conv1D, LSTM,MaxPooling1D,Dropout, Flatten
 import os
-import matplotlib.pyplot as plt
 from enum import Enum
 from sklearn.ensemble import RandomForestRegressor,RandomForestClassifier
 from sklearn.linear_model import LinearRegression
 from sklearn import svm
 from sklearn.preprocessing import PolynomialFeatures,OneHotEncoder
 import joblib
-import json
-# Tree Visualisation
-from sklearn.tree import export_graphviz
-from IPython.display import Image
-import graphviz
-from IPython.display import display
 from xgboost import XGBClassifier
+from constants_correl import MODE, get_relevant_metrics,calc_weighted_target
 
 # constants
 target_col = "goal" # name of column containing target value
@@ -39,18 +31,11 @@ all_user = [
     "stucdea",
     ]
 
-class MODE (Enum):
-    ALL = ["click","drag","phrase","write"]
-    NBACK = ["click","drag","phrase",]
-    MOUSE = ["click","drag"]
-    KEY = ["phrase","writing"]
-    WRITE= ["writing"]
-    PHRASE= ["phrase"]
-    DRAG = ["drag"]
-    CLICK =["click"]
+sample_len = 10 # samples for cnn
+    
 
 # functions
-def calc_weighted_target(data_file, user_name, target):
+def calc_weighted_target_old(data_file, user_name, target):
     user_name = data_file.split(".")[0].split("_")[0][:-1]
     task_type = data_file.split(".")[0].split("_")[1]
 
@@ -65,7 +50,11 @@ def calc_weighted_target(data_file, user_name, target):
     workloads = []
     for key in target.keys():
         if task_type in key:
+            print(task_type, key)
+            print(target[key], user_data[key.split("_")[1]].values.tolist()[0])
+        
             workloads.append(target[key] * user_data[key.split("_")[1]].values.tolist()[0])
+    print(sum(workloads))
     print(sum(workloads)/3)
     return sum(workloads)/3
 
@@ -110,30 +99,22 @@ def createModelCat(sample_len,output):
     model = Sequential()
     #model.add(Conv1D(filters=124, kernel_size=5, activation='relu', input_shape=(sample_len, n_features)))
     
-    model.add(Dense(1024,input_shape = (sample_len[0],),activation="relu",name="steffen"))
-    #model.add(Dense(1024,activation="relu"))
+    model.add(Dense(1024,input_shape = (sample_len[0],),activation="relu"))
     model.add(keras.layers.BatchNormalization())
-    #model.add(Conv1D(filters=128, kernel_size=3, activation='relu', input_shape=(sample_len, n_features)))
-    #model.add(MaxPooling1D(pool_size=2))
-    #model.add(Dropout(.3))
-    #model.add(Conv1D(filters=128, kernel_size=2, activation='relu',))
-    #model.add(MaxPooling1D(pool_size=2))
     model.add(Dense(2048,activation="relu"))
     model.add(Dense(2048,activation="relu"))
     model.add(keras.layers.BatchNormalization())
     model.add(Dense(1024,activation="relu"))
     model.add(Dense(1024,activation="relu"))
     model.add(keras.layers.BatchNormalization())
-    #model.add(Dropout(.3))
     model.add(Dense(512,activation="relu"))
     model.add(Dense(512,activation="relu"))    
     model.add(keras.layers.BatchNormalization())
-    #model.add(Dropout(.3))
+
     model.add(Dense(output,activation="softmax"))
 
     optimizer = keras.optimizers.Adam(learning_rate=0.00001)
-    model.compile(optimizer=optimizer, loss='categorical_crossentropy',metrics= ['accuracy'],experimental_run_tf_function=False)#binary_crossentropy
-
+    model.compile(optimizer=optimizer, loss='categorical_crossentropy',metrics= ['accuracy'],experimental_run_tf_function=False)
     return model
 
 def createModel_odl(input_dim, output_dim):
@@ -186,28 +167,6 @@ def createModel_cnn(input_dim, output):
     model.compile(loss='mse', optimizer=optimizer, metrics=['mean_squared_error', 'mean_absolute_error','accuracy'],experimental_run_tf_function=False)
     return model
 
-def visualHist(history):
-    ## shows visualization of accuracy and loss of network after training is completed 
-    
-    # history: network parameters progress over time 
-    
-    # summarize history for accuracy
-    plt.plot(history.history['accuracy'])
-
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['dense_accuracy'], loc='lower right')
-    plt.show()
-
-    # summarize history for loss
-    plt.plot(history.history['loss'])
-    plt.title('model loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend(['dense_loss'], loc='upper right')
-    plt.show()
-
 def createModel_final_cat(input_dim,output):
     model = Sequential()
     model.add(Dense(64, input_shape=input_dim, activation="softmax"))
@@ -221,39 +180,42 @@ def createModel_final_cat(input_dim,output):
 
 if __name__ == "__main__":
     # Configuration
-    ## AI-System
-    random_forest = False
+    ## Prediction System
+    ### In use
+    random_forest = True
+    random_forest_class = False
+    
+    ### not currently working
     svm_prediction = False
     ploy_regr = False # not working
     cnn = False
     cnn_cat = False
     fin_dense = False
-    random_forest_class = True
     xgboost = False
     svm_prediction_class = False
     
-    ## Target Value
-    weighted = False
-    categorical = False # needed for categorical
-    workload_level = True
-    
-    ## Data Configuration
-    ### use one User as prediction data otherwise use 10% of data per user for prediction
-    test_user = all_user[0] # Selected Testuser
-    new_user = True # Use single user as predictiondata 
-
-    ### Use only max and min value as targetdata only works with workload_level
-    two = True
-
-    ### samples for cnn
-    sample_len = 10
-
     ### Part of total data used 
     mode = MODE.PHRASE
+
+    ## Target Value
+    weighted = True # Use NASA-TLX as traget --> used in regression
+    workload_level = False # Use workload level --> used in classification
+
+    ### Use only max and min value as targetdata only works with workload_level
+    two = False 
+
+    ## Data Configuration
+    ### use one User as prediction data otherwise use 10% of data per user for prediction
+    new_user = False # Use single user as predictiondata 
+    test_user = all_user[0] # Selected Testuser --> only used if 
     
+
     ### Import path
+    # contains all files 
     FILE_PATH = "./processed_30_5apart/"
-    FILE_PATH = "./processed_2_1apart/"
+    #FILE_PATH = "./processed_2_1apart/"
+
+    small_window = "2_1" in FILE_PATH
     
     ## get general info
     general_info_data = pd.read_csv(FILE_PATH + "general_info.csv")
@@ -264,6 +226,7 @@ if __name__ == "__main__":
     sorted_files = {} # contains data files, key -> username+iteration, value list
     label = {} # contains files of TLX-Results 
     
+    # filter files
     for f in files:
         split_str = f.split("_") 
         if "demand" in split_str[1]:
@@ -297,17 +260,14 @@ if __name__ == "__main__":
             
             # add target column
             if weighted:
-                x = calc_weighted_target(data_file = i, user_name = key, target = target)
+                x = calc_weighted_target(data_file = i, target = target)
                 read_data.loc[:, target_col] = x
-            elif categorical: 
-                read_data[target_col]=read_data[target_col].apply(lambda value: 0 if value <33 else (1 if value < 66 else 2 )) 
             elif workload_level:
                 read_data = read_data.drop(columns=["time"])
                 read_data[target_col] = general_info_data.loc[general_info_data["name"] == key, "difficulty"].values.tolist()[0]
                 print(read_data.head())
             else:
                 read_data[target_col] = target[i.split(".")[0].split("_")[1] + "_mental"]* 5
-
             ## data splitting 
             ### splitting data in train- and test-data  
             if new_user:
@@ -318,14 +278,14 @@ if __name__ == "__main__":
                     else:
                         test_data = read_data 
                 else:
-                    print("training"+key)
+                    print("training "+key)
                     if train_data.shape[0] != 0:
                         train_data = pd.concat([train_data, read_data]).fillna(0)
                     else:
                         train_data = read_data
             else:
                 # data is divided in 85% train rest testdata 
-                idx = read_data.sample(frac = .85).index.to_list()
+                idx = read_data.sample(frac = .9).index.to_list()
                 if train_data.shape[0] != 0:
 
                     train_data = pd.concat([train_data, read_data.loc[read_data.index.isin(idx)]]).fillna(0)
@@ -338,48 +298,20 @@ if __name__ == "__main__":
 
         
     # removes middle category if wanted
-    if two:
+    if two and not weighted:
         train_data = train_data.loc[train_data["goal"] != 1]
         test_data = test_data.loc[test_data["goal"] != 1]
         train_data["goal"] = train_data["goal"].map(lambda val : 1 if val == 2 else val)
         test_data["goal"] = test_data["goal"].map(lambda val : 1 if val == 2 else val)
     #print(train_data)
     print(train_data.shape, test_data.shape)
+    
+    cols = get_relevant_metrics(mode = mode.name, small_window=small_window, weighted=weighted)
 
-    if mode.name == "DRAG":
-        cols = ["avg_size_left","avg_size_right","max_size_left","max_size_right","avg_speed_right"]#,"mouse_avg_distance" , "mouse_avg_speed"]#target_col]
-    elif mode.name == "CLICK" :
-        cols = ["avg_size_left","avg_size_right","max_size_left","max_size_right"]#,"mouse_avg_distance" , "mouse_avg_speed"]#target_col]
-    elif mode.name == "MOUSE": # neu
-        cols = ["avg_size_left","avg_size_right","max_size_left","max_size_right","nan_pup_left","mouse_avg_speed","min_size_right"]
-    elif mode.name == "PHRASE" :
-        cols = ["key_strokes",
-                "key_press_time",
-                "avg_size_left",
-                "avg_size_right",
-                "key_no_dead_time",
-                "max_size_left",
-                "ana_total_time",
-                "max_size_right",
-                "ana_release_vel",
-                "key_dead_time_avg",
-                "ana_press_time",
-                "nan_pup_right",
-                "nan_pup_left",
-                "min_size_right",
-                ]
-    elif mode.name == "WRITE":
-        cols = ["key_no_dead_time","ana_max_travel","ana_release_vel","max_size_left","max_size_right","nan_pup_right","nan_pup_left","min_size_right",]  
-    elif mode.name == "KEY":
-
-        cols = ["key_strokes","key_dead_time_avg","ana_total_time","ana_press_time","ana_release_time","avg_size_left","max_size_left","nan_pup_left","avg_size_right","max_size_right","min_size_right","nan_pup_right"]
-    elif mode.name == "ALL":
-        cols = ["key_strokes","key_no_dead_time","key_dead_time_avg","avg_size_left","max_size_left","nan_pup_left","avg_size_right","max_size_right","min_size_right","nan_pup_right","ana_total_time","ana_press_time","ana_release_vel",]
     #print(train_data.head())
     X_lst = train_data[cols].values.tolist()
     y_lst = train_data[target_col].values.tolist()
-    #X_lst = example_data[cols].values.tolist()
-    #y_lst = example_data[target_col].values.tolist()
+
     X_test_lst = test_data[cols].values.tolist()
     y_test_lst = test_data[target_col].values.tolist()
     #print(y_lst)
@@ -437,16 +369,8 @@ if __name__ == "__main__":
     #print(a[:4])
     #print(b[:4])
 
-    #sampling
+    # sampling
 
-    X, y = split_sequences(X_lst,y_lst, sample_len)
-    X_test,y_test = split_sequences(X_test_lst,y_test_lst, sample_len)
-    #cols = cols+[target_col]
-    X, y = split_sequences_transform(train_data,cols=cols,target_col=target_col,n_steps=sample_len)
-    X_test,y_test= split_sequences_transform(test_data,cols=cols,target_col=target_col,n_steps=sample_len)
-    print(train_data[cols].shape, X.shape)
-    print(train_data[cols].tail())
-    print(X[-5:])
     #exit(1)
     n_features = len(cols)
     #print(train_data)
@@ -454,82 +378,94 @@ if __name__ == "__main__":
     print(test_user)    
 
     i = 0
-    iter_max = 1
+    iter_max = 1 # generate multiple 
     if random_forest:
+        # build random forest based on TLX results
         while i <iter_max:
-            rf = RandomForestRegressor(n_estimators = 100)#3000)
-
+            rf = RandomForestRegressor(n_estimators = 100)
             train_data = train_data.sample(frac=1)
+            
+            
             rf.fit(train_data[cols], train_data[target_col])
-            joblib.dump(rf,f"./rf_weights_{i}.dat")
             prediction = rf.predict(test_data[cols])
-            importances = list(rf.feature_importances_)
-            #print(importances)
-            #print(abs(prediction-test_data[target_col]))
-            x = pd.DataFrame({"output":prediction.round(),  "target":test_data[target_col], "diff":abs(prediction.round()-test_data[target_col])})
-            x.to_csv(f"./test_random_{mode.name}_{2 if two else 3}_nr_{i}.csv", index = False)
+            # define outputs to files 
+            x = pd.DataFrame({"output":prediction,  "target":test_data[target_col], "diff":abs(prediction-test_data[target_col])})
             false_occ = x["diff"].astype(bool).sum(axis=0)
+            output_file_ID = f"test_random_{mode.name}_{'2_1'if small_window else '30_5'}_{test_user if new_user else '90_10'}_{i}_{str(x['diff'].mean()).replace('.','_')}"
+
+            x.to_csv(f"./validation/{output_file_ID}.csv", index = False)
+            joblib.dump(rf,f"./weights/{output_file_ID}.dat")
+
+            # define outputs to console
+            
             if workload_level:
                 print(str(x["diff"].mean()), "wrongly categorised",false_occ,"/",x.shape[0], (x.shape[0]-false_occ)/x.shape[0],"%")
             if weighted:
-                print(str(x["diff"].mean()))
+                print(str(x["diff"].mean()).replace(".",","))
             i+=1
     
     if random_forest_class:
+        # build random forest based on workload level
         while i < iter_max:
-            #rfc = RandomForestClassifier(n_estimators=3000,criterion="log_loss",)
-            rfc = RandomForestClassifier(n_estimators=100)
+            # prepare data 
             train_data = train_data.sample(frac= 1)
-            if not two:
-                sample_weights = np.zeros(len(train_data[target_col]))
-                sample_weights[train_data[target_col]==0] = 1000000000000
-                sample_weights[train_data[target_col]==1] = 10000
-                sample_weights[train_data[target_col]==2] = .000000000001
-            if two:
-                sample_weights = np.zeros(len(train_data[target_col]))
-                sample_weights[train_data[target_col]==0] = 10000
-                sample_weights[train_data[target_col]==1] = .0000001
             
+            # prepare weights (not used because of little shown improvements)
+            sample_weights = np.ones(len(train_data[target_col]))
+            class_weights = {0:1,1:1,2:1}
+            if not two:
+                class_weights = {0:1,1:1,2:1}
+                #sample_weights[train_data[target_col]==0] = 1000000000000
+                #sample_weights[train_data[target_col]==1] = 10000
+                #sample_weights[train_data[target_col]==2] = .000000000001
+            if two and True:
+                #sample_weights[train_data[target_col]==0] = .0001
+                #sample_weights[train_data[target_col]==1] = 1000
+                class_weights = {0:1,1:1}
+            
+            # define and train classifier
+            rfc = RandomForestClassifier(n_estimators=100,class_weight=class_weights)
             rfc.fit(train_data[cols], train_data[target_col], sample_weight=sample_weights)
             prediction = rfc.predict(test_data[cols])
-            x = pd.DataFrame({"output":prediction.round(),  "target":test_data[target_col], "diff":abs(prediction.round()-test_data[target_col])})
-            print(f"./test_random_class_{mode.name}_{2 if two else 3}.csv")
-            x.to_csv(f"./test_random_class_{mode.name}_{2 if two else 3}.csv", index = False)
+
+            # save data and weights 
+            x = pd.DataFrame({"output":prediction,  "target":test_data[target_col], "diff":abs(prediction-test_data[target_col])})
             false_occ = x["diff"].astype(bool).sum(axis=0)
+            output_file_ID = f"test_random_class_{mode.name}_{'2_1'if small_window else '30_5'}_{2 if two else 3}_{test_user if new_user else '90_10'}_{i}_{str((x.shape[0]-false_occ)/x.shape[0]).replace('.','_')}"
+
+            x.to_csv(f"./validation/{output_file_ID}.csv", index = False)
+            joblib.dump(rfc,f"./weights/{output_file_ID}.dat")
+
+            
+            
             if workload_level:
-                print(str(x["diff"].mean()), "wrongly categorised",false_occ,"/",x.shape[0], (x.shape[0]-false_occ)/x.shape[0],"%")
+                print(str(x["diff"].mean()), "wrongly categorised",false_occ,"/",x.shape[0], str((x.shape[0]-false_occ)/x.shape[0]).replace(".",","),"%")
+                print(str((x.shape[0]-false_occ)/x.shape[0]).replace(".",","))
             if weighted:
-                print(str(x["diff"].mean()))
+                print(str(x["diff"].mean()).replace(".",","))
             i+=1
 
-            continue
-            
-            for j in range(1):
-                tree = rfc.estimators_[j]
-                dot_data = export_graphviz(tree,
-                                        feature_names=cols,  
-                                        filled=True,  
-                                        max_depth=100, 
-                                        impurity=False, 
-                                        proportion=True)
-                graph = graphviz.Source(dot_data)
-                
-                display(graph)
 
+    ## Unoptimized trys not used in study
+            
     if xgboost:
         while i < iter_max: 
-            xgb = XGBClassifier(n_estimators=100)
+            
 
             train_data = train_data.sample(frac= 1)
             if two:
+                class_weights = {0:1,1:1}
                 sample_weights = np.zeros(len(train_data[target_col]))
                 sample_weights[train_data[target_col]==0] = .5
                 sample_weights[train_data[target_col]==1] = 3.6
+
+            xgb = XGBClassifier(n_estimators=1000,class_weight = class_weights)
             xgb.fit(train_data[cols], train_data[target_col])#,sample_weight=sample_weights)
             
             prediction = xgb.predict(test_data[cols])
             x = pd.DataFrame({"output":prediction.round(),  "target":test_data[target_col], "diff":abs(prediction.round()-test_data[target_col])})
-            x.to_csv(f"./test_xgb_class_{mode.name}_{2 if two else 3}.csv", index = False)
+            print(f"./test_xgb_class_{mode.name}_{2 if two else 3}_{test_user if new_user else '90_10'}.csv")
+            x.to_csv(f"./test_xgb_class_{mode.name}_{2 if two else 3}_{test_user if new_user else '90_10'}.csv", index = False)
             false_occ = x["diff"].astype(bool).sum(axis=0)
             if workload_level:
                 print(str(x["diff"].mean()), "wrongly categorised",false_occ,"/",x.shape[0], (x.shape[0]-false_occ)/x.shape[0],"%")
@@ -540,7 +476,7 @@ if __name__ == "__main__":
     # svm 
     kernel = "rbf"
     #kernel = "linear"
-    kernel = "poly"
+    #kernel = "poly"
     #kernel = "sigmoid"
     
     if svm_prediction:
@@ -560,7 +496,8 @@ if __name__ == "__main__":
     if svm_prediction_class:
         i = 0
         while i <iter_max:
-            svc = svm.SVC(kernel=kernel,degree=6,cache_size=1600)
+            print("kujdsfahkljdsfkljhsdlkjhdfkljhsdfhkjlsdfgkhljsdf")
+            svc = svm.SVC(kernel=kernel,degree=3,cache_size=1000,class_weight='balanced',C=.0005)
             #svr_lin = svm.SVR(kernel="linear", C=1000, gamma="auto")
             #svr_poly = svm.SVR(kernel="poly", C=1000, gamma="auto", degree=3, epsilon=0.1, coef0=1)
             
@@ -568,7 +505,8 @@ if __name__ == "__main__":
             prediction = svc.predict(test_data[cols])
 
             x = pd.DataFrame({"output":prediction.round(),  "target":test_data[target_col], "diff":abs(prediction.round()-test_data[target_col])})
-            x.to_csv(f"./test_svm_class_{mode.name}_{2 if two else 3}.csv", index = False)
+            print(f"./test_svm_class_{mode.name}_{2 if two else 3}_{test_user if new_user else '90_10'}.csv")
+            x.to_csv(f"./test_svm_class_{mode.name}_{2 if two else 3}_{test_user if new_user else '90_10'}.csv", index = False)
             false_occ = x["diff"].astype(bool).sum(axis=0)
             if workload_level:
                 print(str(x["diff"].mean()), "wrongly categorised",false_occ,"/",x.shape[0], (x.shape[0]-false_occ)/x.shape[0],"%")
@@ -582,8 +520,7 @@ if __name__ == "__main__":
             # get data
             poly = PolynomialFeatures(degree=2, include_bias=False)
             poly_features = poly.fit_transform(train_data[cols])
-            print(poly_features)
-            exit(1)
+
             # define model
             model = LinearRegression()
             model.fit(poly_features,train_data[target_col])
@@ -592,6 +529,16 @@ if __name__ == "__main__":
             x.to_csv("./test_poly_reg.csv", header = None, index = False)
             print(x["diff"].mean())
             i+=1
+
+    
+    # sampling for neural networks
+    X, y = split_sequences(X_lst,y_lst, sample_len)
+    X_test,y_test = split_sequences(X_test_lst,y_test_lst, sample_len)
+    #cols = cols+[target_col]
+    X, y = split_sequences_transform(train_data,cols=cols,target_col=target_col,n_steps=sample_len)
+    X_test,y_test= split_sequences_transform(test_data,cols=cols,target_col=target_col,n_steps=sample_len)
+
+    
 
     if cnn:
         i = 0
@@ -659,7 +606,8 @@ if __name__ == "__main__":
                 #print(row , y_test[nr])
 
             x = pd.DataFrame({"output":data,  "target": y_test,"diff":abs(data-y_test)})
-            x.to_csv(f"./test_cnn_cat_{mode.name}_{2 if two else 3}.csv", index = False)
+            print(f"./test_cnn_cat_{mode.name}_{2 if two else 3}_{test_user if new_user else '90_10'}.csv")
+            x.to_csv(f"./test_cnn_cat_{mode.name}_{2 if two else 3}_{test_user if new_user else '90_10'}.csv", index = False)
             print(x.loc[x["output"] != x["target"]].shape[0]/len(yhat))
             print("nur 0:",x.loc[x["output"] == 0].shape[0]/len(yhat))
             print("nur 1:",x.loc[x["output"] ==1].shape[0]/len(yhat))

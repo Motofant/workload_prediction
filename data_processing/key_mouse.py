@@ -10,10 +10,8 @@ class KeyMouse:
     def __init__(self, all_data, tf_sec) -> None:
         # split data
         self.keyboard_data = all_data.loc[all_data[self.col_perif] == "keyboard"]
-        #self.analog_data = all_data.loc[all_data[self.col_perif] == "analog"]
         self.mouse_data =  all_data.loc[all_data[self.col_perif] == "mouse"]
-        #print(f"keyboard {len(self.keyboard_data)}")
-        #print(f"mouse {len(self.mouse_data)}")
+        
         # get generell info
         self.time_frame = tf_sec
         self.max_time = all_data.index.max()
@@ -80,7 +78,7 @@ class KeyMouse:
         #print(all_times)
 
         press_edges = all_times.loc[all_times[out_col].shift() != all_times[out_col]]
-        press_edges = press_edges.loc[(press_edges[out_col] == False).idxmin():(press_edges[out_col] == False)[::-1].idxmax() ] # TODO: change when edgecases defined
+        press_edges = press_edges.loc[(press_edges[out_col] == False).idxmin():(press_edges[out_col] == False)[::-1].idxmax() ] 
         #print(press_edges)
         
         dead_times=list((press_edges.iloc[2*i+1].name-press_edges.iloc[2*i].name, press_edges.iloc[2*i].name,press_edges.iloc[2*i+1].name,)  for i in range(int(len(press_edges)/2)))

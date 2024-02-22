@@ -1,5 +1,4 @@
 # subprocess data
-sensor_active = True
 sensor_console = False
 
 # study data

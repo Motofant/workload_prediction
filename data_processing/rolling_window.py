@@ -10,7 +10,14 @@ from eyetrack import EyeTrack
 from text_processing import TextInfo
 from mouse_processing import MouseProcess
 import json
-import numpy as np
+
+# constants
+
+key_mouse_sensor = "key_mouse"
+analog_sensor = "analog"
+eye_sensor = "eye"
+sorted_files = {}
+test_files = {}
 
 ORDER_DICT = {
     "a":[0,1,2],
@@ -21,58 +28,57 @@ ORDER_DICT = {
     "f":[1,0,2],
 }
 
-# import paths
-w_size = 2
-w_step = 1
-#logging_path = './logging/'
-#logging_path = './example_only_keymouse/'
-logging_path = './stufaef/'
-logging_path = './stubacf/'
-#logging_path = './all_data/'
-#logging_path = './logging/'
-output_path = f'./processed_{w_size}_{w_step}apart'
-#output_path = f'./processed_no_window'
-#output_path = f'./processed_{w_size}_{w_step}apart'
+# variables
 
 multiple_users = True
-
 users = [
-    #"probe1bcab",
-    #"probe2cabb",
-    #"stuafce",
-    #"stubacf",
-    #"studdac",
-    #"studfed",
-    #"stuebcd",
-    #"stuecfa",
-    #"stufaef",
+    "probe1bcab",
+    "probe2cabb",
+    "stuafce",
+    "stubacf",
+    "studdac",
+    "studfed", 
+    "stuebcd",
+    "stuecfa",
+    "stufaef",
     "stucdea",
-    #"stufeac",
+    #"stufeac", #Userdata not used due to 
     ]
 
-tasks = ["writing", "phrase", "dragging", "clicking"]
-key_mouse_sensor = "key_mouse"
-analog_sensor = "analog"
-eye_sensor = "eye"
-sensors = [key_mouse_sensor,eye_sensor]
-sensors = [key_mouse_sensor, analog_sensor, eye_sensor]
-sorted_files = {}
-test_files = []
+logging_path = './logging/'
+test_data = False
 
+w_size = 30
+w_step = 5
+
+tasks = ["writing", "phrase", "dragging", "clicking"]
+sensors = [key_mouse_sensor, analog_sensor, eye_sensor]
+# import paths
+
+output_path = f'./processed_{w_size}_{w_step}apart_test_t'
+
+# select files based on folder selection
 if multiple_users:
     files = [f for user_path in users for f in os.listdir(f"./{user_path}/")]
-    
 else:
     files = [f for f in os.listdir(logging_path)]
 
+# sort files based on task 
 for f in files:
-    
     split_str = f.split("_")
     logging_path = f"./{split_str[0][:-1]}/"
     print(f,logging_path)
 
-    if "test" in f:
-        test_files.append(logging_path+f)
+    if "test" in f:    
+        if split_str[0] not in test_files.keys():
+            test_files[split_str[0]]={x:[] for x in tasks}
+        if "phrase" in f:
+            test_files[split_str[0]]["phrase"].append(logging_path+f)
+        if "dragging" in f:
+            test_files[split_str[0]]["dragging"].append(logging_path+f)
+        if "clicking" in f:
+            test_files[split_str[0]]["clicking"].append(logging_path+f)
+        #test_files.append(logging_path+f)
         continue
     # 1. sort by user (safety) --> is also difficulty
     # 2. sort by task 
@@ -87,42 +93,50 @@ for f in files:
     if "clicking" in f:
         sorted_files[split_str[0]]["clicking"].append(logging_path+f)
 
+# use test data if specified
+if test_data:
+    sorted_files = test_files
+
+# set window size 
 window_size = pd.Timedelta(seconds=w_size)
 window_step = pd.Timedelta(seconds=w_step)
 init_ignore = pd.Timedelta(seconds=1) # no seconds ignored in the beginning 
 general_info = pd.DataFrame()
-print(sorted_files)
+
 for name in sorted_files.keys():
-    if len(sorted_files[name]["writing"]) ==0:
-        del sorted_files[name]["writing"]
-    logging_path = logging_path + name
-    user_info = {"name":name, "difficulty": ORDER_DICT[name[-5]][int(name[-1])]}
-    # general 
-        # Text
-    if 'writing' in sorted_files[name].keys():
-        gen_text = TextInfo(open([x for x in sorted_files[name]["writing"] if "user_entered" in x][0]).read(), None,  "writing_").output_dict()
-        user_info.update(gen_text)
-        # Phrase
-    if "phrase" in sorted_files[name].keys():
-        gen_phrase = TextInfo(
-            compare_data = pd.read_csv([x for x in sorted_files[name]["phrase"] if "phrases" in x][0],header=None)[0].tolist(),
-            user_data = pd.read_csv([x for x in sorted_files[name]["phrase"] if "user_entered" in x][0], index_col=[0],header=None)[1].tolist(),
-            mode="phrase_",
-            ).output_dict()
-        user_info.update(gen_phrase)
-        # Drag
+    if not test_data:
+        if len(sorted_files[name]["writing"]) ==0:
+            del sorted_files[name]["writing"]
+        logging_path = logging_path + name
+        user_info = {"name":name, "difficulty": ORDER_DICT[name[-5]][int(name[-1])]}
+        # generate general info
+            # Text
+        if 'writing' in sorted_files[name].keys():
+            gen_text = TextInfo(open([x for x in sorted_files[name]["writing"] if "user_entered" in x][0]).read(), None,  "writing_").output_dict()
+            user_info.update(gen_text)
+            # Phrase
+        if "phrase" in sorted_files[name].keys():
+            gen_phrase = TextInfo(
+                compare_data = pd.read_csv([x for x in sorted_files[name]["phrase"] if "phrases" in x][0],header=None)[0].tolist(),
+                user_data = pd.read_csv([x for x in sorted_files[name]["phrase"] if "user_entered" in x][0], index_col=[0],header=None)[1].tolist(),
+                mode="phrase_",
+                ).output_dict()
+            user_info.update(gen_phrase)
+            # Drag
 
-    if "dragging" in sorted_files[name].keys():
-        gen_drag = MouseProcess(data=json.load(open([x for x in sorted_files[name]["dragging"] if "user_entered" in x][0])), mode = "dragging_").output_dict()
-        user_info.update(gen_drag)
-    # Click
-    if "clicking" in sorted_files[name].keys():
-        gen_click = MouseProcess(data=json.load(open([x for x in sorted_files[name]["clicking"] if "user_entered" in x][0])), mode = "clicking_").output_dict()
-        user_info.update(gen_click)
+        if "dragging" in sorted_files[name].keys():
+            gen_drag = MouseProcess(data=json.load(open([x for x in sorted_files[name]["dragging"] if "user_entered" in x][0])), mode = "dragging_").output_dict()
+            user_info.update(gen_drag)
+        # Click
+        if "clicking" in sorted_files[name].keys():
+            gen_click = MouseProcess(data=json.load(open([x for x in sorted_files[name]["clicking"] if "user_entered" in x][0])), mode = "clicking_").output_dict()
+            user_info.update(gen_click)
 
-    general_info = pd.concat([general_info,pd.DataFrame([user_info])])
+        general_info = pd.concat([general_info,pd.DataFrame([user_info])])
 
     for task in sorted_files[name]:
+        if len(sorted_files[name][task]) == 0:
+            continue
         print(task)
         start_val = None
         end_val = None
@@ -160,7 +174,7 @@ for name in sorted_files.keys():
                                 quotechar='"',
                                 dtype={"perif":str, "location":str, "value":object, },
                                 ).set_index("time",drop=False)   
-    
+        # calc sensor 
         while curr < end_val:
 
             task_temp_dict = {"time": curr}
@@ -183,9 +197,5 @@ for name in sorted_files.keys():
             curr += window_step
             #curr = end_val
         task_out.to_csv(f'{output_path}/{name}_{task}.csv', index=None)
-
-general_info.to_csv(f'{output_path}/general_info.csv', index=None)
-
-## Randnotzien
-# Fenstergröße --> 30 sekunden
-# fensterverschiebung --> 10 sekunden nach Startzeitpunkt (nicht erster wert) --> gleichförmiges Fenster
+if not test_data:
+    general_info.to_csv(f'{output_path}/general_info.csv', index=None)

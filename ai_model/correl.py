@@ -2,43 +2,8 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-from enum import Enum
-import seaborn as sns
-from ai_constants import const as c 
 import pingouin as pg
-import math
-
-# function
-def calc_weighted_target(data_file, user_name, target):
-    #print(data_file.split(".")[0].split("_")[0][:-1])
-    user_name = data_file.split(".")[0].split("_")[0][:-1]
-    task_type = data_file.split(".")[0].split("_")[1]
-
-    user_data_path = "./nutzerdaten.xlsx"
-    user_data = pd.read_excel(user_data_path)
-    user_data = user_data.loc[user_data["ID"] == user_name]
-    print("________")
-    print(data_file)
-    print(target)
-    print(user_data)
-    
-    workloads = []
-    for key in target.keys():
-        if task_type in key:
-            workloads.append(target[key] * user_data[key.split("_")[1]].values.tolist()[0])
-    print( sum(workloads)/3)
-
-    return sum(workloads)/3
-    
-def calc_mean_target(data_file,target):
-    task_type = data_file.split(".")[0].split("_")[1]
-    
-    workloads = []
-    for key in target.keys():
-        if task_type in key:
-            workloads.append(target[key])
-    print(sum(workloads)/len(workloads))
-    return sum(workloads)/len(workloads)
+from constants_correl import MODE, calc_weighted_target, calc_mean_target
 
 # constants
 to_convert = ["key_press_time","key_dead_time_avg"]
@@ -48,39 +13,23 @@ target_col = "goal"
 train_data = pd.DataFrame()
 test_data = pd.DataFrame()
 workload_mean = pd.DataFrame()
-
-class MODE (Enum):
-    ALL = ["click","drag","phrase","write"]
-    REPEATED = ["click","drag","phrase"]
-    MOUSE = ["click","drag"]
-    KEY = ["phrase","writing"]
-    WRITE= ["writing"]
-    PHRASE= ["phrase"]
-    DRAG = ["drag"]
-    CLICK =["click"]
-
+OUTPUT_PATH = "./correl_out/"
 # variables
 ## target type
-weighted = True
-mean = False
-categorical = False
-workload_level = False
-weight_to_work = False
+weighted = False
+workload_level=True
 
 ## mode 
-mode = MODE.CLICK
+mode = MODE.PHRASE   
 
-
-## statistics0
-correl = True
-box_plot = False
-stat_analysis = False
+## statistics
+correl = False
+anova = True
 
 # import path 
-
+## Folder has to contain processed data + general_info.csv
 FILE_PATH = "./processed_2_1apart/"
 #FILE_PATH = "./processed_30_5apart/"
-#FILE_PATH = "./processed_no_window/"
 
 
 # read files
@@ -101,76 +50,42 @@ for f in files:
         if any(task in f for task in mode.value):
             sorted_files[split_str[0]].append(f)
 
-
-print(sorted_files)
-print(workload_mean.shape)
-# startt labeling
+train_data_lst = []
+# labeling
 for key,lst in sorted_files.items():
+    print(FILE_PATH+label[key])
 
+    # read demand file
     target = pd.read_csv(FILE_PATH+label[key]).to_dict(orient="records")[0]
     
-    #print(target)
-    # get demands
+    # add targetcolumn to data
     for i in lst:
+        # read metrics into df
         read_data = pd.read_csv(FILE_PATH+i).fillna(0)
         read_data = read_data.replace("NaN",0)
-        if workload_mean.shape[1] == 0:
-            workload_mean = pd.DataFrame(columns= read_data.columns)
+
+        # convert times to 
         for val in to_convert:
             read_data[val] = pd.to_timedelta(read_data[val])/pd.Timedelta(seconds=1)
 
         # get target column
         if weighted:
-            read_data[target_col] = calc_weighted_target(data_file = i, user_name = key, target = target)
-            read_data["name"] = key
-            #print(read_data[target_col])
-        elif mean:
-            read_data[target_col] = calc_mean_target(data_file = i, target = target)
-        else:
-            read_data[target_col] = target[i.split(".")[0].split("_")[1] + single_target_col]/20
-        if categorical: 
-            read_data[target_col]=read_data[target_col].apply(lambda value: 0 if value <33 else (1 if value < 66 else 2 )) 
-            #read_data[target_col] = 2 if read_data[target_col] >66 else 1 if read_data[target_col] >33 else 0
+            read_data[target_col] = calc_weighted_target(data_file = i, target = target)         
+
         if workload_level:
-            read_data[target_col] = rename[general_info_data.loc[general_info_data["name"] == key, "difficulty"].values.tolist()[0]]
-            read_data[target_col] = general_info_data.loc[general_info_data["name"] == key, "difficulty"].values.tolist()[0]
-            read_data["name"] = key
-            workload_mean = pd.concat([workload_mean,read_data])
-
-        if weight_to_work:
-            read_data["weight"]=calc_weighted_target(data_file = i, user_name = key, target = target)
-            
-            read_data[target_col] = rename[general_info_data.loc[general_info_data["name"] == key, "difficulty"].values.tolist()[0]]
             read_data[target_col] = general_info_data.loc[general_info_data["name"] == key, "difficulty"].values.tolist()[0]
 
-            workload_mean = pd.concat([workload_mean,read_data])           
 
-        
+        read_data["name"] = key
+        train_data_lst.append(read_data)           
 
-        # 90% trianing 10% test
-        length = int(read_data.shape[0]*1)
-        if train_data.shape[0] != 0:
+train_data = pd.concat(train_data_lst)
 
-            train_data = pd.concat([train_data, read_data.iloc[:length]])
-            test_data = pd.concat([test_data,read_data.iloc[length:]])
-            
-        else:
-            train_data = read_data.iloc[:length]
-            test_data = read_data.iloc[length:]               
-
-if workload_level or weight_to_work:
-    train_data = workload_mean
-    if weight_to_work:
-        train_data = train_data.loc[:,["time","weight","name",target_col]]
-    cols = train_data.columns.to_list()
-    print(cols)
-
-else:
-    cols = train_data.columns.to_list()
+cols = train_data.columns.to_list()
 
 print(cols)
 train_data = train_data.fillna(0)
-cols.remove("goal")
+cols.remove(target_col)
 cols.remove("name")
 cols.remove("time")
 
@@ -179,15 +94,17 @@ if correl:
     kend="kendall"
     spear="spearman"
     output = {pear:[],kend:[],spear:[]}
+    all_data_out={}
     diagram_cols = []
-    print(train_data)
     
-    #del cols[0]
     for val in cols:
         #print(val)
-        x = train_data[val].corr(train_data[target_col], method="pearson")
-        y = train_data[val].corr(train_data[target_col], method="kendall")
-        z = train_data[val].corr(train_data[target_col], method="spearman")
+        x = train_data[val].corr(train_data[target_col], method=pear)
+        y = train_data[val].corr(train_data[target_col], method=kend)
+        z = train_data[val].corr(train_data[target_col], method=spear)
+        print(x)
+        all_data_out[val]={pear:x,kend:y,spear:z}
+
         com_val = 0.3
         if abs(x)>=com_val or abs(y)>=com_val or abs(z)>=com_val:
             output[pear].append(float("{:.4f}".format(x)))
@@ -196,13 +113,14 @@ if correl:
             diagram_cols.append(val)
         print(val+":",x,y,z)
 
-    # gen diagramm
+    # save correls
+    pd.DataFrame(all_data_out).T.to_csv(f'{OUTPUT_PATH}correls_{FILE_PATH.split("_")[1]+"_"+FILE_PATH.split("_")[2][0]}_{mode.name}.csv')
+
+    # draw diagram 
+    fig, ax = plt.subplots(layout='constrained')
     x = np.arange(len(diagram_cols))  # the label locations
     width = 0.25  # the width of the bars
     multiplier = 0
-
-    fig, ax = plt.subplots(layout='constrained')
-
     for attribute, measurement in output.items():
         offset = width * multiplier
         rects = ax.bar(x + offset, measurement, width, label=attribute)
@@ -218,98 +136,38 @@ if correl:
 
     plt.show()
 
-if box_plot:
-    cat = "Sekundäraufgabe"
-    #rename = {0:"keine",1:"0-Back", 2:"1-Back"}
-    #general_info = pd.read_csv(FILE_PATH + "general_info.csv")
-    print(cols)
+if anova:
+    file_identifier = FILE_PATH.split("/")[1]
+    good_cols = []
+    all_data = train_data.fillna(0)
+    all_data["name"] = all_data["name"].map(lambda x : x[:-1])
+    print(all_data)
+    anova_result = pd.DataFrame(columns=["col_name", "andat"])
+    pairwise_result = pd.DataFrame()
+
+    # calc ANOVA to get relevant sensors
     for col in cols:
-        data = train_data.loc[:,[col,target_col]]
-        print("data ",data)
-        #meta = c[col]
-        x = sns.boxplot(data= data, x = target_col,y = col,order= rename.values())
-        x.set_title(f"{mode.name}: {c[col]['name']}")
-        x.set_ylabel(f"{c[col]['y_name']}")
-        plt.show()
+        an_dat = pg.rm_anova( data = all_data,dv = col, within=target_col,subject = "name",detailed = True)
+        if "p-unc" in an_dat.keys():
+            value =an_dat["p-unc"].values.tolist()[0]
+            anova_result = pd.concat([anova_result,pd.DataFrame({"col_name":[col], "andat":[value]})])
+            if value < .05:
+                good_cols.append(col)
+                #print(col)
+                #print(an_dat)
+    print(anova_result)
+    
+    # save anova results
+    anova_result.to_csv(path_or_buf=f"./{OUTPUT_PATH}/anova_res_{file_identifier}_{mode.name}.csv")
 
-if stat_analysis:
-    ttest = True
-    correls = False
-    normal = False
-    anova = False
+    # post toc test
+    print(good_cols)
+    for col in good_cols:
 
-    ttest_data = {}
-    correl_data = {}
-    normal_data = {}
-    anova_goal_data = {}
-    anova_within_data = {}
-    print(train_data)
-    for col in cols:
-        print(col)
-        # t-Test
-        if ttest:
-            
-            ttest_res = pg.ttest(train_data.loc[:,col],train_data[target_col])
-            x = ttest_res["p-val"].values
-            #print(type(x))
-            #print(x)
-            if x:
-                print("x works")
-            if pd.isnull(x):
-                print("insnan")
-            if not pd.isnull(x):
+        pair_test = pg.pairwise_tests(data = all_data,dv = col,within = target_col,subject = "name", padjust = "bonf", effsize = "cohen")
 
-                if abs(x) > .1 : 
-                    ttest_data[col] = x
-            #print(ttest_res["p-val"].values)
-
-        if correls:
-        # correlation
-            print(train_data.loc[:,col])
-            corr_res = pg.corr(train_data.loc[:,col],train_data[target_col])
-            #print(corr_res["r"].values)
-            x = corr_res["r"].values
-            if not pd.isnull(x):
-                if abs(x) > .15:
-                    correl_data[col] = x 
-        
-        if normal:
-            pass 
-
-        if anova:
-            #print("start anova")
-            print(train_data.head())
-            train_data = train_data.fillna(0)
-            an_dat = pg.rm_anova( data = train_data,dv = col, within=target_col,subject = "name",detailed = False)
-            print(an_dat)
-            if "np2" in an_dat:
-                x = an_dat["np2"].values
-                if not pd.isnull(x):
-                    if abs(x) > .03:
-                        print(x)
-                        anova_goal_data[col] = x
-                    
-    if ttest:
-        x = sns.barplot(ttest_data)
-        for i in x.containers:
-            x.bar_label(i,)
-        x.set_title("T-Test: p-val")
-        #print(ttest_data)
-        plt.show()
-    if correls:
-        print(correl_data)
-        x = sns.barplot(correl_data)
-        x.set_title("Pearson Korrelation: r-Wert")
-        for i in x.containers:
-            x.bar_label(i,)
-        #print(ttest_data)
-        plt.show()
-    if anova:
-        x = sns.barplot(anova_goal_data)
-        x.set_title("Anova: Partial Eta Squared")
-        for i in x.containers:
-            x.bar_label(i,)
-        #print(ttest_data)
-        plt.show()
-    if normal:
-        pass
+        pair_test["column"] = col
+        pairwise_result = pd.concat([pairwise_result,pair_test])
+    # save results
+    pairwise_result.to_csv(f"./{OUTPUT_PATH}/pairwise_{file_identifier}_{mode.name}.csv",columns=["column","A","B","p-unc","T","dof","alternative","p-corr","p-adjust","BF10","cohen"])
+    print(pairwise_result)

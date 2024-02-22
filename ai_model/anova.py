@@ -1,45 +1,11 @@
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
 import numpy as np
 from enum import Enum
-import seaborn as sns
-from ai_constants import const as c 
 import pingouin as pg
 import math
+from constants import MODE
 
-
-# function
-def calc_weighted_target(data_file, user_name, target):
-    #print(data_file.split(".")[0].split("_")[0][:-1])
-    user_name = data_file.split(".")[0].split("_")[0][:-1]
-    task_type = data_file.split(".")[0].split("_")[1]
-
-    user_data_path = "./nutzerdaten.xlsx"
-    user_data = pd.read_excel(user_data_path)
-    user_data = user_data.loc[user_data["ID"] == user_name]
-    print("________")
-    print(data_file)
-    print(target)
-    print(user_data)
-    
-    workloads = []
-    for key in target.keys():
-        if task_type in key:
-            workloads.append(target[key] * user_data[key.split("_")[1]].values.tolist()[0])
-    print( sum(workloads)/3)
-
-    return sum(workloads)/3
-    
-def calc_mean_target(data_file,target):
-    task_type = data_file.split(".")[0].split("_")[1]
-    
-    workloads = []
-    for key in target.keys():
-        if task_type in key:
-            workloads.append(target[key])
-    print(sum(workloads)/len(workloads))
-    return sum(workloads)/len(workloads)
 
 # constants
 to_convert = ["key_press_time","key_dead_time_avg"]
@@ -51,7 +17,7 @@ test_data = pd.DataFrame()
 workload_mean = pd.DataFrame()
 
 class MODE (Enum):
-    ALL = ["click","drag","phrase","write"]
+    ALL = ["click","drag","phrase","writing"]
     REPEATED = ["click","drag","phrase"]
     MOUSE = ["click","drag"]
     KEY = ["phrase","writing"]
@@ -133,15 +99,12 @@ cols.remove("name")
 good_cols = []
 all_data = all_data.fillna(0)
 all_data["name"] = all_data["name"].map(lambda x : x[:-1])
-all_data.to_csv("./hallo.csv")
+
 anova_result = pd.DataFrame(columns=["col_name", "andat"])
 pairwise_result = pd.DataFrame()
 for col in cols:
-    print(col)
-    print(target_col)
     an_dat = pg.rm_anova( data = all_data,dv = col, within=target_col,subject = "name",detailed = True)
-    print(an_dat)
-    exit(1)
+
     if "p-unc" in an_dat.keys():
         value =an_dat["p-unc"].values.tolist()[0]
         anova_result = pd.concat([anova_result,pd.DataFrame({"col_name":[col], "andat":[value]})])
@@ -150,7 +113,7 @@ for col in cols:
             #print(col)
             #print(an_dat)
 print(anova_result)
-anova_result.to_csv(path_or_buf=f"./anova_result/anova_res_{file_identifier}_{mode.name}.csv")
+anova_result.to_csv(path_or_buf=f"./w_t/anova_res_{file_identifier}_{mode.name}.csv")
 # post toc test
 print(good_cols)
 for col in good_cols:
@@ -159,5 +122,5 @@ for col in good_cols:
     print(pair_test)
     pair_test["column"] = col
     pairwise_result = pd.concat([pairwise_result,pair_test])
-pairwise_result.to_csv(f"./anova_result/pairwise_{file_identifier}_{mode.name}.csv",columns=["column","A","B","p-unc","T","dof","alternative","p-corr","p-adjust","BF10","cohen"])
+pairwise_result.to_csv(f"./w_t/pairwise_{file_identifier}_{mode.name}.csv",columns=["column","A","B","p-unc","T","dof","alternative","p-corr","p-adjust","BF10","cohen"])
 print(pairwise_result)

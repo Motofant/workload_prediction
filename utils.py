@@ -31,7 +31,6 @@ def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
 
     # eyetracker
     if f'{site_key}{c.SUB_EY}' not in sts:
-        #cmd = f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}
         cmd = f"{sys.executable} ./tracking/eyetracking.py {name} {task}"
         eyetr = subprocess.Popen(cmd, shell = False,creationflags = CONSOLE_SHOWN)
         psutil.Process(eyetr.pid).suspend()
@@ -55,35 +54,6 @@ def startSubprocesses(site_key:str, name:str, task :str,sub_group = str):
     sts[sub_group] = lst_sub
     output  += [f'{site_key}{c.SUB_KM}',f'{site_key}{c.SUB_AN}',f'{site_key}{c.SUB_EY}',]
     return output
-
-def startSubprocesses_old(site_key:str, name:str, task :str,sub_group = str):
-    lst_sub = []
-    # start logging scripts
-    # keyboard/mouse
-    if f'{site_key}{c.SUB_KM}' not in sts:
-        key_mouse = subprocess.Popen(f"{sys.executable} ./tracking/keyboard_mouse_tracker.py {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
-        psutil.Process(key_mouse.pid).suspend()
-        sts[f'{site_key}{c.SUB_KM}'] = key_mouse
-        lst_sub.append(f'{site_key}{c.SUB_KM}')
-
-    # analog
-    if f'{site_key}{c.SUB_AN}' not in sts:
-        analog = subprocess.Popen(f"dotnet run --project ./c_sharp/ {name} {task}", shell = False,creationflags = CONSOLE_SHOWN)
-        psutil.Process(analog.pid).suspend()
-        sts[f'{site_key}{c.SUB_AN}'] = analog
-        lst_sub.append(f'{site_key}{c.SUB_AN}')
-
-    # eyetracker
-    if f'{site_key}{c.SUB_EY}' not in sts:
-        #cmd = f"./eyeenv/Scripts/python", './tracking/eyetracking.py', {name}, {task}
-        cmd = f"{sys.executable} ./tracking/eyetracking.py {name} {task}"
-        eyetr = subprocess.Popen(cmd, shell = False,creationflags = CONSOLE_SHOWN)
-        psutil.Process(eyetr.pid).suspend()
-        sts[f'{site_key}{c.SUB_EY}'] = eyetr
-        lst_sub.append(f'{site_key}{c.SUB_EY}')
-
-    sts[sub_group] = lst_sub
-    return [f'{site_key}{c.SUB_KM}',f'{site_key}{c.SUB_AN}',f'{site_key}{c.SUB_EY}',]
 
 def startNBack(name:str,sub_group = str):
     lst_sub = []
@@ -127,7 +97,6 @@ def manageSubProc(mode:str, sub_group = str):
 def getPhrases(site_key:str,n_o_phrase: int, path:str):
     # phrases used from https://www.yorku.ca/mack/chi03b.pdf
     if f"{site_key}phrases" not in sts:
-        print("yxou shouldnt be here")
         all_phrases = []
         with open(path, 'r') as f:
             all_phrases = [line.strip() for line in f]

@@ -8,7 +8,7 @@ from streamlit import session_state as sts
 from utils import startSubprocesses, manageSubProc, getFocusString,format_gen,format_perf
 
 # creative writing task 
-# let the user write a text about provideed topic
+# let the user write a text about provided topic
 
 def endTest():
     # end subprocesses
