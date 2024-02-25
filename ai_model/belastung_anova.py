@@ -8,7 +8,7 @@ def calc_weighted_target(task_type, user_name, target):
     #task_type = data_file.split(".")[0].split("_")[1]
     print(user_name)
     print(user_name[:-1])
-    user_data_path = "./nutzerdaten.xlsx"
+    user_data_path = "./nutzerdaten_anon.xlsx"
     user_data = pd.read_excel(user_data_path)
     user_data = user_data.loc[user_data["ID"] == user_name[:-1]]
     print(user_data)
@@ -31,7 +31,7 @@ def calc_weighted_target(task_type, user_name, target):
 # get data
 
 demands_path = "./processed_30_5apart/"
-user_data_path = "./nutzerdaten.xlsx"
+user_data_path = "./nutzerdaten_anon.xlsx"
 user_data = pd.read_excel(user_data_path)
 gen_info = pd.read_csv(demands_path + "general_info.csv")
 

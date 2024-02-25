@@ -35,28 +35,6 @@ sample_len = 10 # samples for cnn
     
 
 # functions
-def calc_weighted_target_old(data_file, user_name, target):
-    user_name = data_file.split(".")[0].split("_")[0][:-1]
-    task_type = data_file.split(".")[0].split("_")[1]
-
-    user_data_path = "./nutzerdaten.xlsx"
-    user_data = pd.read_excel(user_data_path)
-    user_data = user_data.loc[user_data["ID"] == user_name]
-    print("________")
-    print(data_file)
-    print(target)
-    print(user_data)
-    
-    workloads = []
-    for key in target.keys():
-        if task_type in key:
-            print(task_type, key)
-            print(target[key], user_data[key.split("_")[1]].values.tolist()[0])
-        
-            workloads.append(target[key] * user_data[key.split("_")[1]].values.tolist()[0])
-    print(sum(workloads))
-    print(sum(workloads)/3)
-    return sum(workloads)/3
 
 def createModel(sample_len,n_features):
     #print(sample_len, n_features)

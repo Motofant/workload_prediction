@@ -4,7 +4,7 @@ logging/
 
 *.log
 logs/
-*.zip
+#*.zip
 __pycache__/
 *.csv
 .venvs/*
@@ -16,9 +16,9 @@ data_processing/pro*/*
 data_processing/*data/*
 
 *.xlsx
-*.dat
+#*.dat
 *.gv
-
+!*/nutzerdaten_anon.xlsx
 # removal c# stuff
 c_sharp/obj/*
 c_sharp/logs/*

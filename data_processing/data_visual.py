@@ -19,7 +19,7 @@ def calc_weighted_target(data_file, user_name, target):
     user_name = data_file.split("/")[-1].split(".")[0].split("_")[0][:-1]
     task_type = data_file.split("/")[-1].split(".")[0].split("_")[1]
 
-    user_data_path = "./data_processing/nutzerdaten.xlsx"
+    user_data_path = "./data_processing/nutzerdaten_anon.xlsx"
     user_data = pd.read_excel(user_data_path)
     user_data = user_data.loc[user_data["ID"] == user_name]
     print(user_data)
