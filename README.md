@@ -186,12 +186,3 @@ Those are either 0 -> no Secondary task, 1 -> 0-Back, 2 -> 1-Back (3 classes) or
     - testing_user --> user to test
 4. start app with `python ./prognose_testing.py`
 5. results are saved in /prognose_test/
-
-
-
-
-
-- venv
-- (navigation)
-- (setting)
-- start 
